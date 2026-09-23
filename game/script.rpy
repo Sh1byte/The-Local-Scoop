@@ -6,9 +6,18 @@
 define e = Character("Eileen")
 
 
+label splashscreen:
+    play music "gui/startup_menu_music.mp3" loop
+    scene black
+    show screen title_intro
+    pause
+    return
+
+
 # The game starts here.
 
 label start:
+    call splashscreen
 
     # Show a background. This uses a placeholder by default, but you can
     # add a file (named either "bg room.png" or "bg room.jpg") to the

@@ -344,6 +344,57 @@ style navigation_button_text:
     properties gui.text_properties("navigation_button")
 
 
+transform intro_prompt_blink:
+    alpha 0.45
+    easein 0.9 alpha 0.95
+    pause 0.35
+    easeout 0.9 alpha 0.45
+    pause 0.35
+    repeat
+
+screen title_intro():
+    tag menu
+
+    if renpy.exists("gui/startup_menu.webm"):
+        add Movie(play="gui/startup_menu.webm", loop=True, size=(1920, 1080))
+    elif renpy.exists("gui/startup_menu.ogv"):
+        add Movie(play="gui/startup_menu.ogv", loop=True, size=(1920, 1080))
+    elif renpy.exists("gui/main_menu_bg.webm"):
+        add Movie(play="gui/main_menu_bg.webm", loop=True, size=(1920, 1080))
+    else:
+        add Solid("#000000")
+        add "gui/main_menu.png"
+
+    frame:
+        at intro_prompt_blink
+        xalign 0.5
+        xoffset 18
+        yalign 0.92
+        xsize 460
+        ysize 58
+        background Solid("#10182080")
+        padding (16, 8, 16, 8)
+
+        text _("Press any button to start"):
+            xalign 0.5
+            yalign 0.5
+            size 32
+            color "#fff4d6"
+            font "DejaVuSans-Bold.ttf"
+            text_align 0.5
+            layout "nobreak"
+            outlines [(2, "#1b160d99", 0, 0), (1, "#00000055", 2, 2)]
+
+    button:
+        xfill True
+        yfill True
+        action [Hide("title_intro"), ShowMenu("main_menu")]
+
+    key "K_RETURN" action [Hide("title_intro"), ShowMenu("main_menu")]
+    key "K_SPACE" action [Hide("title_intro"), ShowMenu("main_menu")]
+    key "K_KP_ENTER" action [Hide("title_intro"), ShowMenu("main_menu")]
+
+
 ## Main Menu screen ############################################################
 ##
 ## Used to display the main menu when Ren'Py starts.
@@ -355,26 +406,22 @@ screen main_menu():
     ## This ensures that any other menu screen is replaced.
     tag menu
 
-    add gui.main_menu_background
+    if renpy.exists("gui/startup_menu.webm"):
+        add Movie(play="gui/startup_menu.webm", loop=True, size=(1920, 1080))
+    elif renpy.exists("gui/startup_menu.ogv"):
+        add Movie(play="gui/startup_menu.ogv", loop=True, size=(1920, 1080))
+    elif renpy.exists("gui/main_menu_bg.webm"):
+        add Movie(play="gui/main_menu_bg.webm", loop=True, size=(1920, 1080))
+    else:
+        add Solid("#000000")
+        add "gui/main_menu.png"
 
-    ## This empty frame darkens the main menu.
-    frame:
-        style "main_menu_frame"
-
-    ## The use statement includes another screen inside this one. The actual
-    ## contents of the main menu are in the navigation screen.
-    use navigation
-
-    if gui.show_name:
-
-        vbox:
-            style "main_menu_vbox"
-
-            text "[config.name!t]":
-                style "main_menu_title"
-
-            text "[config.version]":
-                style "main_menu_version"
+    imagebutton:
+        idle Transform("images/main_menu_button.png", size=(1920, 1080), fit="contain")
+        hover Transform("images/main_menu_button.png", size=(1920, 1080), fit="contain")
+        xalign 0.5
+        yalign 0.5
+        action Start()
 
 
 style main_menu_frame is empty
