@@ -406,22 +406,14 @@ screen main_menu():
     ## This ensures that any other menu screen is replaced.
     tag menu
 
-    if renpy.exists("gui/startup_menu.webm"):
-        add Movie(play="gui/startup_menu.webm", loop=True, size=(1920, 1080))
-    elif renpy.exists("gui/startup_menu.ogv"):
-        add Movie(play="gui/startup_menu.ogv", loop=True, size=(1920, 1080))
-    elif renpy.exists("gui/main_menu_bg.webm"):
-        add Movie(play="gui/main_menu_bg.webm", loop=True, size=(1920, 1080))
-    else:
-        add Solid("#000000")
-        add "gui/main_menu.png"
-
-    imagebutton:
-        idle Transform("images/main_menu_button.png", size=(1920, 1080), fit="contain")
-        hover Transform("images/main_menu_button.png", size=(1920, 1080), fit="contain")
+    button:
         xalign 0.5
         yalign 0.5
+        xsize 1920
+        ysize 1080
         action Start()
+
+        add Movie(play="gui/main_menu.webm", loop=True, size=(1920, 1080))
 
 
 style main_menu_frame is empty
