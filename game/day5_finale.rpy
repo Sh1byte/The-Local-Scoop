@@ -1,151 +1,209 @@
-# Day 5 Character Definitions
 define medic = Character("Medic", color="#cccccc")
 define engineer = Character("Train Engineer", color="#cccccc")
 define hobo = Character("Hobo", color="#cccccc")
 define tourist = Character("Tourist", color="#cccccc")
 
-# Day 5 Investigation Variables (Path A Only)
 default day5_clue = ""
 default day5_item = ""
 default day5_witness = ""
 default evidence_phone = False
 
+default day5_clues_found = []
+default day5_items_found = []
+default day5_witnesses_found = []
+default day5_clicked_points = []
+
 label day5_path_a_start:
-    # Path A: The Rising Action and Climax (If you chose "Take it and run")
     scene bg rail_depot
-    
-    "The morning of the 5th day arrives. Because the money is missing, both gangs blame each other."
-    "I am dispatched to investigate a morning lead at an old rail depot where a getaway driver was found injured."
-    "Arthur meets me there in the morning sun, completely unaware that I stole the cash."
-    
+    "The morning of the 5th day arrives. Arthur meets me at the old rail depot."
     jump day5_investigation_hub
 
 label day5_investigation_hub:
-    menu:
-        "Inspect the Bloody Tire Tracks" if day5_clue == "":
-            "They show the exact escape route of the ambushed gangsters."
-            $ day5_clue = "The Bloody Tire Tracks"
-            jump day5_investigation_hub
-            
-        "Inspect the Wild Dog Tracks" if day5_clue == "":
-            "Just stray animals drawn to the blood."
-            $ day5_clue = "The Wild Dog Tracks"
-            jump day5_investigation_hub
-            
-        "Inspect the Leaking Oil Puddle" if day5_clue == "":
-            "Looks like normal car trouble, hiding the fact there was a violent shootout here."[cite: 13]
-            $ day5_clue = "The Leaking Oil Puddle"
-            jump day5_investigation_hub
-
-        "Check the driver's pockets" if day5_item == "":
-            "I found a Train Ticket Stub."[cite: 13]
-            "It proves the gangs were planning to leave town."[cite: 13]
-            $ day5_item = "The Train Ticket Stub"
-            jump day5_investigation_hub
-
-        "Check the discarded trash" if day5_item == "":
-            "Just an Empty Wallet. A pickpocket's discarded trash that distracts from the big picture."[cite: 13]
-            $ day5_item = "The Empty Wallet"
-            jump day5_investigation_hub
-
-        "Look inside the Rusty Toolbox" if day5_item == "":
-            "Heavy junk left behind by a mechanic. It adds nothing to my story."[cite: 13]
-            $ day5_item = "The Rusty Toolbox"
-            jump day5_investigation_hub
-
-        "Search near the medical supplies" if not evidence_phone:
-            "Someone dropped a cheap Burner Phone."[cite: 13]
-            "A text message on the screen confirms a massive gang war at the shipping docks at midnight."[cite: 13]
-            "I need to add this to my Reporter's Notepad."
-            $ evidence_phone = True 
-            jump day5_investigation_hub
-
-        "Interview the Medic" if day5_witness == "":
-            medic "They forced me to treat a wounded gangster! He kept muttering about a midnight war at the docks!"[cite: 13]
-            $ day5_witness = "Medic 1"
-            jump day5_investigation_hub
-
-        "Interview the Train Engineer" if day5_witness == "":
-            engineer "That driver just fell off a moving cargo train, plain and simple."[cite: 13]
-            $ day5_witness = "Train Engineer 1"
-            jump day5_investigation_hub
-
-        "Interview the Hobo" if day5_witness == "":
-            hobo "The government is poisoning the water supply! That's what happened here!"[cite: 13]
-            $ day5_witness = "Hobo 1"
-            jump day5_investigation_hub
-
-        "Interview the Tourist" if day5_witness == "":
-            tourist "Oh, I thought they were just filming a zombie action movie here with fake blood."[cite: 13]
-            $ day5_witness = "Tourist 1"
-            jump day5_investigation_hub
-
-        "Return to the Newsroom" if day5_clue != "" and day5_item != "" and day5_witness != "" and evidence_phone:
-            jump day5_morning_newspaper
+    call screen day5_depot_investigation
+    $ clicked_object = _return
+    $ day5_clicked_points.append(clicked_object)
+    
+    if clicked_object == "tiretracks":
+        "They show the exact escape route of the ambushed gangsters."
+        $ day5_clues_found.append("The Bloody Tire Tracks")
+        jump day5_investigation_hub
+    elif clicked_object == "dogtracks":
+        "Just stray animals drawn to the blood."
+        $ day5_clues_found.append("The Wild Dog Tracks")
+        jump day5_investigation_hub
+    elif clicked_object == "oilpuddle":
+        "Looks like normal car trouble."
+        $ day5_clues_found.append("The Leaking Oil Puddle")
+        jump day5_investigation_hub
+        
+    elif clicked_object == "ticketstub":
+        "I found a Train Ticket Stub."
+        $ day5_items_found.append("The Train Ticket Stub")
+        $ inventory_bag_items.append("The Train Ticket Stub")
+        jump day5_investigation_hub
+    elif clicked_object == "wallet":
+        "Just an Empty Wallet."
+        $ day5_items_found.append("The Empty Wallet")
+        $ inventory_bag_items.append("The Empty Wallet")
+        jump day5_investigation_hub
+    elif clicked_object == "toolbox":
+        "Heavy junk left behind by a mechanic."
+        $ day5_items_found.append("The Rusty Toolbox")
+        $ inventory_bag_items.append("The Rusty Toolbox")
+        jump day5_investigation_hub
+        
+    elif clicked_object == "phone":
+        "A Burner Phone confirming a midnight dock war."
+        $ evidence_phone = True 
+        jump day5_investigation_hub
+        
+    elif clicked_object == "medic":
+        medic "They forced me to treat a wounded gangster muttering about the docks!"
+        $ day5_witnesses_found.append("Medic 1")
+        jump day5_investigation_hub
+    elif clicked_object == "engineer":
+        engineer "That driver just fell off a moving cargo train."
+        $ day5_witnesses_found.append("Train Engineer 1")
+        jump day5_investigation_hub
+    elif clicked_object == "hobo":
+        hobo "The government is poisoning the water supply!"
+        $ day5_witnesses_found.append("Hobo 1")
+        jump day5_investigation_hub
+    elif clicked_object == "tourist":
+        tourist "I thought they were filming a zombie movie."
+        $ day5_witnesses_found.append("Tourist 1")
+        jump day5_investigation_hub
+        
+    elif clicked_object == "newsroom":
+        jump day5_morning_newspaper
 
 label day5_morning_newspaper:
     scene bg newsroom
-    "I compile the facts and prep the morning edition."
-    # Josh's Python script triggers here to query SheetDB for the Day 5 morning paper
-    "Chosen Clue: [day5_clue]"
-    "Chosen Item: [day5_item]"
-    "Chosen Witness: [day5_witness]"
-    
-    "That evening, I approach my former rival in the newsroom."[cite: 13]
-    "I look Arthur in the eye and say, 'I’ve got a big lead, Arthur. A massive gang clash at the shipping docks tonight. I need you to come with me to help gather information.'"[cite: 13]
-    "Arthur nods, trusting me completely."[cite: 13]
-    
-    jump day5_path_a_climax
+    "Time to review my Reporter's Notepad and write the final story."
 
+label select_day5_clue:
+    "What was the most credible information I gathered at the rail depot?"
+    menu:
+        "The Bloody Tire Tracks" if "The Bloody Tire Tracks" in day5_clues_found:
+            "Description: Exact escape route of the ambushed gangsters."
+            menu:
+                "Confirm this choice":
+                    $ day5_clue = "The Bloody Tire Tracks"
+                "Pick something else":
+                    jump select_day5_clue
+        "The Wild Dog Tracks" if "The Wild Dog Tracks" in day5_clues_found:
+            "Description: Stray animals drawn to the blood."
+            menu:
+                "Confirm this choice":
+                    $ day5_clue = "The Wild Dog Tracks"
+                "Pick something else":
+                    jump select_day5_clue
+        "The Leaking Oil Puddle" if "The Leaking Oil Puddle" in day5_clues_found:
+            "Description: Hides the fact there was a violent shootout."
+            menu:
+                "Confirm this choice":
+                    $ day5_clue = "The Leaking Oil Puddle"
+                "Pick something else":
+                    jump select_day5_clue
+
+label select_day5_item:
+    "What was the most credible object I gathered at the rail depot?"
+    menu:
+        "The Train Ticket Stub" if "The Train Ticket Stub" in day5_items_found:
+            "Description: Proves the gangs were planning to leave town."
+            menu:
+                "Confirm this choice":
+                    $ day5_item = "The Train Ticket Stub"
+                "Pick something else":
+                    jump select_day5_item
+        "The Empty Wallet" if "The Empty Wallet" in day5_items_found:
+            "Description: A pickpocket's discarded trash."
+            menu:
+                "Confirm this choice":
+                    $ day5_item = "The Empty Wallet"
+                "Pick something else":
+                    jump select_day5_item
+        "The Rusty Toolbox" if "The Rusty Toolbox" in day5_items_found:
+            "Description: Adds nothing to the investigation."
+            menu:
+                "Confirm this choice":
+                    $ day5_item = "The Rusty Toolbox"
+                "Pick something else":
+                    jump select_day5_item
+
+label select_day5_witness:
+    "Who had the most convincing story at the rail depot?"
+    menu:
+        "Medic" if "Medic 1" in day5_witnesses_found:
+            "Testimony: Forced to treat a wounded gangster talking about a midnight dock war."
+            menu:
+                "Confirm this choice":
+                    $ day5_witness = "Medic 1"
+                "Pick something else":
+                    jump select_day5_witness
+        "Train Engineer" if "Train Engineer 1" in day5_witnesses_found:
+            "Testimony: Claims the driver simply fell off a moving cargo train."
+            menu:
+                "Confirm this choice":
+                    $ day5_witness = "Train Engineer 1"
+                "Pick something else":
+                    jump select_day5_witness
+        "Hobo" if "Hobo 1" in day5_witnesses_found:
+            "Testimony: Believes the government is poisoning the water supply."
+            menu:
+                "Confirm this choice":
+                    $ day5_witness = "Hobo 1"
+                "Pick something else":
+                    jump select_day5_witness
+        "Tourist" if "Tourist 1" in day5_witnesses_found:
+            "Testimony: Thought the shootout was just a movie set."
+            menu:
+                "Confirm this choice":
+                    $ day5_witness = "Tourist 1"
+                "Pick something else":
+                    jump select_day5_witness
+
+label day5_api_execution:
+    call calculate_day5_credibility
+    python:
+        article_result = sheetdb_client.fetch_newspaper_article(day5_clue, day5_item, day5_witness)
+        daily_headline = article_result.get("headline", "Error: Story Not Found")
+        daily_body = article_result.get("body", "Error: Check database connection.")
+        
+    "THE DAILY HERALD"
+    "Headline: [daily_headline]"
+    "[daily_body]"
+    "Editor's Note: This article was rated as [daily_rating]!"
+    "My final journalistic credibility is [total_credibility_score]."
+    jump day5_path_a_climax
+    
 label day5_path_a_climax:
     scene bg docks_midnight
-    "We hide on a hill overlooking the docks. The two gangs arrive, heavily armed."[cite: 13]
-    "I face my final choice."[cite: 13]
-    
+    "We hide on a hill overlooking the docks as the two gangs arrive."
     menu:
         "Tell Arthur to sneak down closer for a picture":
-            "Arthur trusts me and moves in. The shooting starts, and Arthur is killed in the crossfire."[cite: 13]
-            "I walk away with the stolen bank money and publish the final story alone, becoming rich but completely corrupt."[cite: 13]
-            
-            # Ending 1
+            "Arthur moves in and is killed in the crossfire."
             "THE DAILY HERALD"
-            "Headline: Tragedy at the Docks: Syndicate War Claims the Life of Local Reporter"[cite: 13]
-            "Ending 1: The Dark Path Unlocked."[cite: 13]
+            "Headline: Tragedy at the Docks: Syndicate War Claims the Life of Local Reporter"
+            "Ending 1: The Dark Path Unlocked."
             return
-            
         "Grab Arthur’s arm and stop him":
-            "I tell him it is too dangerous. We both stay hidden and survive."[cite: 13]
-            "The next day, I publish a co-authored story exposing the gangs, cementing a lifelong friendship with my former rival."[cite: 13]
-            
-            # Ending 2
+            "We stay hidden and survive, publishing a co-authored expose."
             "THE DAILY HERALD"
-            "Headline: The Midnight Bust: River Boys and Iron Syndicate Exposed in Dockyard Showdown"[cite: 13]
-            "Ending 2: The Redemption Path Unlocked."[cite: 13]
+            "Headline: The Midnight Bust: River Boys and Iron Syndicate Exposed"
+            "Ending 2: The Redemption Path Unlocked."
             return
 
 label day5_path_b_start:
-    # Path B: The Master Investigator (If you chose "Do nothing")
     scene bg police_station
     with fade
-    
-    "The screen slowly fades up from black. It is the night of the 5th day. I am sitting in the police station, breathing heavily."[cite: 13]
-    "A flashback reveals what really happened yesterday: Arthur had been watching my back during the bank robbery."[cite: 13]
-    "Just as Editor Vance pulled the trigger, Arthur tackled Vance to the ground, saving my life!"[cite: 13]
-    "The fight stalled Vance just long enough for the police sirens to arrive. Panicked, Vance had to flee the scene, leaving the briefcase of money behind."[cite: 13]
-    
+    "Arthur tackled Vance to the ground, saving my life during the bank robbery."
     if evidence_lighter and evidence_letter and evidence_ledger:
-        "Because Arthur saved me and fought the gang leader, our rivalry turns into absolute brotherhood."[cite: 13]
-        "Together, we realize we have everything we need: The Brass Lighter, The Extortion Letter, The Bloody Ledger, and the ultimate twist—the true identity of Editor Vance."[cite: 13]
-        "We dump all this irrefutable evidence on the Police Chief's desk."[cite: 13]
-        
+        "Together, we dump all our hard evidence on the Police Chief's desk."
         scene bg docks_midnight
-        "At midnight, as Editor Vance and the two gangs prepare to fight at the docks, dozens of police cars surround them."[cite: 13]
-        "Both gangs are arrested before a single punch is thrown. Arthur and I write the biggest story in the state, safely putting an end to the chaos forever."[cite: 13]
-        
-        # Ending 3
-        "Ending 3: The Clean Sweep Unlocked."[cite: 13]
+        "Dozens of police cars surround the docks, arresting both gangs before a shot is fired."
+        "Ending 3: The Clean Sweep Unlocked."
         return
     else:
-        "We survived, but I didn't gather enough hard evidence to take down Editor Vance and the gangs for good."
-        "The war continues..."
+        "We survived, but I didn't gather enough hard evidence to take down Editor Vance."
         return
