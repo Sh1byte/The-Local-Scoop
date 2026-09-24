@@ -1,4 +1,7 @@
-image bg warehouse = im.Scale("images/bg warehouse.jpg", 1920, 1080)
+image bg warehouse = im.Scale("gui/warehouse/warehouse_front.png", 1920, 1072)
+image bg warehouse_back = im.Scale("gui/warehouse/bg_warehouse_back.png", 1920, 1072)
+image bg warehouse_office = im.Scale("gui/day1_office/bg_office.png", 1920, 1072)
+image bg inside_warehouse = im.Scale("gui/day1_inside_warehouse/bg_inside_warehouse.png", 1920, 1072)
 define vance = Character("Editor Vance", color="#b30000")
 define arthur = Character("Arthur", color="#ff9900")
 define watchman = Character("Watchman", color="#cccccc")
@@ -69,6 +72,18 @@ label day1_investigation_hub:
         watchman "I saw them... men in heavy leather jackets marking the warehouse as their territory."
         $ day1_witnesses_found.append("Watchman 1")
         jump day1_investigation_hub
+    elif clicked_object == "warehouse_graffiti":
+        "The graffiti looks fresh. Someone wanted to mark this place as their territory."
+        jump day1_investigation_hub
+    elif clicked_object == "warehouse_windows":
+        "They destroyed even the warehouse windows."
+        jump day1_investigation_hub
+    elif clicked_object == "warehouse_door":
+        jump day1_warehouse_inside
+    elif clicked_object == "warehouse_back":
+        jump day1_warehouse_back
+    elif clicked_object == "warehouse_office":
+        jump day1_warehouse_office
     elif clicked_object == "fisherman":
         fisherman "I swear, the warehouse was attacked by angry teenagers!"
         $ day1_witnesses_found.append("Fisherman 1")
@@ -84,6 +99,24 @@ label day1_investigation_hub:
         
     elif clicked_object == "newsroom":
         jump day1_newspaper_minigame
+
+label day1_warehouse_back:
+    scene bg warehouse_back
+    call screen day1_warehouse_back_environment
+    scene bg warehouse
+    jump day1_investigation_hub
+
+label day1_warehouse_inside:
+    scene bg inside_warehouse
+    call screen day1_warehouse_inside_environment
+    scene bg warehouse
+    jump day1_investigation_hub
+
+label day1_warehouse_office:
+    scene bg warehouse_office
+    call screen day1_warehouse_office_environment
+    scene bg warehouse
+    jump day1_investigation_hub
 
 label day1_newspaper_minigame:
     scene bg newsroom

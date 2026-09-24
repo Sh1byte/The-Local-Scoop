@@ -2,6 +2,18 @@ init python:
     def brighten(image_path, amount=0.2):
         return Transform(image_path, matrixcolor=BrightnessMatrix(amount))
 
+screen day1_warehouse_back_environment():
+    # Clean back environment reserved for future interactive buttons.
+    key "K_ESCAPE" action Return()
+
+screen day1_warehouse_inside_environment():
+    # Clean inside warehouse environment reserved for future interactive buttons.
+    key "K_ESCAPE" action Return()
+
+screen day1_warehouse_office_environment():
+    # Clean office environment reserved for future interactive buttons.
+    key "K_ESCAPE" action Return()
+
 screen day1_warehouse_investigation():
     # --- CLUES ---
     # Paint Can: In the bushes under the skull graffiti
@@ -42,7 +54,21 @@ screen day1_warehouse_investigation():
         imagebutton xpos 1450 ypos 700 idle "ui_assets/jogger.png" hover brighten("ui_assets/jogger.png") action Return("jogger") at Transform(zoom=0.28)
     # Watchman: Standing under the wooden tower on the far right
     if "watchman" not in day1_clicked_points:
-        imagebutton xpos 1650 ypos 700 idle "ui_assets/watchman.png" hover brighten("ui_assets/watchman.png") action Return("watchman") at Transform(zoom=0.28)
+        imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_guard_idle.png" hover brighten("gui/warehouse/warehouse_guard_idle.png") focus_mask True action Return("watchman")
+    # Graffiti: Click to comment on the fresh marking
+    if "warehouse_graffiti" not in day1_clicked_points:
+        imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_grafitti_idle.png" hover brighten("gui/warehouse/warehouse_grafitti_idle.png") focus_mask True action Return("warehouse_graffiti")
+    # Windows: Click to comment on the destroyed windows
+    if "warehouse_windows" not in day1_clicked_points:
+        imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_windows_idle.png" hover brighten("gui/warehouse/warehouse_windows_idle.png") focus_mask True action Return("warehouse_windows")
+    # Door: Enter the inside warehouse environment
+    if "warehouse_door" not in day1_clicked_points:
+        imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_door_idle.png" hover brighten("gui/warehouse/warehouse_door_idle.png") focus_mask True action Return("warehouse_door")
+    # Back and office: Move to the warehouse back scene
+    if "warehouse_back" not in day1_clicked_points:
+        imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_back_idle.png" hover brighten("gui/warehouse/warehouse_back_idle.png") focus_mask True action Return("warehouse_back")
+    if "warehouse_office" not in day1_clicked_points:
+        imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_office_idle.png" hover brighten("gui/warehouse/warehouse_office_idle.png") focus_mask True action Return("warehouse_office")
 
     # --- EXIT BUTTON ---
     if len(day1_clues_found) > 0 and len(day1_items_found) > 0 and len(day1_witnesses_found) > 0:
