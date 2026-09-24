@@ -1,52 +1,56 @@
+init python:
+    def brighten(image_path, amount=0.2):
+        return Transform(image_path, matrixcolor=BrightnessMatrix(amount))
+
 screen day1_warehouse_investigation():
     # --- CLUES ---
     # Paint Can: In the bushes under the skull graffiti
     if "paint_can" not in day1_clicked_points:
-        imagebutton xpos 780 ypos 850 idle "ui_assets/clue_paint.png" hover im.MatrixColor("ui_assets/clue_paint.png", im.matrix.brightness(0.2)) action Return("paint_can") at Transform(zoom=0.08)
+        imagebutton xpos 780 ypos 850 idle "ui_assets/clue_paint.png" hover brighten("ui_assets/clue_paint.png") action Return("paint_can") at Transform(zoom=0.08)
     # Whiskey: On the ground left of the fisherman's crates
     if "whiskey" not in day1_clicked_points:
-        imagebutton xpos 350 ypos 920 idle "ui_assets/clue_whiskey.png" hover im.MatrixColor("ui_assets/clue_whiskey.png", im.matrix.brightness(0.2)) action Return("whiskey") at Transform(zoom=0.08)
+        imagebutton xpos 350 ypos 920 idle "ui_assets/clue_whiskey.png" hover brighten("ui_assets/clue_whiskey.png") action Return("whiskey") at Transform(zoom=0.08)
     # Pizza: On the ground below the driver
     if "pizza" not in day1_clicked_points:
-        imagebutton xpos 900 ypos 980 idle "ui_assets/clue_pizza.png" hover im.MatrixColor("ui_assets/clue_pizza.png", im.matrix.brightness(0.2)) action Return("pizza") at Transform(zoom=0.08)
+        imagebutton xpos 900 ypos 980 idle "ui_assets/clue_pizza.png" hover brighten("ui_assets/clue_pizza.png") action Return("pizza") at Transform(zoom=0.08)
 
     # --- ITEMS ---
     # Keyring: Hanging on the crates near the fisherman
     if "keyring" not in day1_clicked_points:
-        imagebutton xpos 400 ypos 800 idle "ui_assets/item_keyring.png" hover im.MatrixColor("ui_assets/item_keyring.png", im.matrix.brightness(0.2)) action Return("keyring") at Transform(zoom=0.08)
+        imagebutton xpos 400 ypos 800 idle "ui_assets/item_keyring.png" hover brighten("ui_assets/item_keyring.png") action Return("keyring") at Transform(zoom=0.08)
     # Watch: In the grass at the bottom left-center
     if "watch" not in day1_clicked_points:
-        imagebutton xpos 650 ypos 980 idle "ui_assets/item_watch.png" hover im.MatrixColor("ui_assets/item_watch.png", im.matrix.brightness(0.2)) action Return("watch") at Transform(zoom=0.08)
+        imagebutton xpos 650 ypos 980 idle "ui_assets/item_watch.png" hover brighten("ui_assets/item_watch.png") action Return("watch") at Transform(zoom=0.08)
     # Collar: On the ground to the right of the driver near the crates
     if "collar" not in day1_clicked_points:
-        imagebutton xpos 1200 ypos 890 idle "ui_assets/item_collar.png" hover im.MatrixColor("ui_assets/item_collar.png", im.matrix.brightness(0.2)) action Return("collar") at Transform(zoom=0.08)
+        imagebutton xpos 1200 ypos 890 idle "ui_assets/item_collar.png" hover brighten("ui_assets/item_collar.png") action Return("collar") at Transform(zoom=0.08)
 
     # --- HIDDEN EVIDENCE ---
     # Lighter: Floating near the river edge on the far left
     if "lighter" not in day1_clicked_points:
-        imagebutton xpos 100 ypos 900 idle "ui_assets/evidence_lighter.png" hover im.MatrixColor("ui_assets/evidence_lighter.png", im.matrix.brightness(0.2)) action Return("lighter") at Transform(zoom=0.08)
+        imagebutton xpos 100 ypos 900 idle "ui_assets/evidence_lighter.png" hover brighten("ui_assets/evidence_lighter.png") action Return("lighter") at Transform(zoom=0.08)
 
     # --- WITNESSES ---
     # Fisherman: Standing on the left path by the crates
     if "fisherman" not in day1_clicked_points:
-        imagebutton xpos 520 ypos 650 idle "ui_assets/fisherman.png" hover im.MatrixColor("ui_assets/fisherman.png", im.matrix.brightness(0.2)) action Return("fisherman") at Transform(zoom=0.28)
+        imagebutton xpos 520 ypos 650 idle "ui_assets/fisherman.png" hover brighten("ui_assets/fisherman.png") action Return("fisherman") at Transform(zoom=0.28)
     # Driver: Standing by the central pole
     if "driver" not in day1_clicked_points:
-        imagebutton xpos 980 ypos 630 idle "ui_assets/driver.png" hover im.MatrixColor("ui_assets/driver.png", im.matrix.brightness(0.2)) action Return("driver") at Transform(zoom=0.28)
+        imagebutton xpos 980 ypos 630 idle "ui_assets/driver.png" hover brighten("ui_assets/driver.png") action Return("driver") at Transform(zoom=0.28)
     # Jogger: Standing near the open right garage doors
     if "jogger" not in day1_clicked_points:
-        imagebutton xpos 1450 ypos 700 idle "ui_assets/jogger.png" hover im.MatrixColor("ui_assets/jogger.png", im.matrix.brightness(0.2)) action Return("jogger") at Transform(zoom=0.28)
+        imagebutton xpos 1450 ypos 700 idle "ui_assets/jogger.png" hover brighten("ui_assets/jogger.png") action Return("jogger") at Transform(zoom=0.28)
     # Watchman: Standing under the wooden tower on the far right
     if "watchman" not in day1_clicked_points:
-        imagebutton xpos 1650 ypos 700 idle "ui_assets/watchman.png" hover im.MatrixColor("ui_assets/watchman.png", im.matrix.brightness(0.2)) action Return("watchman") at Transform(zoom=0.28)
+        imagebutton xpos 1650 ypos 700 idle "ui_assets/watchman.png" hover brighten("ui_assets/watchman.png") action Return("watchman") at Transform(zoom=0.28)
 
     # --- EXIT BUTTON ---
     if len(day1_clues_found) > 0 and len(day1_items_found) > 0 and len(day1_witnesses_found) > 0:
-        imagebutton xalign 0.5 yalign 0.95 idle "ui_assets/ui_button_write_idle.png" hover im.MatrixColor("ui_assets/ui_button_write_idle.png", im.matrix.brightness(0.2)) action Return("newsroom")
+        imagebutton xalign 0.5 yalign 0.95 idle "ui_assets/ui_button_write_idle.png" hover brighten("ui_assets/ui_button_write_idle.png") action Return("newsroom")
         
     # --- TOGGLES ---
-    imagebutton xalign 0.95 yalign 0.05 idle "ui_assets/ui_icon_notepad_idle.png" hover im.MatrixColor("ui_assets/ui_icon_notepad_idle.png", im.matrix.brightness(0.2)) action ToggleScreen("reporters_notepad") at Transform(zoom=0.1)
-    imagebutton xalign 0.88 yalign 0.05 idle "ui_assets/ui_icon_bag_idle.png" hover im.MatrixColor("ui_assets/ui_icon_bag_idle.png", im.matrix.brightness(0.2)) action ToggleScreen("inventory_bag") at Transform(zoom=0.1)
+    imagebutton xalign 0.95 yalign 0.05 idle "ui_assets/ui_icon_notepad_idle.png" hover brighten("ui_assets/ui_icon_notepad_idle.png") action ToggleScreen("reporters_notepad") at Transform(zoom=0.1)
+    imagebutton xalign 0.88 yalign 0.05 idle "ui_assets/ui_icon_bag_idle.png" hover brighten("ui_assets/ui_icon_bag_idle.png") action ToggleScreen("inventory_bag") at Transform(zoom=0.1)
 # ==========================================
 # DAY 2 MARKET PLAZA SCREEN
 # ==========================================
