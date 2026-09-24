@@ -1,3 +1,4 @@
+image bg warehouse = im.Scale("images/bg warehouse.jpg", 1920, 1080)
 define vance = Character("Editor Vance", color="#b30000")
 define arthur = Character("Arthur", color="#ff9900")
 define watchman = Character("Watchman", color="#cccccc")
