@@ -16,55 +16,42 @@ screen day1_warehouse_office_environment():
 
 screen day1_warehouse_investigation():
     # --- CLUES ---
-    # Paint Can: In the bushes under the skull graffiti
     if "paint_can" not in day1_clicked_points:
-        imagebutton xpos 780 ypos 850 idle "ui_assets/clue_paint.png" hover brighten("ui_assets/clue_paint.png") action Return("paint_can") at Transform(zoom=0.08)
-    # Whiskey: On the ground left of the fisherman's crates
+        imagebutton xpos 780 ypos 850 idle "gui/warehouse/clue_paint.png" hover brighten("gui/warehouse/clue_paint.png") action Return("paint_can") at Transform(zoom=0.08)
     if "whiskey" not in day1_clicked_points:
-        imagebutton xpos 350 ypos 920 idle "ui_assets/clue_whiskey.png" hover brighten("ui_assets/clue_whiskey.png") action Return("whiskey") at Transform(zoom=0.08)
-    # Pizza: On the ground below the driver
+        imagebutton xpos 350 ypos 920 idle "gui/warehouse/clue_whiskey.png" hover brighten("gui/warehouse/clue_whiskey.png") action Return("whiskey") at Transform(zoom=0.08)
     if "pizza" not in day1_clicked_points:
-        imagebutton xpos 900 ypos 980 idle "ui_assets/clue_pizza.png" hover brighten("ui_assets/clue_pizza.png") action Return("pizza") at Transform(zoom=0.08)
+        imagebutton xpos 900 ypos 980 idle "gui/warehouse/clue_pizza.png" hover brighten("gui/warehouse/clue_pizza.png") action Return("pizza") at Transform(zoom=0.08)
 
     # --- ITEMS ---
-    # Keyring: Hanging on the crates near the fisherman
     if "keyring" not in day1_clicked_points:
-        imagebutton xpos 400 ypos 800 idle "ui_assets/item_keyring.png" hover brighten("ui_assets/item_keyring.png") action Return("keyring") at Transform(zoom=0.08)
-    # Watch: In the grass at the bottom left-center
+        imagebutton xpos 400 ypos 800 idle "gui/warehouse/item_keyring.png" hover brighten("gui/warehouse/item_keyring.png") action Return("keyring") at Transform(zoom=0.08)
     if "watch" not in day1_clicked_points:
-        imagebutton xpos 650 ypos 980 idle "ui_assets/item_watch.png" hover brighten("ui_assets/item_watch.png") action Return("watch") at Transform(zoom=0.08)
-    # Collar: On the ground to the right of the driver near the crates
+        imagebutton xpos 650 ypos 980 idle "gui/warehouse/item_watch.png" hover brighten("gui/warehouse/item_watch.png") action Return("watch") at Transform(zoom=0.08)
     if "collar" not in day1_clicked_points:
-        imagebutton xpos 1200 ypos 890 idle "ui_assets/item_collar.png" hover brighten("ui_assets/item_collar.png") action Return("collar") at Transform(zoom=0.08)
+        imagebutton xpos 1200 ypos 890 idle "gui/warehouse/item_collar.png" hover brighten("gui/warehouse/item_collar.png") action Return("collar") at Transform(zoom=0.08)
 
     # --- HIDDEN EVIDENCE ---
-    # Lighter: Floating near the river edge on the far left
     if "lighter" not in day1_clicked_points:
-        imagebutton xpos 100 ypos 900 idle "ui_assets/evidence_lighter.png" hover brighten("ui_assets/evidence_lighter.png") action Return("lighter") at Transform(zoom=0.08)
+        imagebutton xpos 100 ypos 900 idle "gui/warehouse/evidence_lighter.png" hover brighten("gui/warehouse/evidence_lighter.png") action Return("lighter") at Transform(zoom=0.08)
 
     # --- WITNESSES ---
-    # Fisherman: Standing on the left path by the crates
     if "fisherman" not in day1_clicked_points:
-        imagebutton xpos 520 ypos 650 idle "ui_assets/fisherman.png" hover brighten("ui_assets/fisherman.png") action Return("fisherman") at Transform(zoom=0.28)
-    # Driver: Standing by the central pole
+        imagebutton xpos 520 ypos 650 idle "gui/warehouse/fisherman.png" hover brighten("gui/warehouse/fisherman.png") action Return("fisherman") at Transform(zoom=0.28)
     if "driver" not in day1_clicked_points:
-        imagebutton xpos 980 ypos 630 idle "ui_assets/driver.png" hover brighten("ui_assets/driver.png") action Return("driver") at Transform(zoom=0.28)
-    # Jogger: Standing near the open right garage doors
+        imagebutton xpos 980 ypos 630 idle "gui/warehouse/driver.png" hover brighten("gui/warehouse/driver.png") action Return("driver") at Transform(zoom=0.28)
     if "jogger" not in day1_clicked_points:
-        imagebutton xpos 1450 ypos 700 idle "ui_assets/jogger.png" hover brighten("ui_assets/jogger.png") action Return("jogger") at Transform(zoom=0.28)
-    # Watchman: Standing under the wooden tower on the far right
+        imagebutton xpos 1450 ypos 700 idle "gui/warehouse/jogger.png" hover brighten("gui/warehouse/jogger.png") action Return("jogger") at Transform(zoom=0.28)
     if "watchman" not in day1_clicked_points:
         imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_guard_idle.png" hover brighten("gui/warehouse/warehouse_guard_idle.png") focus_mask True action Return("watchman")
-    # Graffiti: Click to comment on the fresh marking
+        
+    # --- ENVIRONMENT NAVIGATION ---
     if "warehouse_graffiti" not in day1_clicked_points:
         imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_grafitti_idle.png" hover brighten("gui/warehouse/warehouse_grafitti_idle.png") focus_mask True action Return("warehouse_graffiti")
-    # Windows: Click to comment on the destroyed windows
     if "warehouse_windows" not in day1_clicked_points:
         imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_windows_idle.png" hover brighten("gui/warehouse/warehouse_windows_idle.png") focus_mask True action Return("warehouse_windows")
-    # Door: Enter the inside warehouse environment
     if "warehouse_door" not in day1_clicked_points:
         imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_door_idle.png" hover brighten("gui/warehouse/warehouse_door_idle.png") focus_mask True action Return("warehouse_door")
-    # Back and office: Move to the warehouse back scene
     if "warehouse_back" not in day1_clicked_points:
         imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_back_idle.png" hover brighten("gui/warehouse/warehouse_back_idle.png") focus_mask True action Return("warehouse_back")
     if "warehouse_office" not in day1_clicked_points:
@@ -72,12 +59,60 @@ screen day1_warehouse_investigation():
 
     # --- EXIT BUTTON ---
     if len(day1_clues_found) > 0 and len(day1_items_found) > 0 and len(day1_witnesses_found) > 0:
-        imagebutton xalign 0.5 yalign 0.95 idle "ui_assets/ui_button_write_idle.png" hover brighten("ui_assets/ui_button_write_idle.png") action Return("newsroom")
-        
+        imagebutton xalign 0.5 yalign 0.95 idle "gui/warehouse/ui_button_write_idle.png" hover brighten("gui/warehouse/ui_button_write_idle.png") action Return("newsroom")
+       
     # --- TOGGLES ---
-    imagebutton xalign 0.95 yalign 0.05 idle "ui_assets/ui_icon_notepad_idle.png" hover brighten("ui_assets/ui_icon_notepad_idle.png") action ToggleScreen("reporters_notepad") at Transform(zoom=0.1)
-    imagebutton xalign 0.88 yalign 0.05 idle "ui_assets/ui_icon_bag_idle.png" hover brighten("ui_assets/ui_icon_bag_idle.png") action ToggleScreen("inventory_bag") at Transform(zoom=0.1)
+    imagebutton xalign 0.95 yalign 0.05 idle "gui/warehouse/ui_icon_notepad_idle.png" hover brighten("gui/warehouse/ui_icon_notepad_idle.png") action ToggleScreen("reporters_notepad") at Transform(zoom=0.1)
+    imagebutton xalign 0.88 yalign 0.05 idle "gui/warehouse/ui_icon_bag_idle.png" hover brighten("gui/warehouse/ui_icon_bag_idle.png") action ToggleScreen("inventory_bag") at Transform(zoom=0.1)
+
 # ==========================================
+# NOTEPAD & BAG SCREENS
+# ==========================================
+screen reporters_notepad():
+    add Solid("#00000088")
+    add "gui/warehouse/ui_notepad.png" align (0.5, 0.5)
+    imagebutton:
+        align (0.75, 0.25)
+        idle "gui/warehouse/ui_close_idle.png"
+        hover "gui/warehouse/ui_close_hover.png"
+        action Hide("reporters_notepad")
+       
+    vbox:
+        xalign 0.5 ypos 300
+        spacing 15
+        text "Case Evidence Tracker" size 32 bold True color "#155dfc"
+       
+        if evidence_lighter:
+            text "• The Brass Lighter (Iron Syndicate)" size 24 color "#6a7282"
+        if evidence_letter:
+            text "• The Extortion Letter (The River Boys)" size 24 color "#6a7282"
+        if evidence_ledger:
+            text "• The Bloody Ledger (Joint Purchase)" size 24 color "#6a7282"
+        if evidence_phone:
+            text "• The Burner Phone (Midnight Dock War)" size 24 color "#6a7282"
+           
+        if not evidence_lighter and not evidence_letter and not evidence_ledger and not evidence_phone:
+            text "No hard evidence collected yet." size 24 color "#6a7282" italic True
+
+screen inventory_bag():
+    add Solid("#00000088")
+    add "gui/warehouse/ui_bag_bg.png" align (0.5, 0.5)
+    imagebutton:
+        align (0.75, 0.25)
+        idle "gui/warehouse/ui_close_idle.png"
+        hover "gui/warehouse/ui_close_hover.png"
+        action Hide("inventory_bag")
+       
+    vbox:
+        xalign 0.5 ypos 300
+        spacing 15
+        text "Physical Evidence Bag" size 32 bold True color "#155dfc"
+       
+        for item in inventory_bag_items:
+            text "• [item]" size 24 color "#6a7282"
+           
+        if len(inventory_bag_items) == 0:
+            text "The bag is empty." size 24 color "#6a7282" italic True
 # DAY 2 MARKET PLAZA SCREEN
 # ==========================================
 screen day2_market_investigation():

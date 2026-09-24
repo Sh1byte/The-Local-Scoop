@@ -417,7 +417,7 @@ screen main_menu():
         spacing 0
 
         textbutton "[NEW GAME]":
-            action Start()
+            action [Stop("music", fadeout=1.0), Start()]
             substitute False
             text_idle_color "#3b302b"
             text_hover_color "#ff0000"
@@ -427,7 +427,7 @@ screen main_menu():
             xalign 0.5
 
         textbutton "[LOAD GAME]":
-            action ShowMenu("load")
+            action [Stop("music", fadeout=1.0), ShowMenu("load")]
             substitute False
             text_idle_color "#3b302b"
             text_hover_color "#ff0000"
@@ -465,7 +465,6 @@ screen main_menu():
             text_size 36
             text_layout "nobreak"
             xalign 0.5
-
 
 style main_menu_frame is empty
 style main_menu_vbox is vbox

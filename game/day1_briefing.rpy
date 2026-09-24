@@ -32,7 +32,10 @@ label stage1_briefing:
 label day1_investigation_hub:
     call screen day1_warehouse_investigation
     $ clicked_object = _return
-    $ day1_clicked_points.append(clicked_object)
+    
+    # Do not hide the button if it is a scene transition or background element
+    if clicked_object not in ["warehouse_door", "warehouse_back", "warehouse_office", "warehouse_graffiti", "warehouse_windows"]:
+        $ day1_clicked_points.append(clicked_object)
     
     if clicked_object == "paint_can":
         "It smells like industrial-grade spray paint."

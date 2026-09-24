@@ -3,9 +3,6 @@
 # Declare characters used by this game. The color argument colorizes the
 # name of the character.
 
-define e = Character("Eileen")
-
-
 label splashscreen:
     play music "gui/startup_menu_music.mp3" loop
     scene black
@@ -13,8 +10,9 @@ label splashscreen:
     pause
     return
 
-
 # The game starts here.
 label start:
+    stop music fadeout 1.0
+    
     # Jump directly into your Day 1 script
     jump stage1_briefing
