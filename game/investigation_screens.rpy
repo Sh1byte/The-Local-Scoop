@@ -22,12 +22,12 @@ screen day1_warehouse_inside_environment():
     key "K_ESCAPE" action Return("return_to_front")
 
 screen day1_warehouse_garage_back_environment():
-    # Keyring (Updated with Notify)
-    if "The Janitor's Keyring" not in day1_items_found:
+    # Keyring disappears once added to the inventory bag
+    if "The Janitor's Keyring" not in inventory_bag_items:
         imagebutton xpos 400 ypos 900 idle "gui/warehouse/item_keyring.png" hover brighten("gui/warehouse/item_keyring.png") action [Notify("You got a keyring."), Return("keyring")] at Transform(zoom=0.06)
-        
+       
     key "K_ESCAPE" action Return("return_to_front")
-
+    
 screen tower_clipboard_overlay():
     modal True
     add "gui/day_tower_warehouse/flashlight/clipboard.png" xalign 0.5 yalign 0.5

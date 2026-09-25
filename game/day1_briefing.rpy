@@ -2,9 +2,11 @@ image bg warehouse = im.Scale("gui/warehouse/warehouse_front.png", 1920, 1072)
 image bg warehouse_back = im.Scale("gui/warehouse/bg_warehouse_back.png", 1920, 1072)
 image bg warehouse_office = im.Scale("gui/day1_office/bg_office.png", 1920, 1072)
 image bg warehouse_office_empty = im.Scale("gui/day1_office/bg_office_empty.png", 1920, 1072)
+image bg empty_drawer = im.Scale("gui/day1_office/drawer/bg_empty_drawer.jpg", 1920, 1072)
 image bg inside_warehouse = im.Scale("gui/day1_inside_warehouse/bg_inside_warehouse.png", 1920, 1072)
 image bg tower_warehouse = im.Scale("gui/day_tower_warehouse/bg_tower_warehouse.png", 1920, 1072)
 image bg garage_back_warehouse = im.Scale("gui/day1_garage_warehouse/bg_garage_warehouse.png", 1920, 1072)
+
 define vance = Character("Editor Vance", color="#b30000")
 define arthur = Character("Arthur", color="#ff9900")
 define watchman = Character("Watchman", color="#cccccc")
@@ -18,7 +20,6 @@ default day1_witness = ""
 default evidence_lighter = False
 default battery_obtained = False
 default office_empty = False
-
 default day1_clues_found = []
 default day1_items_found = []
 default day1_witnesses_found = []
@@ -26,10 +27,10 @@ default day1_clicked_points = []
 default inventory_bag_items = []
 
 label stage1_briefing:
-    scene bg newsroom 
+    scene bg newsroom
     vance "Listen up, rookie. I don't want you digging into the rising crime rate. That's an order."
     vance "Head down to the riverside shipping warehouse. Someone vandalized it. Get a simple quote and come back."
-    
+   
     scene bg warehouse
     arthur "Well, look who finally showed up. Stay out of my way, rookie."
     jump day1_investigation_hub
@@ -96,7 +97,7 @@ label day1_warehouse_back:
     scene bg warehouse_back
     call screen day1_warehouse_back_environment
     $ clicked_object = _return
-    
+   
     if clicked_object == "fisherman":
         fisherman "I swear, the warehouse was attacked by angry teenagers!"
         "I saw them spray painting the walls and smashing the windows."
@@ -133,7 +134,7 @@ label day1_warehouse_inside_from_the_back:
     scene bg inside_warehouse
     call screen day1_warehouse_inside_environment
     $ clicked_object = _return
-    
+   
     if clicked_object == "whiskey":
         "Just a cheap bottle left by a homeless person."
         "Doesn't pay rent and always drunk"
@@ -157,7 +158,7 @@ label day1_warehouse_inside:
     scene bg inside_warehouse
     call screen day1_warehouse_inside_environment
     $ clicked_object = _return
-    
+   
     if clicked_object == "whiskey":
         "Just a cheap bottle left by a homeless person."
         "Doesn't pay rent and always drunk"
@@ -181,13 +182,12 @@ label day1_warehouse_garage_back:
     scene bg garage_back_warehouse
     call screen day1_warehouse_garage_back_environment
     $ clicked_object = _return
-    
+   
     if clicked_object == "keyring":
+        if "The Janitor's Keyring" not in inventory_bag_items:
+            $ inventory_bag_items.append("The Janitor's Keyring")
         "I see something on the ground... It's a Janitor's Keyring."
         "Maybe I can use this on a locked door."
-        if "The Janitor's Keyring" not in day1_items_found:
-            $ day1_items_found.append("The Janitor's Keyring")
-            $ inventory_bag_items.append("The Janitor's Keyring")
         jump day1_warehouse_garage_back
     elif clicked_object == "return_to_front":
         scene bg warehouse
@@ -217,7 +217,7 @@ label day1_warehouse_tower:
     else:
         scene bg warehouse
         jump day1_investigation_hub
-        
+       
 label day1_get_battery:
     "You got a battery."
     if "Battery" not in inventory_bag_items:
@@ -229,10 +229,35 @@ label day1_warehouse_office:
         scene bg warehouse_office_empty
     else:
         scene bg warehouse_office
+
     call screen day1_warehouse_office_environment
     $ clicked_object = _return
 
-    if clicked_object == "officerguy":
+    if clicked_object == "drawer2":
+        if office_empty:
+            if "The Janitor's Keyring" in inventory_bag_items:
+                menu:
+                    "Use the drawer key":
+                        "The key fits. The drawer unlocks."
+                        scene bg empty_drawer
+                        "This drawer is empty."
+                        "I thought I saw something. This is the drawer for the warehouse's blueprints."
+                        "Unless it was also stolen by the vandals."
+                        if "Missing blueprint" not in day1_items_found:
+                            $ day1_items_found.append("Missing blueprint")
+                            $ renpy.notify("You found a clue: Missing blueprint.")
+                    "I leave the drawer closed for now.":
+                        pass
+            else:
+                menu:
+                    "Try to open the drawer":
+                        "It's locked. I need a key."
+                    "Leave the drawer alone":
+                        "I should come back with a key."
+        else:
+            "I should wait until the office is empty to open the drawer."
+        jump day1_warehouse_office
+    elif clicked_object == "officerguy":
         if "Battery" in inventory_bag_items:
             "My equipment just arrived. I can use this battery."
             "I'll go to the restroom while it gets set up."
@@ -240,24 +265,12 @@ label day1_warehouse_office:
         else:
             "My parcel or my equipment just arrived. I need a battery."
         jump day1_warehouse_office
-
-    elif clicked_object == "drawer2":
-        if "drawer_key.png" in inventory_bag_items:
-            menu:
-                "Use the drawer key":
-                    "The key fits. The drawer unlocks."
-                    $ office_empty = True
-                    "I leave the drawer closed for now."
-        else:
-            menu:
-                "Try to open the drawer":
-                    "It's locked. I need a key."
-                "Leave the drawer alone":
-                    "I should come back with a key."
-        jump day1_warehouse_office
-
-    scene bg warehouse
-    jump day1_investigation_hub
+    elif clicked_object == "return_to_front":
+        scene bg warehouse
+        jump day1_investigation_hub
+    else:
+        scene bg warehouse
+        jump day1_investigation_hub
 
 label day1_newspaper_minigame:
     scene bg newsroom
@@ -291,11 +304,11 @@ label select_day1_clue:
 label select_day1_item:
     "What was the most credible object I gathered at the warehouse?"
     menu:
-        "The Janitor's Keyring" if "The Janitor's Keyring" in day1_items_found:
+        "Missing blueprint" if "Missing blueprint" in day1_items_found:
             "Description: Unlocks restricted offices containing vandalized blueprints."
             menu:
                 "Confirm this choice":
-                    $ day1_item = "The Janitor's Keyring"
+                    $ day1_item = "Missing blueprint"
                 "Pick something else":
                     jump select_day1_item
         "The Broken Pocket Watch" if "The Broken Pocket Watch" in day1_items_found:
@@ -351,7 +364,7 @@ label day1_api_execution:
         article_result = sheetdb_client.fetch_newspaper_article(day1_clue, day1_item, day1_witness)
         daily_headline = article_result.get("headline", "Error: Story Not Found")
         daily_body = article_result.get("body", "Error: Check database connection.")
-        
+       
     "THE DAILY HERALD"
     "Headline: [daily_headline]"
     "[daily_body]"
