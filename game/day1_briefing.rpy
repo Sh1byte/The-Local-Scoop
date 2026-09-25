@@ -2,6 +2,8 @@ image bg warehouse = im.Scale("gui/warehouse/warehouse_front.png", 1920, 1072)
 image bg warehouse_back = im.Scale("gui/warehouse/bg_warehouse_back.png", 1920, 1072)
 image bg warehouse_office = im.Scale("gui/day1_office/bg_office.png", 1920, 1072)
 image bg inside_warehouse = im.Scale("gui/day1_inside_warehouse/bg_inside_warehouse.png", 1920, 1072)
+image bg tower_warehouse = im.Scale("gui/day_tower_warehouse/bg_tower_warehouse.png", 1920, 1072)
+image bg garage_back_warehouse = im.Scale("gui/day1_garage_warehouse/bg_garage_warehouse.png", 1920, 1072)
 define vance = Character("Editor Vance", color="#b30000")
 define arthur = Character("Arthur", color="#ff9900")
 define watchman = Character("Watchman", color="#cccccc")
@@ -13,6 +15,7 @@ default day1_clue = ""
 default day1_item = ""
 default day1_witness = ""
 default evidence_lighter = False
+default battery_obtained = False
 
 default day1_clues_found = []
 default day1_items_found = []
@@ -32,48 +35,32 @@ label stage1_briefing:
 label day1_investigation_hub:
     call screen day1_warehouse_investigation
     $ clicked_object = _return
-    
-    # Do not hide the button if it is a scene transition or background element
-    if clicked_object not in ["warehouse_door", "warehouse_back", "warehouse_office", "warehouse_graffiti", "warehouse_windows"]:
-        $ day1_clicked_points.append(clicked_object)
-    
+
     if clicked_object == "paint_can":
         "It smells like industrial-grade spray paint."
-        $ day1_clues_found.append("The Smashed Paint Can")
+        if "The Smashed Paint Can" not in day1_clues_found:
+            $ day1_clues_found.append("The Smashed Paint Can")
         jump day1_investigation_hub
     elif clicked_object == "whiskey":
         "Just a cheap bottle left by a homeless person."
-        $ day1_clues_found.append("The Broken Whiskey Bottle")
+        if "The Broken Whiskey Bottle" not in day1_clues_found:
+            $ day1_clues_found.append("The Broken Whiskey Bottle")
         jump day1_investigation_hub
     elif clicked_object == "pizza":
         "Empty food boxes scattered around."
-        $ day1_clues_found.append("The Torn Pizza Box")
+        if "The Torn Pizza Box" not in day1_clues_found:
+            $ day1_clues_found.append("The Torn Pizza Box")
         jump day1_investigation_hub
-        
-    elif clicked_object == "keyring":
-        "I see something hanging on a fence... It's a Janitor's Keyring."
-        $ day1_items_found.append("The Janitor's Keyring")
-        $ inventory_bag_items.append("The Janitor's Keyring")
-        jump day1_investigation_hub
-    elif clicked_object == "watch":
-        "There's a Broken Pocket Watch in the water."
-        $ day1_items_found.append("The Broken Pocket Watch")
-        $ inventory_bag_items.append("The Broken Pocket Watch")
-        jump day1_investigation_hub
-    elif clicked_object == "collar":
-        "A Lost Dog Collar lies in the dirt."
-        $ day1_items_found.append("The Lost Dog Collar")
-        $ inventory_bag_items.append("The Lost Dog Collar")
-        jump day1_investigation_hub
-        
+
     elif clicked_object == "lighter":
         "It's a Brass Lighter engraved with a skull and crossed wrenches."
-        $ evidence_lighter = True 
+        $ evidence_lighter = True
         jump day1_investigation_hub
-        
+
     elif clicked_object == "watchman":
         watchman "I saw them... men in heavy leather jackets marking the warehouse as their territory."
-        $ day1_witnesses_found.append("Watchman 1")
+        if "Watchman 1" not in day1_witnesses_found:
+            $ day1_witnesses_found.append("Watchman 1")
         jump day1_investigation_hub
     elif clicked_object == "warehouse_graffiti":
         "The graffiti looks fresh. Someone wanted to mark this place as their territory."
@@ -83,21 +70,30 @@ label day1_investigation_hub:
         jump day1_investigation_hub
     elif clicked_object == "warehouse_door":
         jump day1_warehouse_inside
+    elif clicked_object == "warehouse_tower":
+        jump day1_warehouse_tower
     elif clicked_object == "warehouse_back":
         jump day1_warehouse_back
+    elif clicked_object == "garage_back_warehouse":
+        jump day1_warehouse_garage_back
     elif clicked_object == "warehouse_office":
         jump day1_warehouse_office
+    elif clicked_object == "warehouse_inside_from_the_back":
+        jump day1_warehouse_inside_from_the_back
     elif clicked_object == "fisherman":
         fisherman "I swear, the warehouse was attacked by angry teenagers!"
-        $ day1_witnesses_found.append("Fisherman 1")
+        if "Fisherman 1" not in day1_witnesses_found:
+            $ day1_witnesses_found.append("Fisherman 1")
         jump day1_investigation_hub
     elif clicked_object == "driver":
         driver "It was a rival shipping company trying to steal business."
-        $ day1_witnesses_found.append("Delivery Driver 1")
+        if "Delivery Driver 1" not in day1_witnesses_found:
+            $ day1_witnesses_found.append("Delivery Driver 1")
         jump day1_investigation_hub
     elif clicked_object == "jogger":
         jogger "I saw a glowing ghost damage the walls!"
-        $ day1_witnesses_found.append("Jogger 1")
+        if "Jogger 1" not in day1_witnesses_found:
+            $ day1_witnesses_found.append("Jogger 1")
         jump day1_investigation_hub
         
     elif clicked_object == "newsroom":
@@ -106,14 +102,77 @@ label day1_investigation_hub:
 label day1_warehouse_back:
     scene bg warehouse_back
     call screen day1_warehouse_back_environment
-    scene bg warehouse
-    jump day1_investigation_hub
+    $ clicked_object = _return
+    if clicked_object == "fisherman":
+        fisherman "I swear, the warehouse was attacked by angry teenagers!"
+        if "Fisherman 1" not in day1_witnesses_found:
+            $ day1_witnesses_found.append("Fisherman 1")
+        jump day1_warehouse_back
+    elif clicked_object == "back_to_front":
+        scene bg warehouse
+        jump day1_investigation_hub
+    elif clicked_object == "warehouse_inside_from_the_back":
+        jump day1_warehouse_inside_from_the_back
+    elif clicked_object == "garage_back_warehouse":
+        jump day1_warehouse_garage_back
+    else:
+        scene bg warehouse
+        jump day1_investigation_hub
+
+label day1_warehouse_inside_from_the_back:
+    scene bg inside_warehouse
+    call screen day1_warehouse_inside_environment
+    $ clicked_object = _return
+    if clicked_object == "return_to_front":
+        scene bg warehouse
+        jump day1_investigation_hub
+    else:
+        scene bg warehouse
+        jump day1_investigation_hub
 
 label day1_warehouse_inside:
     scene bg inside_warehouse
     call screen day1_warehouse_inside_environment
-    scene bg warehouse
-    jump day1_investigation_hub
+    $ clicked_object = _return
+    if clicked_object == "return_to_front":
+        scene bg warehouse
+        jump day1_investigation_hub
+    else:
+        scene bg warehouse
+        jump day1_investigation_hub
+
+label day1_warehouse_garage_back:
+    scene bg garage_back_warehouse
+    call screen day1_warehouse_garage_back_environment
+    $ clicked_object = _return
+    if clicked_object == "return_to_front":
+        scene bg warehouse
+        jump day1_investigation_hub
+    else:
+        scene bg warehouse
+        jump day1_investigation_hub
+
+label day1_warehouse_tower:
+    scene bg tower_warehouse
+    call screen day1_warehouse_tower_environment
+    $ clicked_object = _return
+    if clicked_object == "jogger":
+        jogger "I saw a glowing ghost damage the walls!"
+        if "Jogger 1" not in day1_witnesses_found:
+            $ day1_witnesses_found.append("Jogger 1")
+        jump day1_warehouse_tower
+    elif clicked_object == "return_to_front":
+        scene bg warehouse
+        jump day1_investigation_hub
+    else:
+        scene bg warehouse
+        jump day1_investigation_hub
+
+label day1_get_battery:
+    "You got a battery."
+    if "Battery" not in inventory_bag_items:
+        $ inventory_bag_items.append("Battery")
+    return
 
 label day1_warehouse_office:
     scene bg warehouse_office
