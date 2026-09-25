@@ -41,28 +41,28 @@ label day1_investigation_hub:
     # FRONT CLUES & ITEMS
     if clicked_object == "paint_can":
         "It smells like industrial-grade spray paint."
+        "Teenagers don't usually have access to this kind of paint."
+        "This is proof of a coordinated, planned job."
         if "The Smashed Paint Can" not in day1_clues_found:
             $ day1_clues_found.append("The Smashed Paint Can")
         jump day1_investigation_hub
-    elif clicked_object == "watch":
-        "There's a Broken Pocket Watch in the water."
-        if "The Broken Pocket Watch" not in day1_items_found:
-            $ day1_items_found.append("The Broken Pocket Watch")
-            $ inventory_bag_items.append("The Broken Pocket Watch")
-        jump day1_investigation_hub
     elif clicked_object == "lighter":
         "It's a Brass Lighter engraved with a skull and crossed wrenches."
+        "I feel like i've seen this symbol before..."
         $ evidence_lighter = True
         jump day1_investigation_hub
 
     # FRONT WITNESSES
     elif clicked_object == "watchman":
         watchman "I saw them... men in heavy leather jackets marking the warehouse as their territory."
+        "I didn't stop them because I was scared."
+        "I'm just a 'WATCH'man after all."
         if "Watchman 1" not in day1_witnesses_found:
             $ day1_witnesses_found.append("Watchman 1")
         jump day1_investigation_hub
     elif clicked_object == "driver":
         driver "It was a rival shipping company trying to steal business."
+        "Nobody plays fair in this town. I don't know why I even bother."
         if "Delivery Driver 1" not in day1_witnesses_found:
             $ day1_witnesses_found.append("Delivery Driver 1")
         jump day1_investigation_hub
@@ -70,9 +70,12 @@ label day1_investigation_hub:
     # FRONT ENVIRONMENT
     elif clicked_object == "warehouse_graffiti":
         "The graffiti looks fresh. Someone wanted to mark this place as their territory."
+        "Or their just incredibly artistic vandals. Either way, this is a crime scene."
         jump day1_investigation_hub
     elif clicked_object == "warehouse_windows":
         "They destroyed even the warehouse windows."
+        "I guess they are violent artists."
+        "Or just violent."
         jump day1_investigation_hub
 
     # NAVIGATION
@@ -96,14 +99,25 @@ label day1_warehouse_back:
     
     if clicked_object == "fisherman":
         fisherman "I swear, the warehouse was attacked by angry teenagers!"
+        "I saw them spray painting the walls and smashing the windows."
+        "I think..."
         if "Fisherman 1" not in day1_witnesses_found:
             $ day1_witnesses_found.append("Fisherman 1")
         jump day1_warehouse_back
     elif clicked_object == "collar":
         "A Lost Dog Collar lies in the dirt."
+        "I wonder if it belongs to a dog that was here during the vandalism."
         if "The Lost Dog Collar" not in day1_items_found:
             $ day1_items_found.append("The Lost Dog Collar")
             $ inventory_bag_items.append("The Lost Dog Collar")
+        jump day1_warehouse_back
+    elif clicked_object == "watch":
+        "There's a Broken Pocket Watch in the water."
+        "Talk about the 'flow' of time."
+        "hehe..."
+        if "The Broken Pocket Watch" not in day1_items_found:
+            $ day1_items_found.append("The Broken Pocket Watch")
+            $ inventory_bag_items.append("The Broken Pocket Watch")
         jump day1_warehouse_back
     elif clicked_object == "warehouse_inside_from_the_back":
         jump day1_warehouse_inside_from_the_back
@@ -122,11 +136,14 @@ label day1_warehouse_inside_from_the_back:
     
     if clicked_object == "whiskey":
         "Just a cheap bottle left by a homeless person."
+        "Doesn't pay rent and always drunk"
+        "Lucky guy"
         if "The Broken Whiskey Bottle" not in day1_clues_found:
             $ day1_clues_found.append("The Broken Whiskey Bottle")
         jump day1_warehouse_inside_from_the_back
     elif clicked_object == "pizza":
         "Empty food boxes scattered around."
+        "It will be absurd to put that on the front page."
         if "The Torn Pizza Box" not in day1_clues_found:
             $ day1_clues_found.append("The Torn Pizza Box")
         jump day1_warehouse_inside_from_the_back
@@ -143,11 +160,14 @@ label day1_warehouse_inside:
     
     if clicked_object == "whiskey":
         "Just a cheap bottle left by a homeless person."
+        "Doesn't pay rent and always drunk"
+        "Lucky guy"
         if "The Broken Whiskey Bottle" not in day1_clues_found:
             $ day1_clues_found.append("The Broken Whiskey Bottle")
         jump day1_warehouse_inside
     elif clicked_object == "pizza":
         "Empty food boxes scattered around."
+        "It will be absurd to put that on the front page."
         if "The Torn Pizza Box" not in day1_clues_found:
             $ day1_clues_found.append("The Torn Pizza Box")
         jump day1_warehouse_inside
@@ -182,6 +202,8 @@ label day1_warehouse_tower:
    
     if clicked_object == "jogger":
         jogger "I saw a glowing ghost damage the walls!"
+        "That place always creeped me out. I don't know why I even jog here."
+        "I think it's time I find a new route for my morning jogs."
         if "Jogger 1" not in day1_witnesses_found:
             $ day1_witnesses_found.append("Jogger 1")
         jump day1_warehouse_tower
