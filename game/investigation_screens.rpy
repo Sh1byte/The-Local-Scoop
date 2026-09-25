@@ -7,14 +7,25 @@ screen day1_warehouse_back_environment():
     imagebutton xpos 0 ypos 0 idle "gui/day1_back_warehouse/warehouse_inside_from_back.png" hover brighten("gui/day1_back_warehouse/warehouse_inside_from_back.png") focus_mask True action Return("warehouse_inside_from_the_back")
     imagebutton xpos 0 ypos 0 idle "gui/day1_back_warehouse/garage_back_warehouse.png" hover brighten("gui/day1_back_warehouse/garage_back_warehouse.png") focus_mask True action Return("garage_back_warehouse")
     imagebutton xpos 0 ypos 0 idle "gui/day1_back_warehouse/return_to_front.png" hover brighten("gui/day1_back_warehouse/return_to_front.png") focus_mask True action Return("back_to_front")
+    
+    # Collar (Always Visible)
+    imagebutton xpos 800 ypos 890 idle "gui/warehouse/item_collar.png" hover brighten("gui/warehouse/item_collar.png") action Return("collar") at Transform(zoom=0.08)
+    imagebutton xpos 1100 ypos 880 idle "gui/warehouse/item_watch.png" hover brighten("gui/warehouse/item_watch.png") action Return("watch") at Transform(zoom=0.06)
+        
     key "K_ESCAPE" action Return("back_to_front")
 
 screen day1_warehouse_inside_environment():
-    # Clean inside warehouse environment reserved for future interactive buttons.
+    # Whiskey and Pizza (Always Visible)
+    imagebutton xpos 350 ypos 920 idle "gui/warehouse/clue_whiskey.png" hover brighten("gui/warehouse/clue_whiskey.png") action Return("whiskey") at Transform(zoom=0.08)
+    imagebutton xpos 1400 ypos 920 idle "gui/warehouse/clue_pizza.png" hover brighten("gui/warehouse/clue_pizza.png") action Return("pizza") at Transform(zoom=0.15)
+        
     key "K_ESCAPE" action Return("return_to_front")
 
 screen day1_warehouse_garage_back_environment():
-    # Garage back environment reserved for future interactive buttons.
+    # Keyring (Updated with Notify)
+    if "The Janitor's Keyring" not in day1_items_found:
+        imagebutton xpos 400 ypos 900 idle "gui/warehouse/item_keyring.png" hover brighten("gui/warehouse/item_keyring.png") action [Notify("You got a keyring."), Return("keyring")] at Transform(zoom=0.06)
+        
     key "K_ESCAPE" action Return("return_to_front")
 
 screen tower_clipboard_overlay():
@@ -56,12 +67,15 @@ screen flashlight_empty_environment():
             idle "gui/day_tower_warehouse/flashlight/battery.png"
             hover brighten("gui/day_tower_warehouse/flashlight/battery.png")
             focus_mask True
+            # Updated Battery Action Block
             action [
                 Notify("You got a battery."),
                 Function(inventory_bag_items.append, "Battery"),
                 SetVariable("battery_obtained", True),
                 Hide("flashlight_empty_environment"),
-                Show("flashlight_empty_environment")
+                Hide("flashlight_open_environment"),
+                Hide("flashlight_environment"),
+                Return("Battery") 
             ]
     textbutton "Close" xalign 0.92 yalign 0.08 action [
         Hide("flashlight_empty_environment"),
@@ -97,15 +111,14 @@ screen day1_warehouse_office_environment():
 
 screen day1_warehouse_investigation():
     # --- CLUES ---
-    imagebutton xpos 780 ypos 850 idle "gui/warehouse/clue_paint.png" hover brighten("gui/warehouse/clue_paint.png") action Return("paint_can") at Transform(zoom=0.08)
-    imagebutton xpos 350 ypos 920 idle "gui/warehouse/clue_whiskey.png" hover brighten("gui/warehouse/clue_whiskey.png") action Return("whiskey") at Transform(zoom=0.08)
-    imagebutton xpos 900 ypos 980 idle "gui/warehouse/clue_pizza.png" hover brighten("gui/warehouse/clue_pizza.png") action Return("pizza") at Transform(zoom=0.08)
+    imagebutton xpos 780 ypos 950 idle "gui/warehouse/clue_paint.png" hover brighten("gui/warehouse/clue_paint.png") action Return("paint_can") at Transform(zoom=0.08)
 
-    # --- HIDDEN EVIDENCE ---
-    imagebutton xpos 100 ypos 900 idle "gui/warehouse/evidence_lighter.png" hover brighten("gui/warehouse/evidence_lighter.png") action Return("lighter") at Transform(zoom=0.08)
+    # --- HIDDEN EVIDENCE (Updated with Notify) ---
+    if not evidence_lighter:
+        imagebutton xpos 300 ypos 960 idle "gui/warehouse/evidence_lighter.png" hover brighten("gui/warehouse/evidence_lighter.png") action [Notify("You got a lighter."), Return("lighter")] at Transform(zoom=0.06)
 
     # --- WITNESSES ---
-    imagebutton xpos 980 ypos 630 idle "gui/warehouse/driver.png" hover brighten("gui/warehouse/driver.png") action Return("driver") at Transform(zoom=0.28)
+    imagebutton xpos 1450 ypos 850 idle "gui/warehouse/driver.png" hover brighten("gui/warehouse/driver.png") action Return("driver") at Transform(zoom=0.15)
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_guard_idle.png" hover brighten("gui/warehouse/warehouse_guard_idle.png") focus_mask True action Return("watchman")
 
     # --- ENVIRONMENT NAVIGATION ---
@@ -119,7 +132,7 @@ screen day1_warehouse_investigation():
     # --- EXIT BUTTON ---
     if len(day1_clues_found) > 0 and len(day1_witnesses_found) > 0:
         imagebutton xalign 0.5 yalign 0.95 idle "gui/warehouse/ui_button_write_idle.png" hover brighten("gui/warehouse/ui_button_write_idle.png") action Return("newsroom")
-       
+        
     # --- TOGGLES ---
     imagebutton xalign 0.95 yalign 0.05 idle "gui/warehouse/ui_icon_notepad_idle.png" hover brighten("gui/warehouse/ui_icon_notepad_idle.png") action ToggleScreen("reporters_notepad") at Transform(zoom=0.1)
     imagebutton xalign 0.88 yalign 0.05 idle "gui/warehouse/ui_icon_bag_idle.png" hover brighten("gui/warehouse/ui_icon_bag_idle.png") action ToggleScreen("inventory_bag") at Transform(zoom=0.1)
