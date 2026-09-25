@@ -106,8 +106,99 @@ screen day1_warehouse_tower_environment():
     key "K_ESCAPE" action Return("return_to_front")
 
 screen day1_warehouse_office_environment():
-    # Clean office environment reserved for future interactive buttons.
+    if office_empty:
+        add "gui/day1_office/bg_office_empty.png"
+    else:
+        add "gui/day1_office/bg_office.png"
+        imagebutton:
+            xpos 0
+            ypos 0
+            idle "gui/day1_office/officerguy.png"
+            hover brighten("gui/day1_office/officerguy.png")
+            focus_mask True
+            action Return("officerguy")
+    imagebutton:
+        xpos 0
+        ypos 0
+        idle "gui/day1_office/desktop_office_idle.png"
+        hover brighten("gui/day1_office/desktop_office_idle.png")
+        focus_mask True
+        action Show("development_environment")
+    imagebutton:
+        xpos 0
+        ypos 0
+        idle "gui/day1_office/keyholder_idle.png"
+        hover brighten("gui/day1_office/keyholder_idle.png")
+        focus_mask True
+        action Show("key_holder_environment")
+    imagebutton:
+        xpos 0
+        ypos 0
+        idle "gui/day1_office/desk_drawer1_idle.png"
+        hover brighten("gui/day1_office/desk_drawer1_idle.png")
+        focus_mask True
+        action Show("development_environment")
+    imagebutton:
+        xpos 0
+        ypos 0
+        idle "gui/day1_office/desk_drawer2_idle.png"
+        hover brighten("gui/day1_office/desk_drawer2_idle.png")
+        focus_mask True
+        action Show("development_environment")
+    imagebutton:
+        xpos 0
+        ypos 0
+        idle "gui/day1_office/drawer1_idle.png"
+        hover brighten("gui/day1_office/drawer1_idle.png")
+        focus_mask True
+        action Show("drawer_files_environment")
+    imagebutton:
+        xpos 0
+        ypos 0
+        idle "gui/day1_office/drawer2_idle.png"
+        hover brighten("gui/day1_office/drawer2_idle.png")
+        focus_mask True
+        action Return("drawer2")
+    imagebutton:
+        xpos 0
+        ypos 0
+        idle "gui/day1_office/drawer3_idle.png"
+        hover brighten("gui/day1_office/drawer3_idle.png")
+        focus_mask True
+        action Show("drawer3_environment")
+    imagebutton:
+        xpos 0
+        ypos 0
+        idle "gui/day1_office/office_returntofront.png"
+        hover brighten("gui/day1_office/office_returntofront.png")
+        focus_mask True
+        action Return("return_to_front")
+
     key "K_ESCAPE" action Return("return_to_front")
+
+screen key_holder_environment():
+    modal True
+    add "gui/day1_office/keys/key_holder.png"
+    textbutton "Close" xalign 0.92 yalign 0.08 action Hide("key_holder_environment")
+    key "K_ESCAPE" action Hide("key_holder_environment")
+
+screen drawer_files_environment():
+    modal True
+    add "gui/day1_office/drawer/drawer_files.png"
+    textbutton "Close" xalign 0.92 yalign 0.08 action Hide("drawer_files_environment")
+    key "K_ESCAPE" action Hide("drawer_files_environment")
+
+screen drawer3_environment():
+    modal True
+    add "gui/day1_office/drawer/drawer3.png"
+    textbutton "Close" xalign 0.92 yalign 0.08 action Hide("drawer3_environment")
+    key "K_ESCAPE" action Hide("drawer3_environment")
+
+screen development_environment():
+    modal True
+    add "gui/development.png"
+    textbutton "Close" xalign 0.92 yalign 0.08 action Hide("development_environment")
+    key "K_ESCAPE" action Hide("development_environment")
 
 screen day1_warehouse_investigation():
     # --- CLUES ---

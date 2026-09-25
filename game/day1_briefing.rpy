@@ -1,6 +1,7 @@
 image bg warehouse = im.Scale("gui/warehouse/warehouse_front.png", 1920, 1072)
 image bg warehouse_back = im.Scale("gui/warehouse/bg_warehouse_back.png", 1920, 1072)
 image bg warehouse_office = im.Scale("gui/day1_office/bg_office.png", 1920, 1072)
+image bg warehouse_office_empty = im.Scale("gui/day1_office/bg_office_empty.png", 1920, 1072)
 image bg inside_warehouse = im.Scale("gui/day1_inside_warehouse/bg_inside_warehouse.png", 1920, 1072)
 image bg tower_warehouse = im.Scale("gui/day_tower_warehouse/bg_tower_warehouse.png", 1920, 1072)
 image bg garage_back_warehouse = im.Scale("gui/day1_garage_warehouse/bg_garage_warehouse.png", 1920, 1072)
@@ -16,6 +17,7 @@ default day1_item = ""
 default day1_witness = ""
 default evidence_lighter = False
 default battery_obtained = False
+default office_empty = False
 
 default day1_clues_found = []
 default day1_items_found = []
@@ -201,8 +203,37 @@ label day1_get_battery:
     return
 
 label day1_warehouse_office:
-    scene bg warehouse_office
+    if office_empty:
+        scene bg warehouse_office_empty
+    else:
+        scene bg warehouse_office
     call screen day1_warehouse_office_environment
+    $ clicked_object = _return
+
+    if clicked_object == "officerguy":
+        if "Battery" in inventory_bag_items:
+            "My equipment just arrived. I can use this battery."
+            "I'll go to the restroom while it gets set up."
+            $ office_empty = True
+        else:
+            "My parcel or my equipment just arrived. I need a battery."
+        jump day1_warehouse_office
+
+    elif clicked_object == "drawer2":
+        if "drawer_key.png" in inventory_bag_items:
+            menu:
+                "Use the drawer key":
+                    "The key fits. The drawer unlocks."
+                    $ office_empty = True
+                    "I leave the drawer closed for now."
+        else:
+            menu:
+                "Try to open the drawer":
+                    "It's locked. I need a key."
+                "Leave the drawer alone":
+                    "I should come back with a key."
+        jump day1_warehouse_office
+
     scene bg warehouse
     jump day1_investigation_hub
 
