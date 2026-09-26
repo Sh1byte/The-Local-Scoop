@@ -168,7 +168,7 @@ label select_day3_witness:
 label day3_api_execution:
     call calculate_day3_credibility
     python:
-        article_result = sheetdb_client.fetch_newspaper_article(day3_clue, day3_item, day3_witness)
+        article_result = sheetdb_client.fetch_newspaper_article(day3_clue, day3_item, day3_witness, "day3")
         daily_headline = article_result.get("headline", "Error: Story Not Found")
         daily_body = article_result.get("body", "Error: Check database connection.")
         
