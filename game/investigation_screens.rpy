@@ -198,6 +198,14 @@ screen drawer3_environment():
 screen development_environment():
     modal True
     add "gui/development.png"
+
+    imagebutton xpos 0 ypos 0 idle "gui/day1_garage_warehouse/batterycharger_idle.png" hover brighten("gui/day1_garage_warehouse/batterycharger_idle.png") focus_mask True action Notify("Battery charger")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_garage_warehouse/boxesgarage_idle.png" hover brighten("gui/day1_garage_warehouse/boxesgarage_idle.png") focus_mask True action Notify("Garage boxes")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_garage_warehouse/driver.png" hover brighten("gui/day1_garage_warehouse/driver.png") focus_mask True action Notify("Driver")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_garage_warehouse/garageclipboard_idle.png" hover brighten("gui/day1_garage_warehouse/garageclipboard_idle.png") focus_mask True action Notify("Garage clipboard")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_garage_warehouse/office_garage_idle.png" hover brighten("gui/day1_garage_warehouse/office_garage_idle.png") focus_mask True action Notify("Garage office")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_garage_warehouse/return_to_back_idle.png" hover brighten("gui/day1_garage_warehouse/return_to_back_idle.png") focus_mask True action Notify("Return to the back")
+
     textbutton "Close" xalign 0.92 yalign 0.08 action Hide("development_environment")
     key "K_ESCAPE" action Hide("development_environment")
 
