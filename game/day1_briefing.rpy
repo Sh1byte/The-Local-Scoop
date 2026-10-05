@@ -21,6 +21,7 @@ default day1_witness = ""
 default evidence_lighter = False
 default battery_obtained = False
 default office_empty = False
+default janitor_helped = False
 default day1_clues_found = []
 default day1_items_found = []
 default day1_witnesses_found = []
@@ -29,6 +30,18 @@ default inventory_bag_items = []
 
 label stage1_briefing:
     scene bg newsroom
+    menu 
+        "What day do you want to play?":
+            "Day 1":
+                jump day1_path
+            "Day 2":
+                jump day2_path
+            "Day 3":
+                jump day3_path
+            "Day 4":
+                jump day4_path
+            "Day 5":
+                jump day5_path
     vance "Listen up, rookie. I don't want you digging into the rising crime rate. That's an order."
     vance "Head down to the riverside shipping warehouse. Someone vandalized it. Get a simple quote and come back."
    
@@ -50,16 +63,10 @@ label day1_investigation_hub:
     # FRONT WITNESSES
     elif clicked_object == "watchman":
         watchman "I saw them... men in heavy leather jackets marking the warehouse as their territory."
-        "I didn't stop them because I was scared."
-        "I'm just a 'WATCH'man after all."
+        watchman "I didn't stop them because I was scared."
+        watchman "I'm just a 'WATCH'man after all."
         if "Watchman 1" not in day1_witnesses_found:
             $ day1_witnesses_found.append("Watchman 1")
-        jump day1_investigation_hub
-    elif clicked_object == "driver":
-        driver "It was a rival shipping company trying to steal business."
-        "Nobody plays fair in this town. I don't know why I even bother."
-        if "Delivery Driver 1" not in day1_witnesses_found:
-            $ day1_witnesses_found.append("Delivery Driver 1")
         jump day1_investigation_hub
 
     # FRONT ENVIRONMENT
@@ -94,8 +101,8 @@ label day1_warehouse_back:
    
     if clicked_object == "fisherman":
         fisherman "I swear, the warehouse was attacked by angry teenagers!"
-        "I saw them spray painting the walls and smashing the windows."
-        "I think..."
+        fisherman "I saw them spray painting the walls and smashing the windows."
+        fisherman "I think..."
         if "Fisherman 1" not in day1_witnesses_found:
             $ day1_witnesses_found.append("Fisherman 1")
         jump day1_warehouse_back
@@ -144,7 +151,16 @@ label day1_warehouse_inside_from_the_back:
     $ clicked_object = _return
    
     if clicked_object == "janitor":
-        "put a text here"
+        $ janitor_helped = True
+        "This building is a mess. I don't know how I would clean this up all by myself."
+        "Hey kid, Can you lend me a hand?"
+        "I don't get paid enough to clean up after vandals."
+        "Here's my keyring, Go find my cleaning tools. I left them in the room at the side of the warehouse."
+        $ renpy.notify("You obtained a keyring.")
+        if "The Janitor's Keyring" not in inventory_bag_items:
+            $ inventory_bag_items.append("The Janitor's Keyring")
+        "A keyring."
+        "With a masterkey attached."
         jump day1_warehouse_inside_from_the_back
     elif clicked_object == "whiskey":
         "Just a cheap bottle left by a homeless person."
@@ -180,7 +196,16 @@ label day1_warehouse_inside:
     $ clicked_object = _return
    
     if clicked_object == "janitor":
-        "put a text here"
+        $ janitor_helped = True
+        "This building is a mess. I don't know how I would clean this up all by myself."
+        "Hey kid, Can you lend me a hand?"
+        "I don't get paid enough to clean up after vandals."
+        "Here's my keyring, Go find my cleaning tools. I left them in the room at the side of the warehouse."
+        $ renpy.notify("You obtained a keyring.")
+        if "The Janitor's Keyring" not in inventory_bag_items:
+            $ inventory_bag_items.append("The Janitor's Keyring")
+        "A keyring."
+        "With a masterkey attached."
         jump day1_warehouse_inside
     elif clicked_object == "whiskey":
         "Just a cheap bottle left by a homeless person."
@@ -222,7 +247,7 @@ label day1_warehouse_garage_back:
         jump day1_warehouse_garage_back
     elif clicked_object == "garage_driver":
         driver "It was a rival shipping company trying to steal business."
-        "Nobody plays fair in this town. I don't know why I even bother."
+        driver "Nobody plays fair in this town. I don't know why I even bother."
         jump day1_warehouse_garage_back
     elif clicked_object == "garage_clipboard":
         "There are notes on the clipboard about deliveries and damaged cargo."
@@ -230,12 +255,7 @@ label day1_warehouse_garage_back:
     elif clicked_object == "garage_office":
         "The office was kept locked up tight. Someone was hiding something in here."
         jump day1_warehouse_garage_back
-    elif clicked_object == "keyring":
-        if "The Janitor's Keyring" not in inventory_bag_items:
-            $ inventory_bag_items.append("The Janitor's Keyring")
-        "I see something on the ground... It's a Janitor's Keyring."
-        "Maybe I can use this on a locked door."
-        jump day1_warehouse_garage_back
+
     elif clicked_object == "return_to_back":
         jump day1_warehouse_back
     elif clicked_object == "return_to_front":
@@ -251,8 +271,8 @@ label day1_warehouse_tower:
    
     if clicked_object == "jogger":
         jogger "I saw a glowing ghost damage the walls!"
-        "That place always creeped me out. I don't know why I even jog here."
-        "I think it's time I find a new route for my morning jogs."
+        jogger "That place always creeped me out. I don't know why I even jog here."
+        jogger "I think it's time I find a new route for my morning jogs."
         if "Jogger 1" not in day1_witnesses_found:
             $ day1_witnesses_found.append("Jogger 1")
         jump day1_warehouse_tower

@@ -32,13 +32,16 @@ screen day1_warehouse_riverclose_environment():
 screen day1_warehouse_inside_front_environment():
     add "gui/day1_inside_warehouse/bg_inside_warehouse.png"
 
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_inside_warehouse/janitor.png"
-        hover brighten("gui/day1_inside_warehouse/janitor.png")
-        focus_mask True
-        action Return("janitor")
+    if janitor_helped:
+        add "gui/day1_inside_warehouse/janitor.png"
+    else:
+        imagebutton:
+            xpos 0
+            ypos 0
+            idle "gui/day1_inside_warehouse/janitor.png"
+            hover brighten("gui/day1_inside_warehouse/janitor.png")
+            focus_mask True
+            action Return("janitor")
 
     imagebutton:
         xpos 0
@@ -67,13 +70,16 @@ screen day1_warehouse_inside_front_environment():
 screen day1_warehouse_inside_back_environment():
     add "gui/day1_inside_warehouse/bg_inside_warehouse.png"
 
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_inside_warehouse/janitor.png"
-        hover brighten("gui/day1_inside_warehouse/janitor.png")
-        focus_mask True
-        action Return("janitor")
+    if janitor_helped:
+        add "gui/day1_inside_warehouse/janitor.png"
+    else:
+        imagebutton:
+            xpos 0
+            ypos 0
+            idle "gui/day1_inside_warehouse/janitor.png"
+            hover brighten("gui/day1_inside_warehouse/janitor.png")
+            focus_mask True
+            action Return("janitor")
 
     imagebutton:
         xpos 0
