@@ -31,9 +31,7 @@ default inventory_bag_items = []
 label stage1_briefing:
     scene bg newsroom
     menu:
-        "What day do you want to play?" # Remove the colon here
-
-        "Day 1": # Move these back one indentation level
+        "Day 1":
             jump day1_path
         "Day 2":
             jump day2_start
@@ -44,11 +42,10 @@ label stage1_briefing:
         "Safe":
             jump safe_close_up
 
-    # NOTE: Because all your menu choices use "jump", the code below 
-    # will never be reached unless a label jumps back to it. 
+label day1_path:
     vance "Listen up, rookie. I don't want you digging into the rising crime rate. That's an order."
     vance "Head down to the riverside shipping warehouse. Someone vandalized it. Get a simple quote and come back."
-    
+
     scene bg warehouse
     arthur "Well, look who finally showed up. Stay out of my way, rookie."
     jump day1_investigation_hub

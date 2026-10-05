@@ -10,6 +10,7 @@ image bg ruined_stall = im.Scale("gui/day2_plaza/market_stalls/bg_market_stall.p
 image bg cashier_with_letter = im.Scale("gui/day2_plaza/market_stalls/ruined_stalls/bg_ruined_stall.png", 1920, 1072)
 image bg cashier_without_letter = im.Scale("gui/day2_plaza/market_stalls/ruined_stalls/without_note.png", 1920, 1072)
 image bg bakery_stall = im.Scale("gui/day2_plaza/bakery/bg_inside_bakery.png", 1920, 1072)
+image bg bakery_kitchen = im.Scale("gui/day2_plaza/bakery/kitchen/bg_kitchen.png", 1920, 1072)
 image bg electric_shop = im.Scale("gui/day2_plaza/electric_shop/bg_inside_electronics.png", 1920, 1072)
 image bg townhall = im.Scale("gui/day2_plaza/townhall/bg_townhall.png", 1920, 1072)
 image bg bench = im.Scale("gui/day2_plaza/bench/bg_bench.png", 1920, 1072)
@@ -18,6 +19,8 @@ image bg bench_without_ticket = im.Scale("gui/day2_plaza/bench/bg_without_ticket
 define vendor = Character("Vendor", color="#cccccc")
 define shopper = Character("Shopper", color="#cccccc")
 define baker = Character("Baker", color="#cccccc")
+define bakery_clerk = Character("Bakery Clerk", color="#cccccc")
+define bakery_customer = Character("Customer", color="#cccccc")
 define musician = Character("Street Musician", color="#cccccc")
 define electronic_man = Character("Electronics Technician", color="#cccccc")
 
@@ -70,6 +73,10 @@ label day2_investigation_hub:
 
     elif clicked_object == "arthur":
         arthur "Back off, rookie! I'm interviewing these people first."
+        jump day2_investigation_hub
+
+    elif clicked_object == "kids":
+        "put a txt here"
         jump day2_investigation_hub
 
     # NAVIGATION TO SUB-AREAS
@@ -156,20 +163,37 @@ label day2_bakery:
     call screen day2_bakery_environment
     $ clicked_object = _return
 
+    if clicked_object == "clerk_bakery":
+        bakery_clerk "put a txt here"
+        jump day2_bakery
+
+    elif clicked_object == "customer1":
+        bakery_customer "put a txt here"
+        jump day2_bakery
+
+    elif clicked_object == "kitchen":
+        jump day2_bakery_kitchen
+
+    elif clicked_object == "return_to_plaza":
+        jump day2_investigation_hub
+    else:
+        jump day2_bakery
+
+label day2_bakery_kitchen:
+    scene bg bakery_kitchen
+    call screen day2_bakery_kitchen_environment
+    $ clicked_object = _return
+
     if clicked_object == "oil":
         "A greasy puddle near a stove."
         if "The Spilled Cooking Oil" not in day2_clues_found:
             $ day2_clues_found.append("The Spilled Cooking Oil")
-        jump day2_bakery
-
+        jump day2_bakery_kitchen
     elif clicked_object == "baker":
-        baker "It was a targeted hit by rival bakers!"
+        baker "put a text here"
         if "Baker 1" not in day2_witnesses_found:
             $ day2_witnesses_found.append("Baker 1")
-        jump day2_bakery
-
-    elif clicked_object == "return_to_plaza":
-        jump day2_investigation_hub
+        jump day2_bakery_kitchen
     else:
         jump day2_bakery
 

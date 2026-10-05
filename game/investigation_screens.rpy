@@ -407,6 +407,7 @@ screen day2_market_investigation():
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/shopper.png" hover brighten("gui/day2_plaza/plaza_front/shopper.png") focus_mask True action Return("shopper")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/musician.png" hover brighten("gui/day2_plaza/plaza_front/musician.png") focus_mask True action Return("musician")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/arthur.png" hover brighten("gui/day2_plaza/plaza_front/arthur.png") focus_mask True action Return("arthur")
+    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/plaza_front/kids.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/plaza_front/kids.png", 1920, 1072)) focus_mask True action Return("kids")
 
     # --- NAVIGATION DOORS / STALLS ---
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/market_stalls_idle.png" hover brighten("gui/day2_plaza/plaza_front/market_stalls_idle.png") focus_mask True action Return("ruined_stall")
@@ -450,15 +451,20 @@ screen day2_cashier_environment():
     key "K_ESCAPE" action Return("back_to_stall")
 
 screen day2_bakery_environment():
-    # --- CLUE (Always Visible) ---
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bakery/clue_oil.png" hover brighten("gui/day2_plaza/bakery/clue_oil.png") focus_mask True action Return("oil")
+    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bakery/kitchen_idle.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bakery/kitchen_idle.png", 1920, 1072)) focus_mask True action Return("kitchen")
 
-    # --- WITNESS ---
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bakery/baker.png" hover brighten("gui/day2_plaza/bakery/baker.png") focus_mask True action Return("baker")
+    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bakery/clerkbakery.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bakery/clerkbakery.png", 1920, 1072)) focus_mask True action Return("clerk_bakery")
+    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bakery/customer1.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bakery/customer1.png", 1920, 1072)) focus_mask True action Return("customer1")
 
     # --- RETURN ---
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bakery/return_to_plaza.png" hover brighten("gui/day2_plaza/bakery/return_to_plaza.png") focus_mask True action Return("return_to_plaza")
+    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bakery/return_to_plaza.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bakery/return_to_plaza.png", 1920, 1072)) focus_mask True action Return("return_to_plaza")
     key "K_ESCAPE" action Return("return_to_plaza")
+
+screen day2_bakery_kitchen_environment():
+    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bakery/kitchen/clue_oil.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bakery/kitchen/clue_oil.png", 1920, 1072)) focus_mask True action Return("oil")
+    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bakery/kitchen/baker.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bakery/kitchen/baker.png", 1920, 1072)) focus_mask True action Return("baker")
+    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bakery/kitchen/return_to_bakery_idle.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bakery/kitchen/return_to_bakery_idle.png", 1920, 1072)) focus_mask True action Return("return_to_bakery")
+    key "K_ESCAPE" action Return()
 
 screen day2_electric_shop_environment():
     # --- ELECTRONIC MAN (Give Broken Camera to Recover Blurry Photo) ---
