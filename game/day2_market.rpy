@@ -1,10 +1,10 @@
 # Day 2 Backgrounds
-image bg market_plaza = im.Scale("gui/day2_plaza/plaza_front/plaza_front.jpg", 1920, 1072)
-image bg ruined_stall = im.Scale("gui/day2_plaza/ruined_stall/burned_stall.jpg", 1920, 1072)
-image bg cashier_with_letter = im.Scale("gui/day2_plaza/ruined_stall/cashier_with_letter.jpg", 1920, 1072)
-image bg cashier_without_letter = im.Scale("gui/day2_plaza/ruined_stall/cashier_without_letter.jpg", 1920, 1072)
-image bg bakery_stall = im.Scale("gui/day2_plaza/bakery/inside_bakery.jpg", 1920, 1072)
-image bg electric_shop = im.Scale("gui/day2_plaza/electric_shop/inside_electric_shop.jpg", 1920, 1072)
+image bg market_plaza = im.Scale("gui/day2_plaza/plaza_front/plaza_front.png", 1920, 1072)
+image bg ruined_stall = im.Scale("gui/day2_plaza/market_stalls/bg_market_stall.png", 1920, 1072)
+image bg cashier_with_letter = im.Scale("gui/day2_plaza/market_stalls/ruined_stalls/bg_ruined_stall.png", 1920, 1072)
+image bg cashier_without_letter = im.Scale("gui/day2_plaza/market_stalls/ruined_stalls/without_note.png", 1920, 1072)
+image bg bakery_stall = im.Scale("gui/day2_plaza/bakery/kitchen/bg_kitchen.png", 1920, 1072)
+image bg electric_shop = im.Scale("gui/day2_plaza/electric_shop/bg_inside_electronics.png", 1920, 1072)
 
 define vendor = Character("Vendor", color="#cccccc")
 define shopper = Character("Shopper", color="#cccccc")
