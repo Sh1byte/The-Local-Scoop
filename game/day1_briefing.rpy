@@ -41,6 +41,8 @@ label stage1_briefing:
             jump day3_start
         "Day 4":
             jump day4_start
+        "Safe":
+            jump safe_close_up
 
     # NOTE: Because all your menu choices use "jump", the code below 
     # will never be reached unless a label jumps back to it. 

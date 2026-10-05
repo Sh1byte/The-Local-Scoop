@@ -553,3 +553,54 @@ screen day5_depot_investigation():
     # --- TOGGLES ---
     imagebutton xalign 0.95 yalign 0.05 idle "ui_assets/ui_icon_notepad_idle.png" hover "ui_assets/ui_icon_notepad_hover.png" action ToggleScreen("reporters_notepad")
     imagebutton xalign 0.95 yalign 0.15 idle "ui_assets/ui_icon_bag_idle.png" hover "ui_assets/ui_icon_bag_hover.png" action ToggleScreen("inventory_bag")
+
+screen backroom_environment():
+    # Replace xpos/ypos and idle images with your exact layout hotspot assets
+    imagebutton xpos 400 ypos 300 idle "safe_distant_idle.png" action Return("safe")
+
+screen safe_closeup_environment():
+    imagebutton xpos 350 ypos 250 idle "safe_closeup_idle.png" action Return("safe_interact")
+    imagebutton xpos 600 ypos 450 idle "clue_paper_idle.png" action Return("clue_paper")
+    textbutton "Back" action Return("back") align (0.05, 0.95)
+
+screen safe_puzzle_screen(current_digit, entered_code):
+    # Calculates the rotation so the dial spins correctly based on the standard 0-9 layout
+    $ rotation_angle = current_digit * -36
+
+    # The rotating safe knob
+    add "gui/day3_casino/backroom/safe/safe_knob.png":
+        xalign 0.5 
+        yalign 0.5
+        transform_anchor True
+        rotate rotation_angle
+
+    # The stationary indicator arrow pointing at the current number
+    add "gui/day3_casino/backroom/safe/safe_arrow.png":
+        xalign 0.5 
+        yalign 0.15
+
+    # Visual cue for entered digits
+    text "Code Entered: [entered_code]" xalign 0.5 yalign 0.05 size 40 color "#ffffff"
+
+    # Keybinds for playing the minigame (Swapped A and D)
+    key "a" action Return("turn_right")
+    key "A" action Return("turn_right")
+    key "d" action Return("turn_left")
+    key "D" action Return("turn_left")
+    key "K_RETURN" action Return("enter_digit")
+    key "K_KP_ENTER" action Return("enter_digit")
+    key "K_ESCAPE" action Return("exit")
+
+    # Instructions UI (Swapped text)
+    vbox:
+        align (0.95, 0.95)
+        text "'A' to turn Right" color "#ffffff"
+        text "'D' to turn Left" color "#ffffff"
+        text "'Enter' to lock in number" color "#ffffff"
+
+    textbutton "Back" action Return("exit") align (0.05, 0.95)
+    
+screen opened_safe_environment():
+    if "Bloody Ledger" not in backroom_items_found:
+        imagebutton xalign 0.5 yalign 0.5 idle "bloody_ledger.jpg" action Return("bloody_ledger")
+    textbutton "Leave Safe" action Return("back") align (0.05, 0.95)

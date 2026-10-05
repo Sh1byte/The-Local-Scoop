@@ -79,6 +79,94 @@ label day3_investigation_hub:
     elif clicked_object == "newsroom":
         jump day3_newspaper_minigame
 
+default backroom_items_found = []
+default safe_unlocked = False
+
+label backroom:
+    scene bg backroom
+    
+    call screen backroom_environment
+    $ clicked_object = _return
+
+    if clicked_object == "safe":
+        jump safe_close_up
+    
+    jump backroom
+
+label safe_close_up:
+    scene bg safe_close_up
+    "I can see the safe on the shelf, along with a piece of paper."
+    
+    call screen safe_closeup_environment
+    $ clicked_object = _return
+
+    if clicked_object == "safe_interact":
+        if safe_unlocked:
+            jump opened_safe_view
+        else:
+            jump safe_minigame
+    elif clicked_object == "clue_paper":
+        "The paper reads: '3 - 1 - 3'"
+        jump safe_close_up
+    elif clicked_object == "back":
+        # Jump back to your main investigation hub
+        jump day3_investigation_hub 
+
+label safe_minigame:
+    $ safe_current_digit = 0
+    $ safe_entered_code = ""
+
+label safe_minigame_loop:
+    # Use the exact file path for the background
+    scene expression "gui/day3_casino/backroom/safe/safe.png"
+    
+    call screen safe_puzzle_screen(safe_current_digit, safe_entered_code)
+    $ action = _return
+
+    if action == "turn_right":
+        $ safe_current_digit = (safe_current_digit - 1) % 10
+        jump safe_minigame_loop
+        
+    elif action == "turn_left":
+        $ safe_current_digit = (safe_current_digit + 1) % 10
+        jump safe_minigame_loop
+        
+    elif action == "enter_digit":
+        $ safe_entered_code += str(safe_current_digit)
+        
+        if len(safe_entered_code) == 3:
+            if safe_entered_code == "313":
+                $ safe_unlocked = True
+                "Click. The heavy mechanism unlocks."
+                jump opened_safe_view
+            else:
+                "Bzzt. Wrong combination. The dial resets."
+                $ safe_entered_code = ""
+                jump safe_minigame_loop
+        jump safe_minigame_loop
+        
+    elif action == "exit":
+        jump safe_close_up
+
+label opened_safe_view:
+    scene bg opened_safe
+    
+    call screen opened_safe_environment
+    $ clicked_object = _return
+
+    if clicked_object == "bloody_ledger":
+        if "Bloody Ledger" not in backroom_items_found:
+            $ backroom_items_found.append("Bloody Ledger")
+            "I found the bloody ledger inside the safe."
+            # Set the day 3 ledger evidence flag to True
+            $ evidence_ledger = True 
+        else:
+            "The safe is empty now."
+        jump opened_safe_view
+        
+    elif clicked_object == "back":
+        jump safe_close_up
+
 label day3_newspaper_minigame:
     scene bg newsroom
     "Time to review my Reporter's Notepad and write the casino edition."
