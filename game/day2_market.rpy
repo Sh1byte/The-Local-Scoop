@@ -1,10 +1,19 @@
 # Day 2 Backgrounds
-image bg market_plaza = im.Scale("gui/day2_plaza/plaza_front/plaza_front.png", 1920, 1072)
+transform day2_plaza_origin:
+    xpos 0
+    ypos 0
+    xanchor 0
+    yanchor 0
+
+image bg market_plaza = "gui/day2_plaza/plaza_front/plaza_front.png"
 image bg ruined_stall = im.Scale("gui/day2_plaza/market_stalls/bg_market_stall.png", 1920, 1072)
 image bg cashier_with_letter = im.Scale("gui/day2_plaza/market_stalls/ruined_stalls/bg_ruined_stall.png", 1920, 1072)
 image bg cashier_without_letter = im.Scale("gui/day2_plaza/market_stalls/ruined_stalls/without_note.png", 1920, 1072)
-image bg bakery_stall = im.Scale("gui/day2_plaza/bakery/kitchen/bg_kitchen.png", 1920, 1072)
+image bg bakery_stall = im.Scale("gui/day2_plaza/bakery/bg_inside_bakery.png", 1920, 1072)
 image bg electric_shop = im.Scale("gui/day2_plaza/electric_shop/bg_inside_electronics.png", 1920, 1072)
+image bg townhall = im.Scale("gui/day2_plaza/townhall/bg_townhall.png", 1920, 1072)
+image bg bench = im.Scale("gui/day2_plaza/bench/bg_bench.png", 1920, 1072)
+image bg bench_without_ticket = im.Scale("gui/day2_plaza/bench/bg_without_ticket.png", 1920, 1072)
 
 define vendor = Character("Vendor", color="#cccccc")
 define shopper = Character("Shopper", color="#cccccc")
@@ -26,7 +35,7 @@ default day2_clicked_points = []
 label day2_start:
     scene bg newsroom
     vance "Market plaza. Fruit stand burned to the ground in broad daylight. Go."
-    scene bg market_plaza
+    scene bg market_plaza at day2_plaza_origin
     arthur "Go back to the office, rookie."
     jump day2_investigation_hub
 
@@ -34,19 +43,12 @@ label day2_start:
 # 1. MARKET PLAZA FRONT (HUB)
 # ==========================================
 label day2_investigation_hub:
-    scene bg market_plaza
+    scene bg market_plaza at day2_plaza_origin
     call screen day2_market_investigation
     $ clicked_object = _return
 
     # ITEMS IN PLAZA FRONT
-    if clicked_object == "lottery":
-        "It's a winning scratch ticket dropped on the pavement."
-        if "The Dropped Lottery Ticket" not in day2_items_found:
-            $ day2_items_found.append("The Dropped Lottery Ticket")
-            $ inventory_bag_items.append("The Dropped Lottery Ticket")
-        jump day2_investigation_hub
-
-    elif clicked_object == "cigar":
+    if clicked_object == "cigar":
         "A half-smoked, imported cigar was dropped nearby."
         if "The Expensive Cigar" not in day2_items_found:
             $ day2_items_found.append("The Expensive Cigar")
@@ -77,6 +79,10 @@ label day2_investigation_hub:
         jump day2_bakery
     elif clicked_object == "electric_shop":
         jump day2_electric_shop
+    elif clicked_object == "townhall":
+        jump day2_townhall
+    elif clicked_object == "bench":
+        jump day2_bench
     elif clicked_object == "newsroom":
         jump day2_newspaper_minigame
     else:
@@ -199,6 +205,36 @@ label day2_electric_shop:
         jump day2_investigation_hub
     else:
         jump day2_electric_shop
+
+label day2_townhall:
+    scene bg townhall
+    call screen day2_plaza_return
+    jump day2_investigation_hub
+
+label day2_bench:
+    if "The Dropped Lottery Ticket" in day2_items_found:
+        scene bg bench_without_ticket
+    else:
+        scene bg bench
+    call screen day2_bench_environment
+    $ clicked_object = _return
+
+    if clicked_object == "ticket":
+        if "The Dropped Lottery Ticket" not in day2_items_found:
+            $ day2_items_found.append("The Dropped Lottery Ticket")
+            $ inventory_bag_items.append("The Dropped Lottery Ticket")
+        "I found the dropped scratch ticket tucked beside the bench."
+        jump day2_bench
+    elif clicked_object == "cigar":
+        if "The Expensive Cigar" not in day2_items_found:
+            $ day2_items_found.append("The Expensive Cigar")
+            $ inventory_bag_items.append("The Expensive Cigar")
+        "A half-smoked, imported cigar was left beside the bench."
+        jump day2_bench
+    elif clicked_object == "return_to_plaza":
+        jump day2_investigation_hub
+    else:
+        jump day2_bench
 
 # ==========================================
 # DAY 2 NEWSPAPER MINIGAME

@@ -403,18 +403,17 @@ screen inventory_bag():
 # ==========================================
 screen day2_market_investigation():
     # --- ITEMS IN PLAZA FRONT (Always Visible) ---
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/item_lottery.png" hover brighten("gui/day2_plaza/plaza_front/item_lottery.png") focus_mask True action Return("lottery")
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/item_cigar.png" hover brighten("gui/day2_plaza/plaza_front/item_cigar.png") focus_mask True action Return("cigar")
-
     # --- WITNESSES IN PLAZA FRONT ---
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/shopper.png" hover brighten("gui/day2_plaza/plaza_front/shopper.png") focus_mask True action Return("shopper")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/musician.png" hover brighten("gui/day2_plaza/plaza_front/musician.png") focus_mask True action Return("musician")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/arthur.png" hover brighten("gui/day2_plaza/plaza_front/arthur.png") focus_mask True action Return("arthur")
 
     # --- NAVIGATION DOORS / STALLS ---
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/goto_ruined_stall.png" hover brighten("gui/day2_plaza/plaza_front/goto_ruined_stall.png") focus_mask True action Return("ruined_stall")
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/goto_bakery.png" hover brighten("gui/day2_plaza/plaza_front/goto_bakery.png") focus_mask True action Return("bakery")
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/goto_electric_shop.png" hover brighten("gui/day2_plaza/plaza_front/goto_electric_shop.png") focus_mask True action Return("electric_shop")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/market_stalls_idle.png" hover brighten("gui/day2_plaza/plaza_front/market_stalls_idle.png") focus_mask True action Return("ruined_stall")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/bakery_idle.png" hover brighten("gui/day2_plaza/plaza_front/bakery_idle.png") focus_mask True action Return("bakery")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/electronics_idle.png" hover brighten("gui/day2_plaza/plaza_front/electronics_idle.png") focus_mask True action Return("electric_shop")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/townhall_front.png" hover brighten("gui/day2_plaza/plaza_front/townhall_front.png") focus_mask True action Return("townhall")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/bench_idle.png" hover brighten("gui/day2_plaza/plaza_front/bench_idle.png") focus_mask True action Return("bench")
 
     # --- EXIT BUTTON ---
     if len(day2_clues_found) > 0 and len(day2_items_found) > 0 and len(day2_witnesses_found) > 0:
@@ -467,6 +466,18 @@ screen day2_electric_shop_environment():
 
     # --- RETURN ---
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/electric_shop/return_to_plaza.png" hover brighten("gui/day2_plaza/electric_shop/return_to_plaza.png") focus_mask True action Return("return_to_plaza")
+    key "K_ESCAPE" action Return("return_to_plaza")
+
+screen day2_plaza_return():
+    textbutton "Return to Plaza" xalign 0.92 yalign 0.08 action Return()
+    key "K_ESCAPE" action Return()
+
+screen day2_bench_environment():
+    if "The Dropped Lottery Ticket" not in day2_items_found:
+        imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bench/item_ticket_idle.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bench/item_ticket_idle.png", 1920, 1072)) focus_mask True action Return("ticket")
+    if "The Expensive Cigar" not in day2_items_found:
+        imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bench/item_cigarrete_idle.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bench/item_cigarrete_idle.png", 1920, 1072)) focus_mask True action Return("cigar")
+    textbutton "Return to Plaza" xalign 0.92 yalign 0.08 action Return("return_to_plaza")
     key "K_ESCAPE" action Return("return_to_plaza")
 
 screen day2_blurry_photo_overlay():
