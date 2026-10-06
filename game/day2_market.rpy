@@ -1,20 +1,20 @@
-# Day 2 Backgrounds
 transform day2_plaza_origin:
     xpos 0
     ypos 0
     xanchor 0
     yanchor 0
 
+# ALL backgrounds natively 1920x1072. No scaling applied!
 image bg market_plaza = "gui/day2_plaza/plaza_front/plaza_front.png"
-image bg ruined_stall = im.Scale("gui/day2_plaza/market_stalls/bg_market_stall.png", 1920, 1072)
-image bg cashier_with_letter = im.Scale("gui/day2_plaza/market_stalls/ruined_stalls/bg_ruined_stall.png", 1920, 1072)
-image bg cashier_without_letter = im.Scale("gui/day2_plaza/market_stalls/ruined_stalls/without_note.png", 1920, 1072)
-image bg bakery_stall = im.Scale("gui/day2_plaza/bakery/bg_inside_bakery.png", 1920, 1072)
-image bg bakery_kitchen = im.Scale("gui/day2_plaza/bakery/kitchen/bg_kitchen.png", 1920, 1072)
-image bg electric_shop = im.Scale("gui/day2_plaza/electric_shop/bg_inside_electronics.png", 1920, 1072)
-image bg townhall = im.Scale("gui/day2_plaza/townhall/bg_townhall.png", 1920, 1072)
-image bg bench = im.Scale("gui/day2_plaza/bench/bg_bench.png", 1920, 1072)
-image bg bench_without_ticket = im.Scale("gui/day2_plaza/bench/bg_without_ticket.png", 1920, 1072)
+image bg ruined_stall = "gui/day2_plaza/market_stalls/bg_market_stall.png"
+image bg cashier_with_letter = "gui/day2_plaza/market_stalls/ruined_stalls/bg_ruined_stall.png"
+image bg cashier_without_letter = "gui/day2_plaza/market_stalls/ruined_stalls/without_note.png"
+image bg bakery_stall = "gui/day2_plaza/bakery/bg_inside_bakery.png"
+image bg bakery_kitchen = "gui/day2_plaza/bakery/kitchen/bg_kitchen.png"
+image bg electric_shop = "gui/day2_plaza/electric_shop/bg_inside_electronics.png"
+image bg townhall = "gui/day2_plaza/townhall/bg_townhall.png"
+image bg bench = "gui/day2_plaza/bench/bg_bench.png"
+image bg bench_without_ticket = "gui/day2_plaza/bench/bg_without_ticket.png"
 
 define vendor = Character("Vendor", color="#cccccc")
 define shopper = Character("Shopper", color="#cccccc")
@@ -29,6 +29,7 @@ default day2_item = ""
 default day2_witness = ""
 default evidence_letter = False
 default blurry_photo_obtained = False
+default cat_fed = False
 
 default day2_clues_found = []
 default day2_items_found = []
@@ -36,50 +37,43 @@ default day2_witnesses_found = []
 default day2_clicked_points = []
 
 label day2_start:
+    # Clear out unused items from Day 1 Bag (Keeping the Brass Lighter)
+    python:
+        for item in ["The Broken Pocket Watch", "The Lost Dog Collar"]:
+            if item in inventory_bag_items:
+                inventory_bag_items.remove(item)
+
     scene bg newsroom
     vance "Market plaza. Fruit stand burned to the ground in broad daylight. Go."
     scene bg market_plaza at day2_plaza_origin
     arthur "Go back to the office, rookie."
     jump day2_investigation_hub
 
-# ==========================================
-# 1. MARKET PLAZA FRONT (HUB)
-# ==========================================
 label day2_investigation_hub:
     scene bg market_plaza at day2_plaza_origin
     call screen day2_market_investigation
     $ clicked_object = _return
-
-    # ITEMS IN PLAZA FRONT
-    if clicked_object == "cigar":
-        "A half-smoked, imported cigar was dropped nearby."
-        if "The Expensive Cigar" not in day2_items_found:
-            $ day2_items_found.append("The Expensive Cigar")
-            $ inventory_bag_items.append("The Expensive Cigar")
-        jump day2_investigation_hub
-
-    # WITNESSES IN PLAZA FRONT
-    elif clicked_object == "shopper":
+        
+    if clicked_object == "shopper":
         shopper "She caused the fire herself for insurance money!"
         if "Shopper 1" not in day2_witnesses_found:
             $ day2_witnesses_found.append("Shopper 1")
         jump day2_investigation_hub
-
+        
     elif clicked_object == "musician":
         musician "I saw a freak lightning strike from a clear sky!"
         if "Street Musician 1" not in day2_witnesses_found:
             $ day2_witnesses_found.append("Street Musician 1")
         jump day2_investigation_hub
-
+        
     elif clicked_object == "arthur":
         arthur "Back off, rookie! I'm interviewing these people first."
         jump day2_investigation_hub
-
+        
     elif clicked_object == "kids":
-        "put a txt here"
+        "Just kids playing near the fountain."
         jump day2_investigation_hub
-
-    # NAVIGATION TO SUB-AREAS
+        
     elif clicked_object == "ruined_stall":
         jump day2_ruined_stall
     elif clicked_object == "bakery":
@@ -95,42 +89,34 @@ label day2_investigation_hub:
     else:
         jump day2_investigation_hub
 
-# ==========================================
-# 2. THE RUINED FRUIT STAND
-# ==========================================
 label day2_ruined_stall:
     scene bg ruined_stall
     call screen day2_ruined_stall_environment
     $ clicked_object = _return
-
+    
     if clicked_object == "gascan":
         "It reeks of accelerant."
         if "The Scorched Gas Can" not in day2_clues_found:
             $ day2_clues_found.append("The Scorched Gas Can")
         jump day2_ruined_stall
-
     elif clicked_object == "toycar":
         "Sad collateral damage."
         if "The Melted Toy Car" not in day2_clues_found:
             $ day2_clues_found.append("The Melted Toy Car")
         jump day2_ruined_stall
-
     elif clicked_object == "camera":
         if "The Melted Camera" not in inventory_bag_items:
             $ inventory_bag_items.append("The Melted Camera")
         "I spot a damaged security camera in the debris."
         "If I bring this to the man at the Town Electronics Shop, he might be able to recover a photo from it."
         jump day2_ruined_stall
-
     elif clicked_object == "cashier":
         jump day2_cashier_closeup
-
     elif clicked_object == "vendor":
         vendor "I stopped paying protection money... and they burned my shop!"
         if "Vendor 1" not in day2_witnesses_found:
             $ day2_witnesses_found.append("Vendor 1")
         jump day2_ruined_stall
-
     elif clicked_object == "return_to_plaza":
         jump day2_investigation_hub
     else:
@@ -141,13 +127,15 @@ label day2_cashier_closeup:
         scene bg cashier_with_letter
     else:
         scene bg cashier_without_letter
-
     call screen day2_cashier_environment
     $ clicked_object = _return
-
+    
     if clicked_object == "letter":
         $ evidence_letter = True
         scene bg cashier_without_letter
+        if "The Extortion Letter" not in inventory_bag_items:
+            $ inventory_bag_items.append("The Extortion Letter")
+            $ renpy.notify("You got The Extortion Letter.")
         "An extortion letter signed with the blue anchor stamp of The River Boys."
         jump day2_cashier_closeup
     elif clicked_object == "back_to_stall":
@@ -155,25 +143,25 @@ label day2_cashier_closeup:
     else:
         jump day2_ruined_stall
 
-# ==========================================
-# 3. THE BAKERY STALL
-# ==========================================
 label day2_bakery:
     scene bg bakery_stall
     call screen day2_bakery_environment
     $ clicked_object = _return
-
+    
     if clicked_object == "clerk_bakery":
-        bakery_clerk "put a txt here"
+        if not cat_fed and "Bread" not in inventory_bag_items:
+            bakery_clerk "Here, have some leftover bread on the house!"
+            $ inventory_bag_items.append("Bread")
+            $ renpy.notify("You got Bread.")
+        else:
+            bakery_clerk "Enjoy the pastries!"
         jump day2_bakery
-
+        
     elif clicked_object == "customer1":
-        bakery_customer "put a txt here"
+        bakery_customer "These pastries are to die for!"
         jump day2_bakery
-
     elif clicked_object == "kitchen":
         jump day2_bakery_kitchen
-
     elif clicked_object == "return_to_plaza":
         jump day2_investigation_hub
     else:
@@ -183,34 +171,32 @@ label day2_bakery_kitchen:
     scene bg bakery_kitchen
     call screen day2_bakery_kitchen_environment
     $ clicked_object = _return
-
+    
     if clicked_object == "oil":
         "A greasy puddle near a stove."
         if "The Spilled Cooking Oil" not in day2_clues_found:
             $ day2_clues_found.append("The Spilled Cooking Oil")
         jump day2_bakery_kitchen
     elif clicked_object == "baker":
-        baker "put a text here"
+        baker "It was a targeted hit by rival bakers!"
         if "Baker 1" not in day2_witnesses_found:
             $ day2_witnesses_found.append("Baker 1")
         jump day2_bakery_kitchen
     else:
         jump day2_bakery
 
-# ==========================================
-# 4. TOWN ELECTRONICS SHOP
-# ==========================================
 label day2_electric_shop:
     scene bg electric_shop
     call screen day2_electric_shop_environment
     $ clicked_object = _return
-
+    
     if clicked_object == "electronic_man":
         if "The Melted Camera" in inventory_bag_items:
             if not blurry_photo_obtained:
                 "I hand the broken camera over to the electronics technician."
                 electronic_man "Give me a moment... The casing is completely melted, but the memory chip inside is still readable!"
                 $ blurry_photo_obtained = True
+                $ inventory_bag_items.remove("The Melted Camera")
                 if "The Melted Camera" not in day2_items_found:
                     $ day2_items_found.append("The Melted Camera")
                 if "Blurry Photograph" not in inventory_bag_items:
@@ -224,7 +210,6 @@ label day2_electric_shop:
         else:
             electronic_man "If you find any damaged electronics or cameras, bring them to me and I'll recover the data."
         jump day2_electric_shop
-
     elif clicked_object == "return_to_plaza":
         jump day2_investigation_hub
     else:
@@ -236,33 +221,47 @@ label day2_townhall:
     jump day2_investigation_hub
 
 label day2_bench:
+    # If the ticket is gone, show the empty bench background
     if "The Dropped Lottery Ticket" in day2_items_found:
         scene bg bench_without_ticket
     else:
         scene bg bench
+       
     call screen day2_bench_environment
     $ clicked_object = _return
-
+   
     if clicked_object == "ticket":
-        if "The Dropped Lottery Ticket" not in day2_items_found:
-            $ day2_items_found.append("The Dropped Lottery Ticket")
-            $ inventory_bag_items.append("The Dropped Lottery Ticket")
-        "I found the dropped scratch ticket tucked beside the bench."
+        if not cat_fed:
+            if "Bread" in inventory_bag_items:
+                menu:
+                    "Give bread to the cat":
+                        "I toss the bread to the cat. It happily takes it and is finally distracted!"
+                        $ cat_fed = True
+                        $ inventory_bag_items.remove("Bread")
+                    "Don't give bread":
+                        "The cat hisses at me, guarding the ticket."
+            else:
+                "The cat hisses at me, baring its claws as I reach for the ticket."
+                "Maybe I need to befriend the cat first to access the ticket. Maybe kitty likes food."
+        else:
+            if "The Dropped Lottery Ticket" not in day2_items_found:
+                $ day2_items_found.append("The Dropped Lottery Ticket")
+                $ inventory_bag_items.append("The Dropped Lottery Ticket")
+            "With the cat distracted, I safely grab the dropped scratch ticket."
         jump day2_bench
+       
     elif clicked_object == "cigar":
+        "A half-smoked, imported cigar was dropped nearby."
         if "The Expensive Cigar" not in day2_items_found:
             $ day2_items_found.append("The Expensive Cigar")
             $ inventory_bag_items.append("The Expensive Cigar")
-        "A half-smoked, imported cigar was left beside the bench."
         jump day2_bench
+       
     elif clicked_object == "return_to_plaza":
         jump day2_investigation_hub
     else:
         jump day2_bench
 
-# ==========================================
-# DAY 2 NEWSPAPER MINIGAME
-# ==========================================
 label day2_newspaper_minigame:
     scene bg newsroom
     "Time to review my Reporter's Notepad and write the market edition."

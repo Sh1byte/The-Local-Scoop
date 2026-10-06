@@ -2,6 +2,21 @@ init python:
     def brighten(image_path, amount=0.2):
         return Transform(image_path, matrixcolor=BrightnessMatrix(amount))
 
+    # Icon mapping for the Inventory Grid UI
+    item_icons = {
+        "Battery": "gui/icons/battery.png",
+        "The Janitor's Keyring": "gui/icons/keyring.png",
+        "The Broken Pocket Watch": "gui/icons/watch.png",
+        "The Lost Dog Collar": "gui/icons/collar.png",
+        "The Brass Lighter": "gui/icons/lighter.png",
+        "Bread": "gui/icons/bread.png",
+        "The Melted Camera": "gui/icons/camera.png",
+        "Blurry Photograph": "gui/icons/photo.png",
+        "The Expensive Cigar": "gui/icons/cigar.png",
+        "The Dropped Lottery Ticket": "gui/icons/ticket.png",
+        "The Extortion Letter": "gui/icons/letter.png"
+    }
+
 # ==========================================
 # DAY 1 WAREHOUSE SCREENS
 # ==========================================
@@ -12,145 +27,49 @@ screen day1_warehouse_back_environment():
     imagebutton xpos 0 ypos 0 idle "gui/day1_back_warehouse/garage_back_warehouse.png" hover brighten("gui/day1_back_warehouse/garage_back_warehouse.png") focus_mask True action Return("garage_back_warehouse")
     imagebutton xpos 0 ypos 0 idle "gui/day1_back_warehouse/return_to_front.png" hover brighten("gui/day1_back_warehouse/return_to_front.png") focus_mask True action Return("back_to_front")
    
-    # Collar and Watch (Always Visible)
-    imagebutton xpos 800 ypos 890 idle "gui/warehouse/item_collar.png" hover brighten("gui/warehouse/item_collar.png") action Return("collar") at Transform(zoom=0.08)
+    if "The Lost Dog Collar" not in inventory_bag_items:
+        imagebutton xpos 800 ypos 890 idle "gui/warehouse/item_collar.png" hover brighten("gui/warehouse/item_collar.png") action Return("collar") at Transform(zoom=0.08)
        
     key "K_ESCAPE" action Return("back_to_front")
 
 screen day1_warehouse_riverclose_environment():
     if "The Broken Pocket Watch" not in inventory_bag_items:
-        imagebutton:
-            xpos 0
-            ypos 0
-            idle "gui/day1_back_warehouse/item_watch_idle.png"
-            hover brighten("gui/day1_back_warehouse/item_watch_idle.png")
-            focus_mask True
-            action Return("watch")
+        imagebutton xpos 0 ypos 0 idle "gui/day1_back_warehouse/item_watch_idle.png" hover brighten("gui/day1_back_warehouse/item_watch_idle.png") focus_mask True action Return("watch")
     textbutton "Back" xalign 0.95 yalign 0.05 action Return("return_to_back")
     key "K_ESCAPE" action Return("return_to_back")
 
 screen day1_warehouse_inside_front_environment():
-    add "gui/day1_inside_warehouse/bg_inside_warehouse.png"
-
-    if janitor_helped:
-        add "gui/day1_inside_warehouse/janitor.png"
-    else:
-        imagebutton:
-            xpos 0
-            ypos 0
-            idle "gui/day1_inside_warehouse/janitor.png"
-            hover brighten("gui/day1_inside_warehouse/janitor.png")
-            focus_mask True
-            action Return("janitor")
-
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_inside_warehouse/clue_whiskey_idle.png"
-        hover brighten("gui/day1_inside_warehouse/clue_whiskey_idle.png")
-        focus_mask True
-        action Return("whiskey")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_inside_warehouse/clue_pizza_idle.png"
-        hover brighten("gui/day1_inside_warehouse/clue_pizza_idle.png")
-        focus_mask True
-        action Return("pizza")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_inside_warehouse/clue_paint_idle.png"
-        hover brighten("gui/day1_inside_warehouse/clue_paint_idle.png")
-        focus_mask True
-        action Return("paint_can")
-
+    if not janitor_helped:
+        imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/janitor.png" hover brighten("gui/day1_inside_warehouse/janitor.png") focus_mask True action Return("janitor")
+        
+    if not whiskey_cleared:
+        imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/clue_whiskey_idle.png" hover brighten("gui/day1_inside_warehouse/clue_whiskey_idle.png") focus_mask True action Return("whiskey")
+    if not pizza_cleared:
+        imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/clue_pizza_idle.png" hover brighten("gui/day1_inside_warehouse/clue_pizza_idle.png") focus_mask True action Return("pizza")
+    if not paint_cleared:
+        imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/clue_paint_idle.png" hover brighten("gui/day1_inside_warehouse/clue_paint_idle.png") focus_mask True action Return("paint_can")
     key "K_ESCAPE" action Return("return_to_front")
 
 screen day1_warehouse_inside_back_environment():
-    add "gui/day1_inside_warehouse/bg_inside_warehouse.png"
-
-    if janitor_helped:
-        add "gui/day1_inside_warehouse/janitor.png"
-    else:
-        imagebutton:
-            xpos 0
-            ypos 0
-            idle "gui/day1_inside_warehouse/janitor.png"
-            hover brighten("gui/day1_inside_warehouse/janitor.png")
-            focus_mask True
-            action Return("janitor")
-
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_inside_warehouse/clue_whiskey_idle.png"
-        hover brighten("gui/day1_inside_warehouse/clue_whiskey_idle.png")
-        focus_mask True
-        action Return("whiskey")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_inside_warehouse/clue_pizza_idle.png"
-        hover brighten("gui/day1_inside_warehouse/clue_pizza_idle.png")
-        focus_mask True
-        action Return("pizza")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_inside_warehouse/clue_paint_idle.png"
-        hover brighten("gui/day1_inside_warehouse/clue_paint_idle.png")
-        focus_mask True
-        action Return("paint_can")
-
+    if not janitor_helped:
+        imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/janitor.png" hover brighten("gui/day1_inside_warehouse/janitor.png") focus_mask True action Return("janitor")
+        
+    if not whiskey_cleared:
+        imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/clue_whiskey_idle.png" hover brighten("gui/day1_inside_warehouse/clue_whiskey_idle.png") focus_mask True action Return("whiskey")
+    if not pizza_cleared:
+        imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/clue_pizza_idle.png" hover brighten("gui/day1_inside_warehouse/clue_pizza_idle.png") focus_mask True action Return("pizza")
+    if not paint_cleared:
+        imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/clue_paint_idle.png" hover brighten("gui/day1_inside_warehouse/clue_paint_idle.png") focus_mask True action Return("paint_can")
     key "K_ESCAPE" action Return("return_to_back")
 
 screen day1_warehouse_garage_environment():
     add "gui/day1_garage_warehouse/bg_garage_warehouse.png"
-
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_garage_warehouse/batterycharger_idle.png"
-        hover brighten("gui/day1_garage_warehouse/batterycharger_idle.png")
-        focus_mask True
-        action Return("battery_charger")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_garage_warehouse/boxesgarage_idle.png"
-        hover brighten("gui/day1_garage_warehouse/boxesgarage_idle.png")
-        focus_mask True
-        action Return("garage_boxes")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_garage_warehouse/driver.png"
-        hover brighten("gui/day1_garage_warehouse/driver.png")
-        focus_mask True
-        action Return("garage_driver")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_garage_warehouse/garageclipboard_idle.png"
-        hover brighten("gui/day1_garage_warehouse/garageclipboard_idle.png")
-        focus_mask True
-        action Return("garage_clipboard")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_garage_warehouse/office_garage_idle.png"
-        hover brighten("gui/day1_garage_warehouse/office_garage_idle.png")
-        focus_mask True
-        action Return("garage_office")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_garage_warehouse/return_to_back_idle.png"
-        hover brighten("gui/day1_garage_warehouse/return_to_back_idle.png")
-        focus_mask True
-        action Return("return_to_back")
-
+    imagebutton xpos 0 ypos 0 idle "gui/day1_garage_warehouse/batterycharger_idle.png" hover brighten("gui/day1_garage_warehouse/batterycharger_idle.png") focus_mask True action Return("battery_charger")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_garage_warehouse/boxesgarage_idle.png" hover brighten("gui/day1_garage_warehouse/boxesgarage_idle.png") focus_mask True action Return("garage_boxes")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_garage_warehouse/driver.png" hover brighten("gui/day1_garage_warehouse/driver.png") focus_mask True action Return("garage_driver")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_garage_warehouse/garageclipboard_idle.png" hover brighten("gui/day1_garage_warehouse/garageclipboard_idle.png") focus_mask True action Return("garage_clipboard")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_garage_warehouse/office_garage_idle.png" hover brighten("gui/day1_garage_warehouse/office_garage_idle.png") focus_mask True action Return("garage_office")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_garage_warehouse/return_to_back_idle.png" hover brighten("gui/day1_garage_warehouse/return_to_back_idle.png") focus_mask True action Return("return_to_back")
     key "K_ESCAPE" action Return("return_to_back")
    
 screen tower_clipboard_overlay():
@@ -162,24 +81,14 @@ screen tower_clipboard_overlay():
 screen flashlight_environment():
     modal True
     add "gui/day_tower_warehouse/flashlight/flashlight.png"
-    imagebutton:
-        xpos 0 ypos 0
-        idle "gui/day_tower_warehouse/flashlight/fl_open_idle.png"
-        hover brighten("gui/day_tower_warehouse/flashlight/fl_open_idle.png")
-        focus_mask True
-        action Show("flashlight_open_environment")
+    imagebutton xpos 0 ypos 0 idle "gui/day_tower_warehouse/flashlight/fl_open_idle.png" hover brighten("gui/day_tower_warehouse/flashlight/fl_open_idle.png") focus_mask True action Show("flashlight_open_environment")
     textbutton "Close" xalign 0.92 yalign 0.08 action Hide("flashlight_environment")
     key "K_ESCAPE" action Hide("flashlight_environment")
 
 screen flashlight_open_environment():
     modal True
     add "gui/day_tower_warehouse/flashlight/flashlight_open.png"
-    imagebutton:
-        xpos 0 ypos 0
-        idle "gui/day_tower_warehouse/flashlight/fl_empty_idle.png"
-        hover brighten("gui/day_tower_warehouse/flashlight/fl_empty_idle.png")
-        focus_mask True
-        action Show("flashlight_empty_environment")
+    imagebutton xpos 0 ypos 0 idle "gui/day_tower_warehouse/flashlight/fl_empty_idle.png" hover brighten("gui/day_tower_warehouse/flashlight/fl_empty_idle.png") focus_mask True action Show("flashlight_empty_environment")
     textbutton "Close" xalign 0.92 yalign 0.08 action Hide("flashlight_open_environment")
     key "K_ESCAPE" action Hide("flashlight_open_environment")
 
@@ -215,18 +124,8 @@ screen flashlight_empty_environment():
 screen day1_warehouse_tower_environment():
     add "gui/day_tower_warehouse/bg_tower_warehouse.png"
     imagebutton xpos 0 ypos 0 idle "gui/day_tower_warehouse/jogger.png" hover brighten("gui/day_tower_warehouse/jogger.png") focus_mask True action Return("jogger")
-    imagebutton:
-        xpos 0 ypos 0
-        idle "gui/day_tower_warehouse/tower_clipboard.png"
-        hover brighten("gui/day_tower_warehouse/tower_clipboard.png")
-        focus_mask True
-        action Show("tower_clipboard_overlay")
-    imagebutton:
-        xpos 0 ypos 0
-        idle "gui/day_tower_warehouse/tower_flashlight.png"
-        hover brighten("gui/day_tower_warehouse/tower_flashlight.png")
-        focus_mask True
-        action Show("flashlight_environment")
+    imagebutton xpos 0 ypos 0 idle "gui/day_tower_warehouse/tower_clipboard.png" hover brighten("gui/day_tower_warehouse/tower_clipboard.png") focus_mask True action Show("tower_clipboard_overlay")
+    imagebutton xpos 0 ypos 0 idle "gui/day_tower_warehouse/tower_flashlight.png" hover brighten("gui/day_tower_warehouse/tower_flashlight.png") focus_mask True action Show("flashlight_environment")
     key "K_ESCAPE" action Return("return_to_front")
 
 screen day1_warehouse_office_environment():
@@ -234,69 +133,15 @@ screen day1_warehouse_office_environment():
         add "gui/day1_office/bg_office_empty.png"
     else:
         add "gui/day1_office/bg_office.png"
-        imagebutton:
-            xpos 0
-            ypos 0
-            idle "gui/day1_office/officerguy.png"
-            hover brighten("gui/day1_office/officerguy.png")
-            focus_mask True
-            action Return("officerguy")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_office/desktop_office_idle.png"
-        hover brighten("gui/day1_office/desktop_office_idle.png")
-        focus_mask True
-        action Show("development_environment")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_office/keyholder_idle.png"
-        hover brighten("gui/day1_office/keyholder_idle.png")
-        focus_mask True
-        action Show("key_holder_environment")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_office/desk_drawer1_idle.png"
-        hover brighten("gui/day1_office/desk_drawer1_idle.png")
-        focus_mask True
-        action Show("development_environment")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_office/desk_drawer2_idle.png"
-        hover brighten("gui/day1_office/desk_drawer2_idle.png")
-        focus_mask True
-        action Show("development_environment")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_office/drawer1_idle.png"
-        hover brighten("gui/day1_office/drawer1_idle.png")
-        focus_mask True
-        action Show("drawer_files_environment")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_office/drawer2_idle.png"
-        hover brighten("gui/day1_office/drawer2_idle.png")
-        focus_mask True
-        action Return("drawer2")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_office/drawer3_idle.png"
-        hover brighten("gui/day1_office/drawer3_idle.png")
-        focus_mask True
-        action Show("drawer3_environment")
-    imagebutton:
-        xpos 0
-        ypos 0
-        idle "gui/day1_office/office_returntofront.png"
-        hover brighten("gui/day1_office/office_returntofront.png")
-        focus_mask True
-        action Return("return_to_front")
+        imagebutton xpos 0 ypos 0 idle "gui/day1_office/officerguy.png" hover brighten("gui/day1_office/officerguy.png") focus_mask True action Return("officerguy")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_office/desktop_office_idle.png" hover brighten("gui/day1_office/desktop_office_idle.png") focus_mask True action Show("development_environment")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_office/keyholder_idle.png" hover brighten("gui/day1_office/keyholder_idle.png") focus_mask True action Show("key_holder_environment")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_office/desk_drawer1_idle.png" hover brighten("gui/day1_office/desk_drawer1_idle.png") focus_mask True action Show("development_environment")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_office/desk_drawer2_idle.png" hover brighten("gui/day1_office/desk_drawer2_idle.png") focus_mask True action Show("development_environment")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_office/drawer1_idle.png" hover brighten("gui/day1_office/drawer1_idle.png") focus_mask True action Show("drawer_files_environment")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_office/drawer2_idle.png" hover brighten("gui/day1_office/drawer2_idle.png") focus_mask True action Return("drawer2")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_office/drawer3_idle.png" hover brighten("gui/day1_office/drawer3_idle.png") focus_mask True action Show("drawer3_environment")
+    imagebutton xpos 0 ypos 0 idle "gui/day1_office/office_returntofront.png" hover brighten("gui/day1_office/office_returntofront.png") focus_mask True action Return("return_to_front")
     key "K_ESCAPE" action Return("return_to_front")
 
 screen key_holder_environment():
@@ -304,19 +149,16 @@ screen key_holder_environment():
     add "gui/day1_office/keys/key_holder.png"
     textbutton "Close" xalign 0.92 yalign 0.08 action Hide("key_holder_environment")
     key "K_ESCAPE" action Hide("key_holder_environment")
-
 screen drawer_files_environment():
     modal True
     add "gui/day1_office/drawer/drawer_files.png"
     textbutton "Close" xalign 0.92 yalign 0.08 action Hide("drawer_files_environment")
     key "K_ESCAPE" action Hide("drawer_files_environment")
-
 screen drawer3_environment():
     modal True
     add "gui/day1_office/drawer/drawer3.png"
     textbutton "Close" xalign 0.92 yalign 0.08 action Hide("drawer3_environment")
     key "K_ESCAPE" action Hide("drawer3_environment")
-
 screen development_environment():
     modal True
     add "gui/development.png"
@@ -324,29 +166,21 @@ screen development_environment():
     key "K_ESCAPE" action Hide("development_environment")
 
 screen day1_warehouse_investigation():
-    # --- HIDDEN EVIDENCE ---
     if not evidence_lighter:
         imagebutton xpos 300 ypos 960 idle "gui/warehouse/evidence_lighter.png" hover brighten("gui/warehouse/evidence_lighter.png") action [Notify("You got a lighter."), Return("lighter")] at Transform(zoom=0.06)
-
-    # --- WITNESSES ---
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_guard_idle.png" hover brighten("gui/warehouse/warehouse_guard_idle.png") focus_mask True action Return("watchman")
-
-    # --- ENVIRONMENT NAVIGATION ---
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_grafitti_idle.png" hover brighten("gui/warehouse/warehouse_grafitti_idle.png") focus_mask True action Return("warehouse_graffiti")
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_windows_idle.png" hover brighten("gui/warehouse/warehouse_windows_idle.png") focus_mask True action Return("warehouse_windows")
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_door_idle.png" hover brighten("gui/warehouse/warehouse_door_idle.png") focus_mask True action Return("warehouse_door")
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_tower_idle.png" hover brighten("gui/warehouse/warehouse_tower_idle.png") focus_mask True action Return("warehouse_tower")
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_back_idle.png" hover brighten("gui/warehouse/warehouse_back_idle.png") focus_mask True action Return("warehouse_back")
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_office_idle.png" hover brighten("gui/warehouse/warehouse_office_idle.png") focus_mask True action Return("warehouse_office")
-
-    # --- EXIT BUTTON ---
+    
     if len(day1_clues_found) > 0 and len(day1_witnesses_found) > 0:
         imagebutton xalign 0.5 yalign 0.95 idle "gui/warehouse/ui_button_write_idle.png" hover brighten("gui/warehouse/ui_button_write_idle.png") action Return("newsroom")
        
-    # --- TOGGLES ---
     imagebutton xalign 0.95 yalign 0.05 idle "gui/warehouse/ui_icon_notepad_idle.png" hover brighten("gui/warehouse/ui_icon_notepad_idle.png") action ToggleScreen("reporters_notepad") at Transform(zoom=0.1)
     imagebutton xalign 0.88 yalign 0.05 idle "gui/warehouse/ui_icon_bag_idle.png" hover brighten("gui/warehouse/ui_icon_bag_idle.png") action ToggleScreen("inventory_bag") at Transform(zoom=0.1)
-
 
 # ==========================================
 # NOTEPAD & BAG SCREENS
@@ -380,97 +214,105 @@ screen reporters_notepad():
 screen inventory_bag():
     add Solid("#00000088")
     add "gui/warehouse/ui_bag_bg.png" align (0.5, 0.5)
+   
     imagebutton:
-        align (0.75, 0.25)
+        align (0.78, 0.15)
         idle "gui/warehouse/ui_close_idle.png"
         hover "gui/warehouse/ui_close_hover.png"
         action Hide("inventory_bag")
        
-    vbox:
-        xalign 0.5 ypos 300
-        spacing 15
-        text "Physical Evidence Bag" size 32 bold True color "#155dfc"
+    # Dictionary of descriptions that pop up when clicking an item
+    python:
+        item_descriptions = {
+            "Battery": "A heavy industrial battery. It might power something.",
+            "The Janitor's Keyring": "A keyring with a master key attached. Could unlock doors or drawers.",
+            "The Broken Pocket Watch": "An expensive watch. Talk about the 'flow' of time.",
+            "The Lost Dog Collar": "A dirty pet collar. I wonder if it belongs to a dog that was here.",
+            "The Brass Lighter": "Engraved with a skull and crossed wrenches. A crucial piece of evidence.",
+            "Bread": "Some leftover bread. Maybe I can use this to feed a hungry animal.",
+            "The Melted Camera": "The casing is melted, but the memory chip inside might survive.",
+            "Blurry Photograph": "A blurry photo recovered from the melted camera. Shows the fire starting.",
+            "The Expensive Cigar": "A half-smoked, imported cigar dropped nearby.",
+            "The Dropped Lottery Ticket": "A winning scratch ticket.",
+            "The Extortion Letter": "Signed with the blue anchor stamp of The River Boys."
+        }
+       
+    vpgrid:
+        cols 5
+        spacing 0
+        xpos 575
+        ypos 210
        
         for item in inventory_bag_items:
-            text "• [item]" size 24 color "#6a7282"
-           
-        if len(inventory_bag_items) == 0:
-            text "The bag is empty." size 24 color "#6a7282" italic True
+            fixed:
+                xysize (170, 140)
+               
+                if item in item_icons:
+                    # Make the icon a clickable button that shows a notification
+                    imagebutton:
+                        align (0.5, 0.5)
+                        idle item_icons[item]
+                        hover brighten(item_icons[item])
+                        action Notify(item_descriptions.get(item, "A mysterious item."))
+                        at Transform(zoom=2)
+                else:
+                    text "[item]" size 16 color "#ffffff" align (0.5, 0.5)
 
 
 # ==========================================
 # DAY 2 MARKET PLAZA SCREENS
 # ==========================================
 screen day2_market_investigation():
-    # --- ITEMS IN PLAZA FRONT (Always Visible) ---
-    # --- WITNESSES IN PLAZA FRONT ---
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/shopper.png" hover brighten("gui/day2_plaza/plaza_front/shopper.png") focus_mask True action Return("shopper")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/musician.png" hover brighten("gui/day2_plaza/plaza_front/musician.png") focus_mask True action Return("musician")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/arthur.png" hover brighten("gui/day2_plaza/plaza_front/arthur.png") focus_mask True action Return("arthur")
-    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/plaza_front/kids.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/plaza_front/kids.png", 1920, 1072)) focus_mask True action Return("kids")
-
-    # --- NAVIGATION DOORS / STALLS ---
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/kids.png" hover brighten("gui/day2_plaza/plaza_front/kids.png") focus_mask True action Return("kids")
+   
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/market_stalls_idle.png" hover brighten("gui/day2_plaza/plaza_front/market_stalls_idle.png") focus_mask True action Return("ruined_stall")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/bakery_idle.png" hover brighten("gui/day2_plaza/plaza_front/bakery_idle.png") focus_mask True action Return("bakery")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/electronics_idle.png" hover brighten("gui/day2_plaza/plaza_front/electronics_idle.png") focus_mask True action Return("electric_shop")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/townhall_front.png" hover brighten("gui/day2_plaza/plaza_front/townhall_front.png") focus_mask True action Return("townhall")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/bench_idle.png" hover brighten("gui/day2_plaza/plaza_front/bench_idle.png") focus_mask True action Return("bench")
-
-    # --- EXIT BUTTON ---
-    if len(day2_clues_found) > 0 and len(day2_items_found) > 0 and len(day2_witnesses_found) > 0:
+   
+    if len(day2_clues_found) > 0 and len(day2_witnesses_found) > 0:
         imagebutton xalign 0.5 yalign 0.95 idle "gui/warehouse/ui_button_write_idle.png" hover brighten("gui/warehouse/ui_button_write_idle.png") action Return("newsroom")
        
-    # --- TOGGLES ---
     imagebutton xalign 0.95 yalign 0.05 idle "gui/warehouse/ui_icon_notepad_idle.png" hover brighten("gui/warehouse/ui_icon_notepad_idle.png") action ToggleScreen("reporters_notepad") at Transform(zoom=0.1)
     imagebutton xalign 0.88 yalign 0.05 idle "gui/warehouse/ui_icon_bag_idle.png" hover brighten("gui/warehouse/ui_icon_bag_idle.png") action ToggleScreen("inventory_bag") at Transform(zoom=0.1)
 
 screen day2_ruined_stall_environment():
-    # --- CLUES (Always Visible) ---
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/clue_gascan.png" hover brighten("gui/day2_plaza/ruined_stall/clue_gascan.png") focus_mask True action Return("gascan")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/clue_toycar.png" hover brighten("gui/day2_plaza/ruined_stall/clue_toycar.png") focus_mask True action Return("toycar")
-
-    # --- DISAPPEARING CAMERA ---
-    if "The Melted Camera" not in inventory_bag_items:
+   
+    if "The Melted Camera" not in inventory_bag_items and not blurry_photo_obtained:
         imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/item_camera.png" hover brighten("gui/day2_plaza/ruined_stall/item_camera.png") focus_mask True action [Notify("You got the Melted Camera."), Return("camera")]
-
-    # --- CASH REGISTER (Leads to Extortion Letter) ---
+   
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/cashier_idle.png" hover brighten("gui/day2_plaza/ruined_stall/cashier_idle.png") focus_mask True action Return("cashier")
-
-    # --- WITNESS ---
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/vendor.png" hover brighten("gui/day2_plaza/ruined_stall/vendor.png") focus_mask True action Return("vendor")
-
-    # --- RETURN ---
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/return_to_plaza.png" hover brighten("gui/day2_plaza/ruined_stall/return_to_plaza.png") focus_mask True action Return("return_to_plaza")
     key "K_ESCAPE" action Return("return_to_plaza")
 
 screen day2_cashier_environment():
     if not evidence_letter:
-        imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/evidence_letter.png" hover brighten("gui/day2_plaza/ruined_stall/evidence_letter.png") focus_mask True action [Notify("You got the Extortion Letter."), Return("letter")]
-
+        imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/evidence_letter.png" hover brighten("gui/day2_plaza/ruined_stall/evidence_letter.png") focus_mask True action [Return("letter")]
     textbutton "Back" xalign 0.92 yalign 0.08 action Return("back_to_stall")
     key "K_ESCAPE" action Return("back_to_stall")
 
 screen day2_bakery_environment():
-    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bakery/kitchen_idle.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bakery/kitchen_idle.png", 1920, 1072)) focus_mask True action Return("kitchen")
-
-    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bakery/clerkbakery.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bakery/clerkbakery.png", 1920, 1072)) focus_mask True action Return("clerk_bakery")
-    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bakery/customer1.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bakery/customer1.png", 1920, 1072)) focus_mask True action Return("customer1")
-
-    # --- RETURN ---
-    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bakery/return_to_plaza.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bakery/return_to_plaza.png", 1920, 1072)) focus_mask True action Return("return_to_plaza")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bakery/kitchen_idle.png" hover brighten("gui/day2_plaza/bakery/kitchen_idle.png") focus_mask True action Return("kitchen")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bakery/clerkbakery.png" hover brighten("gui/day2_plaza/bakery/clerkbakery.png") focus_mask True action Return("clerk_bakery")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bakery/customer1.png" hover brighten("gui/day2_plaza/bakery/customer1.png") focus_mask True action Return("customer1")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bakery/return_to_plaza.png" hover brighten("gui/day2_plaza/bakery/return_to_plaza.png") focus_mask True action Return("return_to_plaza")
     key "K_ESCAPE" action Return("return_to_plaza")
 
 screen day2_bakery_kitchen_environment():
-    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bakery/kitchen/clue_oil.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bakery/kitchen/clue_oil.png", 1920, 1072)) focus_mask True action Return("oil")
-    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bakery/kitchen/baker.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bakery/kitchen/baker.png", 1920, 1072)) focus_mask True action Return("baker")
-    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bakery/kitchen/return_to_bakery_idle.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bakery/kitchen/return_to_bakery_idle.png", 1920, 1072)) focus_mask True action Return("return_to_bakery")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bakery/kitchen/clue_oil.png" hover brighten("gui/day2_plaza/bakery/kitchen/clue_oil.png") focus_mask True action Return("oil")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bakery/kitchen/baker.png" hover brighten("gui/day2_plaza/bakery/kitchen/baker.png") focus_mask True action Return("baker")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bakery/kitchen/return_to_bakery_idle.png" hover brighten("gui/day2_plaza/bakery/kitchen/return_to_bakery_idle.png") focus_mask True action Return("return_to_bakery")
     key "K_ESCAPE" action Return()
 
 screen day2_electric_shop_environment():
-    # --- ELECTRONIC MAN (Give Broken Camera to Recover Blurry Photo) ---
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/electric_shop/electronic_man.png" hover brighten("gui/day2_plaza/electric_shop/electronic_man.png") focus_mask True action Return("electronic_man")
-
-    # --- RETURN ---
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/electric_shop/return_to_plaza.png" hover brighten("gui/day2_plaza/electric_shop/return_to_plaza.png") focus_mask True action Return("return_to_plaza")
     key "K_ESCAPE" action Return("return_to_plaza")
 
@@ -480,9 +322,11 @@ screen day2_plaza_return():
 
 screen day2_bench_environment():
     if "The Dropped Lottery Ticket" not in day2_items_found:
-        imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bench/item_ticket_idle.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bench/item_ticket_idle.png", 1920, 1072)) focus_mask True action Return("ticket")
+        imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bench/item_ticket_idle.png" hover brighten("gui/day2_plaza/bench/item_ticket_idle.png") focus_mask True action Return("ticket")
+           
     if "The Expensive Cigar" not in day2_items_found:
-        imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/bench/item_cigarrete_idle.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/bench/item_cigarrete_idle.png", 1920, 1072)) focus_mask True action Return("cigar")
+        imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bench/item_cigarrete_idle.png" hover brighten("gui/day2_plaza/bench/item_cigarrete_idle.png") focus_mask True action Return("cigar")
+           
     textbutton "Return to Plaza" xalign 0.92 yalign 0.08 action Return("return_to_plaza")
     key "K_ESCAPE" action Return("return_to_plaza")
 
@@ -492,8 +336,7 @@ screen day2_blurry_photo_overlay():
     add "gui/day2_plaza/ruined_stall/blurry_photo.png" align (0.5, 0.5)
     textbutton "Close" xalign 0.92 yalign 0.08 action Return()
     key "K_ESCAPE" action Return()
-
-
+    
 # ==========================================
 # DAY 3 CASINO SCREEN
 # ==========================================

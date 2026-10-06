@@ -14,14 +14,23 @@ define watchman = Character("Watchman", color="#cccccc")
 define fisherman = Character("Fisherman", color="#cccccc")
 define driver = Character("Delivery Driver", color="#cccccc")
 define jogger = Character("Jogger", color="#cccccc")
+define janitor = Character("Janitor", color="#cccccc")
 
 default day1_clue = ""
 default day1_item = ""
 default day1_witness = ""
+
+# Progression Variables
 default evidence_lighter = False
 default battery_obtained = False
 default office_empty = False
+
+default janitor_spoken_to = False
 default janitor_helped = False
+default paint_cleared = False
+default whiskey_cleared = False
+default pizza_cleared = False
+
 default day1_clues_found = []
 default day1_items_found = []
 default day1_witnesses_found = []
@@ -45,7 +54,6 @@ label stage1_briefing:
 label day1_path:
     vance "Listen up, rookie. I don't want you digging into the rising crime rate. That's an order."
     vance "Head down to the riverside shipping warehouse. Someone vandalized it. Get a simple quote and come back."
-
     scene bg warehouse
     arthur "Well, look who finally showed up. Stay out of my way, rookie."
     jump day1_investigation_hub
@@ -53,15 +61,16 @@ label day1_path:
 label day1_investigation_hub:
     call screen day1_warehouse_investigation
     $ clicked_object = _return
-
-    # FRONT CLUES & ITEMS
+    
     if clicked_object == "lighter":
         "It's a Brass Lighter engraved with a skull and crossed wrenches."
         "I feel like i've seen this symbol before..."
         $ evidence_lighter = True
+        if "The Brass Lighter" not in inventory_bag_items:
+            $ inventory_bag_items.append("The Brass Lighter")
+            $ renpy.notify("You got The Brass Lighter.")
         jump day1_investigation_hub
 
-    # FRONT WITNESSES
     elif clicked_object == "watchman":
         watchman "I saw them... men in heavy leather jackets marking the warehouse as their territory."
         watchman "I didn't stop them because I was scared."
@@ -70,18 +79,17 @@ label day1_investigation_hub:
             $ day1_witnesses_found.append("Watchman 1")
         jump day1_investigation_hub
 
-    # FRONT ENVIRONMENT
     elif clicked_object == "warehouse_graffiti":
         "The graffiti looks fresh. Someone wanted to mark this place as their territory."
         "Or their just incredibly artistic vandals. Either way, this is a crime scene."
         jump day1_investigation_hub
+
     elif clicked_object == "warehouse_windows":
         "They destroyed even the warehouse windows."
         "I guess they are violent artists."
         "Or just violent."
         jump day1_investigation_hub
 
-    # NAVIGATION
     elif clicked_object == "warehouse_door":
         jump day1_warehouse_inside
     elif clicked_object == "warehouse_tower":
@@ -132,6 +140,7 @@ label day1_warehouse_riverclose:
     scene bg riverclose
     call screen day1_warehouse_riverclose_environment
     $ clicked_object = _return
+    
     if clicked_object == "watch":
         "There's a Broken Pocket Watch in the water."
         "Talk about the 'flow' of time."
@@ -146,43 +155,77 @@ label day1_warehouse_riverclose:
     else:
         jump day1_warehouse_riverclose
 
+# ---------------------------------------------
+# JANITOR TRASH LOGIC (Inside Warehouse)
+# ---------------------------------------------
 label day1_warehouse_inside_from_the_back:
     scene bg inside_warehouse
     call screen day1_warehouse_inside_back_environment
     $ clicked_object = _return
-   
+    
     if clicked_object == "janitor":
-        $ janitor_helped = True
-        "This building is a mess. I don't know how I would clean this up all by myself."
-        "Hey kid, Can you lend me a hand?"
-        "I don't get paid enough to clean up after vandals."
-        "Here's my keyring, Go find my cleaning tools. I left them in the room at the side of the warehouse."
-        $ renpy.notify("You obtained a keyring.")
-        if "The Janitor's Keyring" not in inventory_bag_items:
-            $ inventory_bag_items.append("The Janitor's Keyring")
-        "A keyring."
-        "With a masterkey attached."
+        if paint_cleared and pizza_cleared and whiskey_cleared:
+            if not janitor_helped:
+                janitor "I am shocked! You cleaned up all this trash!"
+                janitor "Since you're so good at this, do you want to help me clean up the rest of the warehouse?"
+                menu:
+                    "Yes":
+                        janitor "Thank you so much! Here's my keyring, go find my cleaning tools in the other rooms."
+                        $ renpy.notify("You obtained a keyring.")
+                        $ inventory_bag_items.append("The Janitor's Keyring")
+                        $ janitor_helped = True
+                    "No":
+                        janitor "Alright, but you can come help me anytime."
+            else:
+                "The janitor is busy cleaning."
+        else:
+            if not janitor_spoken_to:
+                janitor "This building is a mess. I don't know how I would clean this up all by myself."
+                janitor "I don't get paid enough to clean up after vandals."
+                $ janitor_spoken_to = True
+            else:
+                janitor "There's still so much trash everywhere..."
         jump day1_warehouse_inside_from_the_back
+
     elif clicked_object == "whiskey":
         "Just a cheap bottle left by a homeless person."
-        "Doesn't pay rent and always drunk"
-        "Lucky guy"
         if "The Broken Whiskey Bottle" not in day1_clues_found:
             $ day1_clues_found.append("The Broken Whiskey Bottle")
+        if janitor_spoken_to:
+            menu:
+                "Throw it away":
+                    $ whiskey_cleared = True
+                    "I threw the bottle in the trash."
+                "Leave it alone":
+                    pass
         jump day1_warehouse_inside_from_the_back
+
     elif clicked_object == "pizza":
         "Empty food boxes scattered around."
-        "It will be absurd to put that on the front page."
         if "The Torn Pizza Box" not in day1_clues_found:
             $ day1_clues_found.append("The Torn Pizza Box")
+        if janitor_spoken_to:
+            menu:
+                "Throw it away":
+                    $ pizza_cleared = True
+                    "I threw the boxes in the trash."
+                "Leave it alone":
+                    pass
         jump day1_warehouse_inside_from_the_back
+
     elif clicked_object == "paint_can":
-        "It smells like industrial-grade spray paint."
-        "Teenagers don't usually have access to this kind of paint."
-        "This is proof of a coordinated, planned job."
+        "It smells like industrial-grade spray paint. Proof of a coordinated, planned job."
         if "The Smashed Paint Can" not in day1_clues_found:
             $ day1_clues_found.append("The Smashed Paint Can")
+        if janitor_spoken_to:
+            menu:
+                "Throw it away":
+                    $ paint_cleared = True
+                    "I tossed the paint can."
+                "Leave it alone":
+                    pass
         jump day1_warehouse_inside_from_the_back
+
     elif clicked_object == "return_to_back":
         jump day1_warehouse_back
     elif clicked_object == "return_to_front":
@@ -197,42 +240,75 @@ label day1_warehouse_inside:
     $ clicked_object = _return
    
     if clicked_object == "janitor":
-        $ janitor_helped = True
-        "This building is a mess. I don't know how I would clean this up all by myself."
-        "Hey kid, Can you lend me a hand?"
-        "I don't get paid enough to clean up after vandals."
-        "Here's my keyring, Go find my cleaning tools. I left them in the room at the side of the warehouse."
-        $ renpy.notify("You obtained a keyring.")
-        if "The Janitor's Keyring" not in inventory_bag_items:
-            $ inventory_bag_items.append("The Janitor's Keyring")
-        "A keyring."
-        "With a masterkey attached."
+        if paint_cleared and pizza_cleared and whiskey_cleared:
+            if not janitor_helped:
+                janitor "I am shocked! You cleaned up all this trash!"
+                janitor "Since you're so good at this, do you want to help me clean up the rest of the warehouse?"
+                menu:
+                    "Yes":
+                        janitor "Thank you so much! Here's my keyring, go find my cleaning tools in the other rooms."
+                        $ renpy.notify("You obtained a keyring.")
+                        $ inventory_bag_items.append("The Janitor's Keyring")
+                        $ janitor_helped = True
+                    "No":
+                        janitor "Alright, but you can come help me anytime."
+            else:
+                "The janitor is busy cleaning."
+        else:
+            if not janitor_spoken_to:
+                janitor "This building is a mess. I don't know how I would clean this up all by myself."
+                janitor "I don't get paid enough to clean up after vandals."
+                $ janitor_spoken_to = True
+            else:
+                janitor "There's still so much trash everywhere..."
         jump day1_warehouse_inside
+
     elif clicked_object == "whiskey":
         "Just a cheap bottle left by a homeless person."
-        "Doesn't pay rent and always drunk"
-        "Lucky guy"
         if "The Broken Whiskey Bottle" not in day1_clues_found:
             $ day1_clues_found.append("The Broken Whiskey Bottle")
+        if janitor_spoken_to:
+            menu:
+                "Throw it away":
+                    $ whiskey_cleared = True
+                    "I threw the bottle in the trash."
+                "Leave it alone":
+                    pass
         jump day1_warehouse_inside
+
     elif clicked_object == "pizza":
         "Empty food boxes scattered around."
-        "It will be absurd to put that on the front page."
         if "The Torn Pizza Box" not in day1_clues_found:
             $ day1_clues_found.append("The Torn Pizza Box")
+        if janitor_spoken_to:
+            menu:
+                "Throw it away":
+                    $ pizza_cleared = True
+                    "I threw the boxes in the trash."
+                "Leave it alone":
+                    pass
         jump day1_warehouse_inside
+
     elif clicked_object == "paint_can":
-        "It smells like industrial-grade spray paint."
-        "Teenagers don't usually have access to this kind of paint."
-        "This is proof of a coordinated, planned job."
+        "It smells like industrial-grade spray paint. Proof of a coordinated, planned job."
         if "The Smashed Paint Can" not in day1_clues_found:
             $ day1_clues_found.append("The Smashed Paint Can")
+        if janitor_spoken_to:
+            menu:
+                "Throw it away":
+                    $ paint_cleared = True
+                    "I tossed the paint can."
+                "Leave it alone":
+                    pass
         jump day1_warehouse_inside
+
     elif clicked_object == "return_to_front":
         scene bg warehouse
         jump day1_investigation_hub
     else:
         jump day1_warehouse_inside
+
+# ---------------------------------------------
 
 label day1_warehouse_garage_back:
     scene bg garage_back_warehouse
@@ -256,7 +332,6 @@ label day1_warehouse_garage_back:
     elif clicked_object == "garage_office":
         "The office was kept locked up tight. Someone was hiding something in here."
         jump day1_warehouse_garage_back
-
     elif clicked_object == "return_to_back":
         jump day1_warehouse_back
     elif clicked_object == "return_to_front":
@@ -287,7 +362,7 @@ label day1_warehouse_tower:
     else:
         scene bg warehouse
         jump day1_investigation_hub
-       
+
 label day1_get_battery:
     "You got a battery."
     if "Battery" not in inventory_bag_items:
@@ -299,16 +374,16 @@ label day1_warehouse_office:
         scene bg warehouse_office_empty
     else:
         scene bg warehouse_office
-
     call screen day1_warehouse_office_environment
     $ clicked_object = _return
-
+    
     if clicked_object == "drawer2":
         if office_empty:
             if "The Janitor's Keyring" in inventory_bag_items:
                 menu:
                     "Use the drawer key":
                         "The key fits. The drawer unlocks."
+                        $ inventory_bag_items.remove("The Janitor's Keyring")
                         scene bg empty_drawer
                         "This drawer is empty."
                         "I thought I saw something. This is the drawer for the warehouse's blueprints."
@@ -327,14 +402,17 @@ label day1_warehouse_office:
         else:
             "I should wait until the office is empty to open the drawer."
         jump day1_warehouse_office
+        
     elif clicked_object == "officerguy":
         if "Battery" in inventory_bag_items:
             "My equipment just arrived. I can use this battery."
+            $ inventory_bag_items.remove("Battery")
             "I'll go to the restroom while it gets set up."
             $ office_empty = True
         else:
             "My parcel or my equipment just arrived. I need a battery."
         jump day1_warehouse_office
+        
     elif clicked_object == "return_to_front":
         scene bg warehouse
         jump day1_investigation_hub
@@ -431,7 +509,8 @@ label select_day1_witness:
 label day1_api_execution:
     call calculate_day1_credibility
     python:
-        article_result = sheetdb_client.fetch_newspaper_article(day1_clue, day1_item, day1_witness)
+        api_item = "The Janitor's Keyring" if day1_item == "Missing blueprint" else day1_item
+        article_result = sheetdb_client.fetch_newspaper_article(day1_clue, api_item, day1_witness, "day1")
         daily_headline = article_result.get("headline", "Error: Story Not Found")
         daily_body = article_result.get("body", "Error: Check database connection.")
        

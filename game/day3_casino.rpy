@@ -14,6 +14,12 @@ default day3_witnesses_found = []
 default day3_clicked_points = []
 
 label day3_start:
+    # Clear out unused items from Day 2 Bag (Keeping the Extortion Letter)
+    python:
+        for item in ["Blurry Photograph", "The Expensive Cigar", "The Dropped Lottery Ticket"]:
+            if item in inventory_bag_items:
+                inventory_bag_items.remove(item)
+
     scene bg newsroom
     vance "Both of you, drop the gang story entirely!"
     scene bg casino_basement
