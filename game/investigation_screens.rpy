@@ -285,8 +285,6 @@ screen day2_ruined_stall_environment():
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/vendor_idle.png" hover brighten("gui/day2_plaza/market_stalls/vendor_idle.png") focus_mask True action Return("vendor")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/townhall_fromstall_idle.png" hover brighten("gui/day2_plaza/market_stalls/townhall_fromstall_idle.png") focus_mask True action Return("townhall")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/fruitstand_idle.png" hover brighten("gui/day2_plaza/market_stalls/fruitstand_idle.png") focus_mask True action Return("another_stall")
-    if renpy.loadable("gui/day2_plaza/ruined_stall/item_camera.png") and "The Melted Camera" not in inventory_bag_items and not blurry_photo_obtained:
-        imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/item_camera.png" hover brighten("gui/day2_plaza/ruined_stall/item_camera.png") focus_mask True action [Notify("You got the Melted Camera."), Return("camera")]
     key "K_ESCAPE" action Return("return_to_plaza")
 
 screen day2_cashier_environment():
@@ -298,6 +296,8 @@ screen day2_cashier_environment():
 screen day2_zoomstall_view():
     if not evidence_letter:
         imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/ruined_stalls/evidence_letter.png" hover brighten("gui/day2_plaza/market_stalls/ruined_stalls/evidence_letter.png") focus_mask True action Return("evidence_letter")
+    if renpy.loadable("gui/day2_plaza/market_stalls/ruined_stalls/item_camera.png") and "The Melted Camera" not in inventory_bag_items and not blurry_photo_obtained:
+        imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/ruined_stalls/item_camera.png" hover brighten("gui/day2_plaza/market_stalls/ruined_stalls/item_camera.png") focus_mask True action Return("camera")
     key "K_ESCAPE" action Return("back_to_stall")
 
 screen day2_extortion_letter_view():

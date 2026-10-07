@@ -16,7 +16,7 @@ image bg electric_shop = "gui/day2_plaza/electric_shop/bg_inside_electronics.png
 image bg townhall = "gui/day2_plaza/townhall/bg_townhall.png"
 image bg townhall_inside = "gui/day2_plaza/townhall/inside_townhall/townhall_inside.png"
 image bg bench = "gui/day2_plaza/bench/bg_bench.png"
-image bg bench_without_ticket = "gui/day2_plaza/bench/bg_without_ticket.png"
+image bg bench_bread = "gui/day2_plaza/bench/bg_bench_bread.jpg"
 image bg another_stall = im.Scale("gui/day2_plaza/market_stalls/another_stall/bg_anotherstall.png", 1920, 1072)
 
 define vendor = Character("Vendor", color="#cccccc")
@@ -34,6 +34,7 @@ default day2_witness = ""
 default evidence_letter = False
 default blurry_photo_obtained = False
 default cat_fed = False
+default photographer_interviewed = False
 
 default day2_clues_found = []
 default day2_items_found = []
@@ -98,12 +99,6 @@ label day2_ruined_stall:
         if "The Melted Toy Car" not in day2_clues_found:
             $ day2_clues_found.append("The Melted Toy Car")
         jump day2_ruined_stall
-    elif clicked_object == "camera":
-        if "The Melted Camera" not in inventory_bag_items:
-            $ inventory_bag_items.append("The Melted Camera")
-        "I spot a damaged security camera in the debris."
-        "If I bring this to the man at the Town Electronics Shop, he might be able to recover a photo from it."
-        jump day2_ruined_stall
     elif clicked_object == "cashier":
         jump day2_cashier_closeup
     elif clicked_object == "zoomstall":
@@ -140,6 +135,16 @@ label day2_stall_zoom:
                 $ inventory_bag_items.append("The Extortion Letter")
                 $ renpy.notify("You got The Extortion Letter.")
             "An extortion letter signed with the blue anchor stamp of The River Boys."
+        jump day2_stall_zoom
+    elif clicked_object == "camera":
+        if not photographer_interviewed:
+            "It's busted. I have no use for this; it's not worth my time."
+        else:
+            if "The Melted Camera" not in inventory_bag_items:
+                $ inventory_bag_items.append("The Melted Camera")
+                $ renpy.notify("You got The Melted Camera.")
+            "I spot the photographer's damaged camera in the debris."
+            "If I bring this to the man at the Town Electronics Shop, he might be able to recover a photo from it."
         jump day2_stall_zoom
     else:
         jump day2_ruined_stall
@@ -266,15 +271,19 @@ label day2_townhall_inside:
     $ clicked_object = _return
 
     if clicked_object == "photographer":
-        photographer "put a txt here"
+        if not photographer_interviewed:
+            photographer "I got mugged by the gangsters. I even got a shot of the ones who burned the stall, but they burned my camera along with it."
+            $ photographer_interviewed = True
+            "I think that camera might be worth my time after all."
+        else:
+            photographer "I don't have anything else to add."
         jump day2_townhall_inside
     else:
         jump day2_townhall
 
 label day2_bench:
-    # If the ticket is gone, show the empty bench background
-    if "The Dropped Lottery Ticket" in day2_items_found:
-        scene bg bench_without_ticket
+    if cat_fed:
+        scene bg bench_bread
     else:
         scene bg bench
        
