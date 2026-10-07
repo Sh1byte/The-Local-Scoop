@@ -61,12 +61,14 @@ label day2_investigation_hub:
         
     if clicked_object == "musician":
         musician "I saw a freak lightning strike from a clear sky!"
+        musician "It hit the fruit stand and set it ablaze!"
+        musician "Maybe i'll write a song about it!"
         if "Street Musician 1" not in day2_witnesses_found:
             $ day2_witnesses_found.append("Street Musician 1")
         jump day2_investigation_hub
         
     elif clicked_object == "kids":
-        "Just kids playing near the fountain."
+        "Just kids playing on the road."
         jump day2_investigation_hub
         
     elif clicked_object == "ruined_stall":
@@ -91,11 +93,13 @@ label day2_ruined_stall:
     
     if clicked_object == "gascan":
         "It reeks of accelerant."
+        "The scorched gas can is a clue that the fire was started intentionally."
         if "The Scorched Gas Can" not in day2_clues_found:
             $ day2_clues_found.append("The Scorched Gas Can")
         jump day2_ruined_stall
     elif clicked_object == "toycar":
         "Sad collateral damage."
+        "I'm glad no one was hurt, but this melted toy car is a clue that a child might have been playing with matches."
         if "The Melted Toy Car" not in day2_clues_found:
             $ day2_clues_found.append("The Melted Toy Car")
         jump day2_ruined_stall
@@ -105,6 +109,7 @@ label day2_ruined_stall:
         jump day2_stall_zoom
     elif clicked_object == "vendor":
         vendor "I stopped paying protection money... and they burned my shop!"
+        vendor "I have no idea who did it, but I know it was the River Boys!"
         if "Vendor 1" not in day2_witnesses_found:
             $ day2_witnesses_found.append("Vendor 1")
         jump day2_ruined_stall
@@ -144,7 +149,7 @@ label day2_stall_zoom:
                 $ inventory_bag_items.append("The Melted Camera")
                 $ renpy.notify("You got The Melted Camera.")
             "I spot the photographer's damaged camera in the debris."
-            "If I bring this to the man at the Town Electronics Shop, he might be able to recover a photo from it."
+            "If I bring this to the Froi at the Town Electronics Shop, he might be able to recover a photo from it."
         jump day2_stall_zoom
     else:
         jump day2_ruined_stall
@@ -182,6 +187,7 @@ label day2_bakery:
     
     if clicked_object == "clerk_bakery":
         if not cat_fed and "Bread" not in inventory_bag_items:
+            bakery_clerk "There's a stray cat that keeps hanging around the plaza. It looks hungry."
             bakery_clerk "Here, have some leftover bread on the house!"
             $ inventory_bag_items.append("Bread")
             $ renpy.notify("You got Bread.")
@@ -191,6 +197,7 @@ label day2_bakery:
         
     elif clicked_object == "customer1":
         bakery_customer "These pastries are to die for!"
+        bakery_customer "I mean, with all the oil that they put in them, I might actually die!"
         jump day2_bakery
     elif clicked_object == "kitchen":
         jump day2_bakery_kitchen
@@ -206,11 +213,14 @@ label day2_bakery_kitchen:
     
     if clicked_object == "oil":
         "A greasy puddle near a stove."
+        "Maybe this spilled cooking oil is a clue that the fire was a simple kitchen grease fire accident."
         if "The Spilled Cooking Oil" not in day2_clues_found:
             $ day2_clues_found.append("The Spilled Cooking Oil")
         jump day2_bakery_kitchen
     elif clicked_object == "baker":
-        baker "It was a targeted hit by rival bakers!"
+        baker "The owner of the stall is a good friend of mine. He is my supplier of flour and sugar. I can't believe someone would burn his stall down!"
+        baker "Obviously it was a targeted hit by rival bakers!"
+        baker "They're too jealous of my success that cut my supply of ingredients"
         if "Baker 1" not in day2_witnesses_found:
             $ day2_witnesses_found.append("Baker 1")
         jump day2_bakery_kitchen
@@ -240,7 +250,8 @@ label day2_electric_shop:
                 electronic_man "Here is the blurry photograph I recovered from that melted camera."
                 call screen day2_blurry_photo_overlay
         else:
-            electronic_man "If you find any damaged electronics or cameras, bring them to me and I'll recover the data."
+            electronic_man "Welcome to the best electronics repair shop in town! I can fix anything, from radios to cameras."
+            electronic_man "You can look around and see if you find anything that needs fixing."
         jump day2_electric_shop
     elif clicked_object == "return_to_plaza":
         jump day2_investigation_hub
@@ -253,14 +264,15 @@ label day2_townhall:
     $ clicked_object = _return
 
     if clicked_object == "shopper":
-        shopper "She caused the fire herself for insurance money!"
+        shopper "He caused the fire himself for insurance money!"
+        shopper "People this days are so greedy, I can't believe it!"
         if "Shopper 1" not in day2_witnesses_found:
             $ day2_witnesses_found.append("Shopper 1")
         jump day2_townhall
     elif clicked_object == "inside":
         jump day2_townhall_inside
     elif clicked_object == "arthur":
-        arthur "Back off, rookie! I'm interviewing these people first."
+        arthur "Back off, rookie! I'm interviewing these shopper first."
         jump day2_townhall
     else:
         jump day2_investigation_hub
@@ -273,10 +285,11 @@ label day2_townhall_inside:
     if clicked_object == "photographer":
         if not photographer_interviewed:
             photographer "I got mugged by the gangsters. I even got a shot of the ones who burned the stall, but they burned my camera along with it."
+            photographer "I don't have much to say, but I can tell you that the gangsters are part of a secret society called The River Boys."
             $ photographer_interviewed = True
-            "I think that camera might be worth my time after all."
+            "(I think that camera might be worth my time after all.)"
         else:
-            photographer "I don't have anything else to add."
+            photographer "I don't have anything else to add kid."
         jump day2_townhall_inside
     else:
         jump day2_townhall
@@ -308,10 +321,13 @@ label day2_bench:
                 $ day2_items_found.append("The Dropped Lottery Ticket")
                 $ inventory_bag_items.append("The Dropped Lottery Ticket")
             "With the cat distracted, I safely grab the dropped scratch ticket."
+            "Too bad it's a losing ticket, but it might be useful for my report..."
+            "or not."
         jump day2_bench
        
     elif clicked_object == "cigar":
         "A half-smoked, imported cigar was dropped nearby."
+        "Maybe this expensive cigar is a clue that someone wealthy was involved in the fire."
         if "The Expensive Cigar" not in day2_items_found:
             $ day2_items_found.append("The Expensive Cigar")
             $ inventory_bag_items.append("The Expensive Cigar")
