@@ -263,9 +263,7 @@ screen inventory_bag():
 # DAY 2 MARKET PLAZA SCREENS
 # ==========================================
 screen day2_market_investigation():
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/shopper.png" hover brighten("gui/day2_plaza/plaza_front/shopper.png") focus_mask True action Return("shopper")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/musician.png" hover brighten("gui/day2_plaza/plaza_front/musician.png") focus_mask True action Return("musician")
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/arthur.png" hover brighten("gui/day2_plaza/plaza_front/arthur.png") focus_mask True action Return("arthur")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/kids.png" hover brighten("gui/day2_plaza/plaza_front/kids.png") focus_mask True action Return("kids")
    
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/market_stalls_idle.png" hover brighten("gui/day2_plaza/plaza_front/market_stalls_idle.png") focus_mask True action Return("ruined_stall")
@@ -281,22 +279,34 @@ screen day2_market_investigation():
     imagebutton xalign 0.88 yalign 0.05 idle "gui/warehouse/ui_icon_bag_idle.png" hover brighten("gui/warehouse/ui_icon_bag_idle.png") action ToggleScreen("inventory_bag") at Transform(zoom=0.1)
 
 screen day2_ruined_stall_environment():
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/clue_gascan.png" hover brighten("gui/day2_plaza/ruined_stall/clue_gascan.png") focus_mask True action Return("gascan")
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/clue_toycar.png" hover brighten("gui/day2_plaza/ruined_stall/clue_toycar.png") focus_mask True action Return("toycar")
-   
-    if "The Melted Camera" not in inventory_bag_items and not blurry_photo_obtained:
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/clue_gascan_idle.png" hover brighten("gui/day2_plaza/market_stalls/clue_gascan_idle.png") focus_mask True action Return("gascan")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/clue_toycar_idle.png" hover brighten("gui/day2_plaza/market_stalls/clue_toycar_idle.png") focus_mask True action Return("toycar")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/zoomstall_idle.png" hover brighten("gui/day2_plaza/market_stalls/zoomstall_idle.png") focus_mask True action Return("zoomstall")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/vendor_idle.png" hover brighten("gui/day2_plaza/market_stalls/vendor_idle.png") focus_mask True action Return("vendor")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/townhall_fromstall_idle.png" hover brighten("gui/day2_plaza/market_stalls/townhall_fromstall_idle.png") focus_mask True action Return("townhall")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/fruitstand_idle.png" hover brighten("gui/day2_plaza/market_stalls/fruitstand_idle.png") focus_mask True action Return("another_stall")
+    if renpy.loadable("gui/day2_plaza/ruined_stall/item_camera.png") and "The Melted Camera" not in inventory_bag_items and not blurry_photo_obtained:
         imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/item_camera.png" hover brighten("gui/day2_plaza/ruined_stall/item_camera.png") focus_mask True action [Notify("You got the Melted Camera."), Return("camera")]
-   
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/cashier_idle.png" hover brighten("gui/day2_plaza/ruined_stall/cashier_idle.png") focus_mask True action Return("cashier")
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/vendor.png" hover brighten("gui/day2_plaza/ruined_stall/vendor.png") focus_mask True action Return("vendor")
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/return_to_plaza.png" hover brighten("gui/day2_plaza/ruined_stall/return_to_plaza.png") focus_mask True action Return("return_to_plaza")
     key "K_ESCAPE" action Return("return_to_plaza")
 
 screen day2_cashier_environment():
     if not evidence_letter:
-        imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/ruined_stall/evidence_letter.png" hover brighten("gui/day2_plaza/ruined_stall/evidence_letter.png") focus_mask True action [Return("letter")]
+        imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/ruined_stalls/extortion_letter.png" hover brighten("gui/day2_plaza/market_stalls/ruined_stalls/extortion_letter.png") focus_mask True action [Return("letter")]
     textbutton "Back" xalign 0.92 yalign 0.08 action Return("back_to_stall")
     key "K_ESCAPE" action Return("back_to_stall")
+
+screen day2_zoomstall_view():
+    if not evidence_letter:
+        imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/ruined_stalls/evidence_letter.png" hover brighten("gui/day2_plaza/market_stalls/ruined_stalls/evidence_letter.png") focus_mask True action Return("evidence_letter")
+    key "K_ESCAPE" action Return("back_to_stall")
+
+screen day2_extortion_letter_view():
+    textbutton "Return" xalign 0.92 yalign 0.08 action Return("return")
+    key "K_ESCAPE" action Return("return")
+
+screen day2_another_stall_view():
+    imagebutton xpos 0 ypos 0 idle "bg another_stall" action Return()
+    key "K_ESCAPE" action Return()
 
 screen day2_bakery_environment():
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bakery/kitchen_idle.png" hover brighten("gui/day2_plaza/bakery/kitchen_idle.png") focus_mask True action Return("kitchen")
@@ -315,6 +325,18 @@ screen day2_electric_shop_environment():
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/electric_shop/electronic_man.png" hover brighten("gui/day2_plaza/electric_shop/electronic_man.png") focus_mask True action Return("electronic_man")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/electric_shop/return_to_plaza.png" hover brighten("gui/day2_plaza/electric_shop/return_to_plaza.png") focus_mask True action Return("return_to_plaza")
     key "K_ESCAPE" action Return("return_to_plaza")
+
+screen day2_townhall_environment():
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/townhall/arthur.png" hover brighten("gui/day2_plaza/townhall/arthur.png") focus_mask True action Return("arthur")
+    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/townhall/shopper.png" hover brighten("gui/day2_plaza/townhall/shopper.png") focus_mask True action Return("shopper")
+    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/townhall/goto_insidetownhall_idle.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/townhall/goto_insidetownhall_idle.png", 1920, 1072)) focus_mask True action Return("inside")
+    textbutton "Return to Plaza" xalign 0.92 yalign 0.08 action Return("return_to_plaza")
+    key "K_ESCAPE" action Return("return_to_plaza")
+
+screen day2_townhall_inside_environment():
+    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/townhall/inside_townhall/photographer.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/townhall/inside_townhall/photographer.png", 1920, 1072)) focus_mask True action Return("photographer")
+    imagebutton xpos 0 ypos 0 idle im.Scale("gui/day2_plaza/townhall/inside_townhall/return_to_thfront.png", 1920, 1072) hover brighten(im.Scale("gui/day2_plaza/townhall/inside_townhall/return_to_thfront.png", 1920, 1072)) focus_mask True action Return("return_to_thfront")
+    key "K_ESCAPE" action Return("return_to_thfront")
 
 screen day2_plaza_return():
     textbutton "Return to Plaza" xalign 0.92 yalign 0.08 action Return()

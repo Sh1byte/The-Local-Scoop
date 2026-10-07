@@ -7,14 +7,17 @@ transform day2_plaza_origin:
 # ALL backgrounds natively 1920x1072. No scaling applied!
 image bg market_plaza = "gui/day2_plaza/plaza_front/plaza_front.png"
 image bg ruined_stall = "gui/day2_plaza/market_stalls/bg_market_stall.png"
+image bg extortion_letter = "gui/day2_plaza/market_stalls/ruined_stalls/extortion_letter.png"
 image bg cashier_with_letter = "gui/day2_plaza/market_stalls/ruined_stalls/bg_ruined_stall.png"
 image bg cashier_without_letter = "gui/day2_plaza/market_stalls/ruined_stalls/without_note.png"
 image bg bakery_stall = "gui/day2_plaza/bakery/bg_inside_bakery.png"
 image bg bakery_kitchen = "gui/day2_plaza/bakery/kitchen/bg_kitchen.png"
 image bg electric_shop = "gui/day2_plaza/electric_shop/bg_inside_electronics.png"
 image bg townhall = "gui/day2_plaza/townhall/bg_townhall.png"
+image bg townhall_inside = "gui/day2_plaza/townhall/inside_townhall/townhall_inside.png"
 image bg bench = "gui/day2_plaza/bench/bg_bench.png"
 image bg bench_without_ticket = "gui/day2_plaza/bench/bg_without_ticket.png"
+image bg another_stall = im.Scale("gui/day2_plaza/market_stalls/another_stall/bg_anotherstall.png", 1920, 1072)
 
 define vendor = Character("Vendor", color="#cccccc")
 define shopper = Character("Shopper", color="#cccccc")
@@ -23,6 +26,7 @@ define bakery_clerk = Character("Bakery Clerk", color="#cccccc")
 define bakery_customer = Character("Customer", color="#cccccc")
 define musician = Character("Street Musician", color="#cccccc")
 define electronic_man = Character("Electronics Technician", color="#cccccc")
+define photographer = Character("Photographer", color="#cccccc")
 
 default day2_clue = ""
 default day2_item = ""
@@ -54,20 +58,10 @@ label day2_investigation_hub:
     call screen day2_market_investigation
     $ clicked_object = _return
         
-    if clicked_object == "shopper":
-        shopper "She caused the fire herself for insurance money!"
-        if "Shopper 1" not in day2_witnesses_found:
-            $ day2_witnesses_found.append("Shopper 1")
-        jump day2_investigation_hub
-        
-    elif clicked_object == "musician":
+    if clicked_object == "musician":
         musician "I saw a freak lightning strike from a clear sky!"
         if "Street Musician 1" not in day2_witnesses_found:
             $ day2_witnesses_found.append("Street Musician 1")
-        jump day2_investigation_hub
-        
-    elif clicked_object == "arthur":
-        arthur "Back off, rookie! I'm interviewing these people first."
         jump day2_investigation_hub
         
     elif clicked_object == "kids":
@@ -112,15 +106,48 @@ label day2_ruined_stall:
         jump day2_ruined_stall
     elif clicked_object == "cashier":
         jump day2_cashier_closeup
+    elif clicked_object == "zoomstall":
+        jump day2_stall_zoom
     elif clicked_object == "vendor":
         vendor "I stopped paying protection money... and they burned my shop!"
         if "Vendor 1" not in day2_witnesses_found:
             $ day2_witnesses_found.append("Vendor 1")
         jump day2_ruined_stall
+    elif clicked_object == "townhall":
+        jump day2_townhall
+    elif clicked_object == "another_stall":
+        jump day2_another_stall
     elif clicked_object == "return_to_plaza":
         jump day2_investigation_hub
     else:
         jump day2_ruined_stall
+
+label day2_stall_zoom:
+    if evidence_letter:
+        scene bg cashier_without_letter
+    else:
+        scene bg cashier_with_letter
+    call screen day2_zoomstall_view
+    $ clicked_object = _return
+
+    if clicked_object == "evidence_letter":
+        scene bg extortion_letter
+        call screen day2_extortion_letter_view
+        $ clicked_object = _return
+        if clicked_object == "return":
+            $ evidence_letter = True
+            if "The Extortion Letter" not in inventory_bag_items:
+                $ inventory_bag_items.append("The Extortion Letter")
+                $ renpy.notify("You got The Extortion Letter.")
+            "An extortion letter signed with the blue anchor stamp of The River Boys."
+        jump day2_stall_zoom
+    else:
+        jump day2_ruined_stall
+
+label day2_another_stall:
+    scene bg another_stall
+    call screen day2_another_stall_view
+    jump day2_ruined_stall
 
 label day2_cashier_closeup:
     if not evidence_letter:
@@ -217,8 +244,32 @@ label day2_electric_shop:
 
 label day2_townhall:
     scene bg townhall
-    call screen day2_plaza_return
-    jump day2_investigation_hub
+    call screen day2_townhall_environment
+    $ clicked_object = _return
+
+    if clicked_object == "shopper":
+        shopper "She caused the fire herself for insurance money!"
+        if "Shopper 1" not in day2_witnesses_found:
+            $ day2_witnesses_found.append("Shopper 1")
+        jump day2_townhall
+    elif clicked_object == "inside":
+        jump day2_townhall_inside
+    elif clicked_object == "arthur":
+        arthur "Back off, rookie! I'm interviewing these people first."
+        jump day2_townhall
+    else:
+        jump day2_investigation_hub
+
+label day2_townhall_inside:
+    scene bg townhall_inside
+    call screen day2_townhall_inside_environment
+    $ clicked_object = _return
+
+    if clicked_object == "photographer":
+        photographer "put a txt here"
+        jump day2_townhall_inside
+    else:
+        jump day2_townhall
 
 label day2_bench:
     # If the ticket is gone, show the empty bench background
