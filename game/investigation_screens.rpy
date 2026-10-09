@@ -360,42 +360,129 @@ screen day2_blurry_photo_overlay():
     key "K_ESCAPE" action Return()
     
 # ==========================================
-# DAY 3 CASINO SCREEN
+# DAY 3 CASINO SCREENS
 # ==========================================
-screen day3_casino_investigation():
-    # --- CLUES ---
-    if "bullethole" not in day3_clicked_points:
-        imagebutton xpos 200 ypos 650 idle "ui_assets/clue_bullethole.png" hover "ui_assets/clue_bullethole_hover.png" action Return("bullethole")
-    if "cards" not in day3_clicked_points:
-        imagebutton xpos 800 ypos 700 idle "ui_assets/clue_cards.png" hover "ui_assets/clue_cards_hover.png" action Return("cards")
-    if "jukebox" not in day3_clicked_points:
-        imagebutton xpos 300 ypos 750 idle "ui_assets/clue_jukebox.png" hover "ui_assets/clue_jukebox_hover.png" action Return("jukebox")
-    # --- ITEMS ---
-    if "vippass" not in day3_clicked_points:
-        imagebutton xpos 400 ypos 450 idle "ui_assets/item_vippass.png" hover "ui_assets/item_vippass_hover.png" action Return("vippass")
-    if "earring" not in day3_clicked_points:
-        imagebutton xpos 600 ypos 500 idle "ui_assets/item_earring.png" hover "ui_assets/item_earring_hover.png" action Return("earring")
-    if "creditcard" not in day3_clicked_points:
-        imagebutton xpos 700 ypos 600 idle "ui_assets/item_creditcard.png" hover "ui_assets/item_creditcard_hover.png" action Return("creditcard")
-    # --- HIDDEN EVIDENCE ---
-    if "ledger" not in day3_clicked_points:
-        imagebutton xpos 900 ypos 850 idle "ui_assets/evidence_ledger.png" hover "ui_assets/evidence_ledger_hover.png" action Return("ledger")
-    # --- WITNESSES ---
-    if "dealer" not in day3_clicked_points:
-        imagebutton xpos 1100 ypos 300 idle "ui_assets/dealer_neutral.png" hover "ui_assets/dealer_hover.png" action Return("dealer")
-    if "cleaner" not in day3_clicked_points:
-        imagebutton xpos 100 ypos 350 idle "ui_assets/cleaner_neutral.png" hover "ui_assets/cleaner_hover.png" action Return("cleaner")
-    if "waitress" not in day3_clicked_points:
-        imagebutton xpos 850 ypos 250 idle "ui_assets/waitress_neutral.png" hover "ui_assets/waitress_hover.png" action Return("waitress")
-    if "drunk" not in day3_clicked_points:
-        imagebutton xpos 1200 ypos 400 idle "ui_assets/drunk_neutral.png" hover "ui_assets/drunk_hover.png" action Return("drunk")
-    # --- EXIT BUTTON ---
+screen day3_ui_buttons():
+    # Show writing button if minimal progress requirements are met
     if len(day3_clues_found) > 0 and len(day3_items_found) > 0 and len(day3_witnesses_found) > 0:
-        imagebutton xalign 0.5 yalign 0.95 idle "ui_assets/ui_button_write_idle.png" hover "ui_assets/ui_button_write_hover.png" action Return("newsroom")
-       
-    # --- TOGGLES ---
-    imagebutton xalign 0.95 yalign 0.05 idle "ui_assets/ui_icon_notepad_idle.png" hover "ui_assets/ui_icon_notepad_hover.png" action ToggleScreen("reporters_notepad")
-    imagebutton xalign 0.95 yalign 0.15 idle "ui_assets/ui_icon_bag_idle.png" hover "ui_assets/ui_icon_bag_hover.png" action ToggleScreen("inventory_bag")
+        imagebutton xalign 0.5 yalign 0.95 idle "gui/warehouse/ui_button_write_idle.png" hover brighten("gui/warehouse/ui_button_write_idle.png") action Return("newsroom")
+        
+    imagebutton xalign 0.95 yalign 0.05 idle "gui/warehouse/ui_icon_notepad_idle.png" hover brighten("gui/warehouse/ui_icon_notepad_idle.png") action ToggleScreen("reporters_notepad") at Transform(zoom=0.1)
+    imagebutton xalign 0.88 yalign 0.05 idle "gui/warehouse/ui_icon_bag_idle.png" hover brighten("gui/warehouse/ui_icon_bag_idle.png") action ToggleScreen("inventory_bag") at Transform(zoom=0.1)
+
+screen day3_outside_casino():
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/outside_casino/go_to_casino.png" hover brighten("gui/day3_casino/outside_casino/go_to_casino.png") focus_mask True action Return("casino")
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/outside_casino/go_to_club.png" hover brighten("gui/day3_casino/outside_casino/go_to_club.png") focus_mask True action Return("club_front")
+    use day3_ui_buttons
+
+screen day3_casino_lobby():
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_lobby/go_to_cashier.png" hover brighten("gui/day3_casino/casino_lobby/go_to_cashier.png") focus_mask True action Return("cashier")
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_lobby/go_to_outside_casino.png" hover brighten("gui/day3_casino/casino_lobby/go_to_outside_casino.png") focus_mask True action Return("outside")
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_lobby/go_to_playroom.png" hover brighten("gui/day3_casino/casino_lobby/go_to_playroom.png") focus_mask True action Return("playroom")
+    
+    if slot_machine_shorted:
+        imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_lobby/go_to_underground_noBouncer.png" hover brighten("gui/day3_casino/casino_lobby/go_to_underground_noBouncer.png") focus_mask True action Return("underground")
+    else:
+        imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_lobby/go_to_underground.png" hover brighten("gui/day3_casino/casino_lobby/go_to_underground.png") focus_mask True action Return("underground")
+        
+    use day3_ui_buttons
+
+screen day3_cashier_environment():
+    textbutton "Back" action Return("back") align (0.05, 0.95)
+
+screen day3_underground_casino():
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/go_to_lobby.png" hover brighten("gui/day3_casino/underground_casino/go_to_lobby.png") focus_mask True action Return("lobby")
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/go_to_backroom.png" hover brighten("gui/day3_casino/underground_casino/go_to_backroom.png") focus_mask True action Return("backroom")
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/bullet_wall_idle.png" hover brighten("gui/day3_casino/underground_casino/bullet_wall_idle.png") focus_mask True action Return("bullethole")
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/cleaner_idle.png" hover brighten("gui/day3_casino/underground_casino/cleaner_idle.png") focus_mask True action Return("cleaner")
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/waitress_idle.png" hover brighten("gui/day3_casino/underground_casino/waitress_idle.png") focus_mask True action Return("waitress")
+
+    if "The Stolen Credit Card" not in day3_items_found:
+        imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/credit card idle.png" hover brighten("gui/day3_casino/underground_casino/credit card idle.png") focus_mask True action Return("creditcard")
+    
+    if "The VIP Pass" not in day3_items_found:
+        imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/vip_pass_idle.png" hover brighten("gui/day3_casino/underground_casino/vip_pass_idle.png") focus_mask True action Return("vippass")
+    use day3_ui_buttons
+
+screen day3_backroom_environment():
+    if safe_unlocked:
+        imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/backroom_room/go_to_open_vault.png" hover brighten("gui/day3_casino/backroom/backroom_room/go_to_open_vault.png") focus_mask True action Return("vault")
+    else:
+        imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/backroom_room/go_to_vault.png" hover brighten("gui/day3_casino/backroom/backroom_room/go_to_vault.png") focus_mask True action Return("vault")
+
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/backroom_room/dealer_idle.png" hover brighten("gui/day3_casino/backroom/backroom_room/dealer_idle.png") focus_mask True action Return("dealer")
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/backroom_room/go_backto_underground.png" hover brighten("gui/day3_casino/backroom/backroom_room/go_backto_underground.png") focus_mask True action Return("underground")
+    use day3_ui_buttons
+
+screen day3_safe_closeup_environment():
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/safe/vault_closeup_idle.png" hover brighten("gui/day3_casino/backroom/safe/vault_closeup_idle.png") focus_mask True action Return("safe_interact")
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/safe/note_idle.png" hover brighten("gui/day3_casino/backroom/safe/note_idle.png") focus_mask True action Return("clue_paper")
+    textbutton "Back" action Return("back") align (0.05, 0.95)
+
+screen day3_opened_safe_environment():
+    if not evidence_ledger:
+        imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/safe/opened_safe/ledger_idle.png" hover brighten("gui/day3_casino/backroom/safe/opened_safe/ledger_idle.png") focus_mask True action Return("bloody_ledger")
+    textbutton "Leave Safe" action Return("back") align (0.05, 0.95)
+
+screen safe_puzzle_screen(current_digit, entered_code):
+    $ rotation_angle = current_digit * -36
+    # Keep the dial and arrow elements inside the minigame
+    add "gui/day3_casino/backroom/safe/safe_minigame/safe_knob.png":
+        xalign 0.5
+        yalign 0.5
+        transform_anchor True
+        rotate rotation_angle
+    add "gui/day3_casino/backroom/safe/safe_minigame/safe_arrow.png":
+        xalign 0.5
+        yalign 0.15
+        
+    text "Code Entered: [entered_code]" xalign 0.5 yalign 0.05 size 40 color "#ffffff"
+    key "a" action Return("turn_right")
+    key "A" action Return("turn_right")
+    key "d" action Return("turn_left")
+    key "D" action Return("turn_left")
+    key "K_RETURN" action Return("enter_digit")
+    key "K_KP_ENTER" action Return("enter_digit")
+    key "K_ESCAPE" action Return("exit")
+    
+    vbox:
+        align (0.95, 0.95)
+        text "'A' to turn Right" color "#ffffff"
+        text "'D' to turn Left" color "#ffffff"
+        text "'Enter' to lock in number" color "#ffffff"
+    textbutton "Back" action Return("exit") align (0.05, 0.95)
+
+screen day3_playroom_environment():
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/go_to_lobby_from_playroom.png" hover brighten("gui/day3_casino/casino_playroom/go_to_lobby_from_playroom.png") focus_mask True action Return("lobby")
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/go_to_cards_closeup.png" hover brighten("gui/day3_casino/casino_playroom/go_to_cards_closeup.png") focus_mask True action Return("cards_closeup")
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/go_to_wire_minigame.png" hover brighten("gui/day3_casino/casino_playroom/go_to_wire_minigame.png") focus_mask True action Return("wire_minigame")
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/arthur_idle.png" hover brighten("gui/day3_casino/casino_playroom/arthur_idle.png") focus_mask True action Return("arthur")
+    
+    # Conditional jukebox cutout (with bouncer overlay)
+    if slot_machine_shorted:
+        imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/destroyed_jukebox_bouncer.png" hover brighten("gui/day3_casino/casino_playroom/destroyed_jukebox_bouncer.png") focus_mask True action Return("jukebox")
+    else:
+        imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/destroyed_jukebox_idle.png" hover brighten("gui/day3_casino/casino_playroom/destroyed_jukebox_idle.png") focus_mask True action Return("jukebox")
+        
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/drunk_idle.png" hover brighten("gui/day3_casino/casino_playroom/drunk_idle.png") focus_mask True action Return("drunk")
+    use day3_ui_buttons
+
+screen day3_cards_closeup_environment():
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/cards_closeup/cards_idle.png" hover brighten("gui/day3_casino/casino_playroom/cards_closeup/cards_idle.png") focus_mask True action Return("cards")
+    
+    if "The Diamond Earring" not in day3_items_found:
+        imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/cards_closeup/earring_idle.png" hover brighten("gui/day3_casino/casino_playroom/cards_closeup/earring_idle.png") focus_mask True action Return("earring")
+    textbutton "Back" action Return("back") align (0.05, 0.95)
+
+screen day3_club_front_environment():
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/local_club/club_door_idle.png" hover brighten("gui/day3_casino/local_club/club_door_idle.png") focus_mask True action Return("inside_club")
+    textbutton "Back to Outside" action Return("outside") align (0.05, 0.95)
+    use day3_ui_buttons
+
+screen day3_club_inside_environment():
+    imagebutton xpos 0 ypos 0 idle "gui/day3_casino/local_club/inside_club/go_to_outside_club.png" hover brighten("gui/day3_casino/local_club/inside_club/go_to_outside_club.png") focus_mask True action Return("outside")
+    imagebutton xpos -17 ypos 0 idle "gui/day3_casino/local_club/inside_club/gossiper_idle.png" hover brighten("gui/day3_casino/local_club/inside_club/gossiper_idle.png") focus_mask True action Return("gossiper")
+    use day3_ui_buttons
 
 
 # ==========================================
@@ -444,45 +531,3 @@ screen safe_closeup_environment():
     imagebutton xpos 350 ypos 250 idle "safe_closeup_idle.png" action Return("safe_interact")
     imagebutton xpos 600 ypos 450 idle "clue_paper_idle.png" action Return("clue_paper")
     textbutton "Back" action Return("back") align (0.05, 0.95)
-
-screen safe_puzzle_screen(current_digit, entered_code):
-    # Calculates the rotation so the dial spins correctly based on the standard 0-9 layout
-    $ rotation_angle = current_digit * -36
-
-    # The rotating safe knob
-    add "gui/day3_casino/backroom/safe/safe_knob.png":
-        xalign 0.5 
-        yalign 0.5
-        transform_anchor True
-        rotate rotation_angle
-
-    # The stationary indicator arrow pointing at the current number
-    add "gui/day3_casino/backroom/safe/safe_arrow.png":
-        xalign 0.5 
-        yalign 0.15
-
-    # Visual cue for entered digits
-    text "Code Entered: [entered_code]" xalign 0.5 yalign 0.05 size 40 color "#ffffff"
-
-    # Keybinds for playing the minigame (Swapped A and D)
-    key "a" action Return("turn_right")
-    key "A" action Return("turn_right")
-    key "d" action Return("turn_left")
-    key "D" action Return("turn_left")
-    key "K_RETURN" action Return("enter_digit")
-    key "K_KP_ENTER" action Return("enter_digit")
-    key "K_ESCAPE" action Return("exit")
-
-    # Instructions UI (Swapped text)
-    vbox:
-        align (0.95, 0.95)
-        text "'A' to turn Right" color "#ffffff"
-        text "'D' to turn Left" color "#ffffff"
-        text "'Enter' to lock in number" color "#ffffff"
-
-    textbutton "Back" action Return("exit") align (0.05, 0.95)
-    
-screen opened_safe_environment():
-    if "Bloody Ledger" not in backroom_items_found:
-        imagebutton xalign 0.5 yalign 0.5 idle "bloody_ledger.jpg" action Return("bloody_ledger")
-    textbutton "Leave Safe" action Return("back") align (0.05, 0.95)
