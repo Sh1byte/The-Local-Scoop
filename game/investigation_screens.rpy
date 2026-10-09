@@ -458,7 +458,6 @@ screen day3_playroom_environment():
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/go_to_wire_minigame.png" hover brighten("gui/day3_casino/casino_playroom/go_to_wire_minigame.png") focus_mask True action Return("wire_minigame")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/arthur_idle.png" hover brighten("gui/day3_casino/casino_playroom/arthur_idle.png") focus_mask True action Return("arthur")
     
-    # Conditional jukebox cutout (with bouncer overlay)
     if slot_machine_shorted:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/destroyed_jukebox_bouncer.png" hover brighten("gui/day3_casino/casino_playroom/destroyed_jukebox_bouncer.png") focus_mask True action Return("jukebox")
     else:
