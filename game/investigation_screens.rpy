@@ -57,7 +57,7 @@ screen news_van_screen():
 
     # Button to leave the van cutout
     textbutton "Leave Van" xalign 0.02 yalign 0.05 action Hide("news_van_screen") text_size 30 text_color "#FFF"
-    
+
 label newspaper_minigame_router:
     if current_day == 1:
         jump day1_newspaper_minigame
@@ -522,3 +522,19 @@ screen safe_closeup_environment():
     imagebutton xpos 350 ypos 250 idle "safe_closeup_idle.png" action Return("safe_interact")
     imagebutton xpos 600 ypos 450 idle "clue_paper_idle.png" action Return("clue_paper")
     textbutton "Back" action Return("back") align (0.05, 0.95)
+
+# ==========================================
+# TUTORIAL SCREENS
+# ==========================================
+screen tutorial_office_environment():
+    imagebutton xpos 0 ypos -9 idle "gui/tutorial/files_idle.png" hover brighten("gui/tutorial/files_idle.png") focus_mask True action Return("files")
+    
+    # The badge disappears after it is picked up
+    if not tutorial_badge_picked:
+        imagebutton xpos 0 ypos -9 idle "gui/tutorial/badge_idle.png" hover brighten("gui/tutorial/badge_idle.png") focus_mask True action Return("badge")
+        
+    imagebutton xpos 0 ypos -9 idle "gui/tutorial/arthur_tuts_idle.png" hover brighten("gui/tutorial/arthur_tuts_idle.png") focus_mask True action Return("arthur")
+    imagebutton xpos 0 ypos -9 idle "gui/tutorial/door_idle.png" hover brighten("gui/tutorial/door_idle.png") focus_mask True action Return("door")
+    
+    # The News Van icon acts as the "Finish Tutorial" button
+    imagebutton xalign 0.95 yalign 0.05 idle "gui/tutorial/ui_icon_van_idle.png" hover brighten("gui/tutorial/ui_icon_van_idle.png") action Return("van") at Transform(zoom=0.1)

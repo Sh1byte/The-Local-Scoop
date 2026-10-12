@@ -40,6 +40,8 @@ label stage1_briefing:
     scene bg newsroom
     
     menu:
+        "Tutorial":
+            jump tutorial_start
         "Day 1":
             jump day1_path
         "Day 2":
