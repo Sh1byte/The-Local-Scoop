@@ -1,7 +1,9 @@
+default current_day = 1
+
 init python:
     def brighten(image_path, amount=0.2):
         return Transform(image_path, matrixcolor=BrightnessMatrix(amount))
-
+        
     # Icon mapping for the Inventory Grid UI
     item_icons = {
         "Battery": "gui/icons/battery.png",
@@ -16,6 +18,55 @@ init python:
         "The Dropped Lottery Ticket": "gui/icons/ticket.png",
         "The Extortion Letter": "gui/icons/letter.png"
     }
+
+screen global_hud():
+    zorder 100 # <--- Add this line to force the HUD to the front
+
+    if current_day != 4:
+        # Persistent Bag Icon
+        imagebutton xalign 0.88 yalign 0.05 idle "gui/warehouse/ui_icon_bag_idle.png" hover brighten("gui/warehouse/ui_icon_bag_idle.png") action ToggleScreen("inventory_bag") at Transform(zoom=0.1)
+
+        # News Van Icon
+        imagebutton xalign 0.95 yalign 0.05 idle "gui/warehouse/ui_icon_van_idle.png" hover brighten("gui/warehouse/ui_icon_van_idle.png") action Show("news_van_screen") at Transform(zoom=0.1)
+
+screen news_van_screen():
+    modal True
+   
+    python:
+        # Check if the player has gathered enough core evidence based on the current day
+        can_write = False
+        if current_day == 1 and len(day1_clues_found) > 0 and len(day1_items_found) > 0 and len(day1_witnesses_found) > 0: can_write = True
+        elif current_day == 2 and len(day2_clues_found) > 0 and len(day2_items_found) > 0 and len(day2_witnesses_found) > 0: can_write = True
+        elif current_day == 3 and len(day3_clues_found) > 0 and len(day3_items_found) > 0 and len(day3_witnesses_found) > 0: can_write = True
+        elif current_day == 5 and len(day5_clues_found) > 0 and len(day5_items_found) > 0 and len(day5_witnesses_found) > 0: can_write = True
+
+    if can_write:
+        # Normal Background when ready to write
+        add "gui/warehouse/bg van.jpg" 
+        
+        # Show typewriter to create the news
+        imagebutton xalign 0.5 yalign 0.5 idle "gui/warehouse/typwriter_idle.png" hover brighten("gui/warehouse/typwriter_idle.png") action [Hide("news_van_screen"), Jump("newspaper_minigame_router")]
+        
+    else:
+        # Blurred Background with Dark Overlay when evidence is missing
+        add "gui/warehouse/bg van.jpg" at Transform(blur=15)
+        add Solid("#000000AA") # Adds a semi-transparent black shadow over the screen
+        
+        # Not enough evidence notification
+        text "(The evidence isn't enough to create a good story, maybe I should look for more)" xalign 0.5 yalign 0.5 size 30 color "#FFFFFF" outlines [(2, "#000000", 0, 0)]
+
+    # Button to leave the van cutout
+    textbutton "Leave Van" xalign 0.02 yalign 0.05 action Hide("news_van_screen") text_size 30 text_color "#FFF"
+    
+label newspaper_minigame_router:
+    if current_day == 1:
+        jump day1_newspaper_minigame
+    elif current_day == 2:
+        jump day2_newspaper_minigame
+    elif current_day == 3:
+        jump day3_newspaper_minigame
+    elif current_day == 5:
+        jump day5_morning_newspaper
 
 # ==========================================
 # DAY 1 WAREHOUSE SCREENS
@@ -167,7 +218,7 @@ screen development_environment():
 
 screen day1_warehouse_investigation():
     if not evidence_lighter:
-        imagebutton xpos 300 ypos 960 idle "gui/warehouse/evidence_lighter.png" hover brighten("gui/warehouse/evidence_lighter.png") action [Notify("You got a lighter."), Return("lighter")] at Transform(zoom=0.06)
+        imagebutton xpos 300 ypos 960 idle "gui/warehouse/evidence_lighter.png" hover brighten("gui/warehouse/evidence_lighter.png") action [Notify("You got a lighter."), Return("lighter")] at Transform(zoom=0.04)
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_guard_idle.png" hover brighten("gui/warehouse/warehouse_guard_idle.png") focus_mask True action Return("watchman")
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_grafitti_idle.png" hover brighten("gui/warehouse/warehouse_grafitti_idle.png") focus_mask True action Return("warehouse_graffiti")
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_windows_idle.png" hover brighten("gui/warehouse/warehouse_windows_idle.png") focus_mask True action Return("warehouse_windows")
@@ -176,41 +227,9 @@ screen day1_warehouse_investigation():
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_back_idle.png" hover brighten("gui/warehouse/warehouse_back_idle.png") focus_mask True action Return("warehouse_back")
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_office_idle.png" hover brighten("gui/warehouse/warehouse_office_idle.png") focus_mask True action Return("warehouse_office")
     
-    if len(day1_clues_found) > 0 and len(day1_witnesses_found) > 0:
-        imagebutton xalign 0.5 yalign 0.95 idle "gui/warehouse/ui_button_write_idle.png" hover brighten("gui/warehouse/ui_button_write_idle.png") action Return("newsroom")
-       
-    imagebutton xalign 0.95 yalign 0.05 idle "gui/warehouse/ui_icon_notepad_idle.png" hover brighten("gui/warehouse/ui_icon_notepad_idle.png") action ToggleScreen("reporters_notepad") at Transform(zoom=0.1)
-    imagebutton xalign 0.88 yalign 0.05 idle "gui/warehouse/ui_icon_bag_idle.png" hover brighten("gui/warehouse/ui_icon_bag_idle.png") action ToggleScreen("inventory_bag") at Transform(zoom=0.1)
-
 # ==========================================
-# NOTEPAD & BAG SCREENS
+# BAG SCREEN
 # ==========================================
-screen reporters_notepad():
-    add Solid("#00000088")
-    add "gui/warehouse/ui_notepad.png" align (0.5, 0.5)
-    imagebutton:
-        align (0.75, 0.25)
-        idle "gui/warehouse/ui_close_idle.png"
-        hover "gui/warehouse/ui_close_hover.png"
-        action Hide("reporters_notepad")
-       
-    vbox:
-        xalign 0.5 ypos 300
-        spacing 15
-        text "Case Evidence Tracker" size 32 bold True color "#155dfc"
-       
-        if evidence_lighter:
-            text "• The Brass Lighter (Iron Syndicate)" size 24 color "#6a7282"
-        if evidence_letter:
-            text "• The Extortion Letter (The River Boys)" size 24 color "#6a7282"
-        if evidence_ledger:
-            text "• The Bloody Ledger (Joint Purchase)" size 24 color "#6a7282"
-        if evidence_phone:
-            text "• The Burner Phone (Midnight Dock War)" size 24 color "#6a7282"
-           
-        if not evidence_lighter and not evidence_letter and not evidence_ledger and not evidence_phone:
-            text "No hard evidence collected yet." size 24 color "#6a7282" italic True
-
 screen inventory_bag():
     add Solid("#00000088")
     add "gui/warehouse/ui_bag_bg.png" align (0.5, 0.5)
@@ -272,12 +291,6 @@ screen day2_market_investigation():
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/townhall_front.png" hover brighten("gui/day2_plaza/plaza_front/townhall_front.png") focus_mask True action Return("townhall")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/bench_idle.png" hover brighten("gui/day2_plaza/plaza_front/bench_idle.png") focus_mask True action Return("bench")
    
-    if len(day2_clues_found) > 0 and len(day2_witnesses_found) > 0:
-        imagebutton xalign 0.5 yalign 0.95 idle "gui/warehouse/ui_button_write_idle.png" hover brighten("gui/warehouse/ui_button_write_idle.png") action Return("newsroom")
-       
-    imagebutton xalign 0.95 yalign 0.05 idle "gui/warehouse/ui_icon_notepad_idle.png" hover brighten("gui/warehouse/ui_icon_notepad_idle.png") action ToggleScreen("reporters_notepad") at Transform(zoom=0.1)
-    imagebutton xalign 0.88 yalign 0.05 idle "gui/warehouse/ui_icon_bag_idle.png" hover brighten("gui/warehouse/ui_icon_bag_idle.png") action ToggleScreen("inventory_bag") at Transform(zoom=0.1)
-
 screen day2_ruined_stall_environment():
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/clue_gascan_idle.png" hover brighten("gui/day2_plaza/market_stalls/clue_gascan_idle.png") focus_mask True action Return("gascan")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/clue_toycar_idle.png" hover brighten("gui/day2_plaza/market_stalls/clue_toycar_idle.png") focus_mask True action Return("toycar")
@@ -362,30 +375,20 @@ screen day2_blurry_photo_overlay():
 # ==========================================
 # DAY 3 CASINO SCREENS
 # ==========================================
-screen day3_ui_buttons():
-    # Show writing button if minimal progress requirements are met
-    if len(day3_clues_found) > 0 and len(day3_items_found) > 0 and len(day3_witnesses_found) > 0:
-        imagebutton xalign 0.5 yalign 0.95 idle "gui/warehouse/ui_button_write_idle.png" hover brighten("gui/warehouse/ui_button_write_idle.png") action Return("newsroom")
-        
-    imagebutton xalign 0.95 yalign 0.05 idle "gui/warehouse/ui_icon_notepad_idle.png" hover brighten("gui/warehouse/ui_icon_notepad_idle.png") action ToggleScreen("reporters_notepad") at Transform(zoom=0.1)
-    imagebutton xalign 0.88 yalign 0.05 idle "gui/warehouse/ui_icon_bag_idle.png" hover brighten("gui/warehouse/ui_icon_bag_idle.png") action ToggleScreen("inventory_bag") at Transform(zoom=0.1)
 
 screen day3_outside_casino():
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/outside_casino/go_to_casino.png" hover brighten("gui/day3_casino/outside_casino/go_to_casino.png") focus_mask True action Return("casino")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/outside_casino/go_to_club.png" hover brighten("gui/day3_casino/outside_casino/go_to_club.png") focus_mask True action Return("club_front")
-    use day3_ui_buttons
 
 screen day3_casino_lobby():
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_lobby/go_to_cashier.png" hover brighten("gui/day3_casino/casino_lobby/go_to_cashier.png") focus_mask True action Return("cashier")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_lobby/go_to_outside_casino.png" hover brighten("gui/day3_casino/casino_lobby/go_to_outside_casino.png") focus_mask True action Return("outside")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_lobby/go_to_playroom.png" hover brighten("gui/day3_casino/casino_lobby/go_to_playroom.png") focus_mask True action Return("playroom")
-    
+   
     if slot_machine_shorted:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_lobby/go_to_underground_noBouncer.png" hover brighten("gui/day3_casino/casino_lobby/go_to_underground_noBouncer.png") focus_mask True action Return("underground")
     else:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_lobby/go_to_underground.png" hover brighten("gui/day3_casino/casino_lobby/go_to_underground.png") focus_mask True action Return("underground")
-        
-    use day3_ui_buttons
 
 screen day3_cashier_environment():
     textbutton "Back" action Return("back") align (0.05, 0.95)
@@ -396,23 +399,21 @@ screen day3_underground_casino():
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/bullet_wall_idle.png" hover brighten("gui/day3_casino/underground_casino/bullet_wall_idle.png") focus_mask True action Return("bullethole")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/cleaner_idle.png" hover brighten("gui/day3_casino/underground_casino/cleaner_idle.png") focus_mask True action Return("cleaner")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/waitress_idle.png" hover brighten("gui/day3_casino/underground_casino/waitress_idle.png") focus_mask True action Return("waitress")
-
+    
     if "The Stolen Credit Card" not in day3_items_found:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/credit card idle.png" hover brighten("gui/day3_casino/underground_casino/credit card idle.png") focus_mask True action Return("creditcard")
-    
+   
     if "The VIP Pass" not in day3_items_found:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/vip_pass_idle.png" hover brighten("gui/day3_casino/underground_casino/vip_pass_idle.png") focus_mask True action Return("vippass")
-    use day3_ui_buttons
 
 screen day3_backroom_environment():
     if safe_unlocked:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/backroom_room/go_to_open_vault.png" hover brighten("gui/day3_casino/backroom/backroom_room/go_to_open_vault.png") focus_mask True action Return("vault")
     else:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/backroom_room/go_to_vault.png" hover brighten("gui/day3_casino/backroom/backroom_room/go_to_vault.png") focus_mask True action Return("vault")
-
+    
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/backroom_room/dealer_idle.png" hover brighten("gui/day3_casino/backroom/backroom_room/dealer_idle.png") focus_mask True action Return("dealer")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/backroom_room/go_backto_underground.png" hover brighten("gui/day3_casino/backroom/backroom_room/go_backto_underground.png") focus_mask True action Return("underground")
-    use day3_ui_buttons
 
 screen day3_safe_closeup_environment():
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/safe/vault_closeup_idle.png" hover brighten("gui/day3_casino/backroom/safe/vault_closeup_idle.png") focus_mask True action Return("safe_interact")
@@ -457,14 +458,13 @@ screen day3_playroom_environment():
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/go_to_cards_closeup.png" hover brighten("gui/day3_casino/casino_playroom/go_to_cards_closeup.png") focus_mask True action Return("cards_closeup")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/go_to_wire_minigame.png" hover brighten("gui/day3_casino/casino_playroom/go_to_wire_minigame.png") focus_mask True action Return("wire_minigame")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/arthur_idle.png" hover brighten("gui/day3_casino/casino_playroom/arthur_idle.png") focus_mask True action Return("arthur")
-    
+   
     if slot_machine_shorted:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/destroyed_jukebox_bouncer.png" hover brighten("gui/day3_casino/casino_playroom/destroyed_jukebox_bouncer.png") focus_mask True action Return("jukebox")
     else:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/destroyed_jukebox_idle.png" hover brighten("gui/day3_casino/casino_playroom/destroyed_jukebox_idle.png") focus_mask True action Return("jukebox")
-        
+       
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/drunk_idle.png" hover brighten("gui/day3_casino/casino_playroom/drunk_idle.png") focus_mask True action Return("drunk")
-    use day3_ui_buttons
 
 screen day3_cards_closeup_environment():
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/cards_closeup/cards_idle.png" hover brighten("gui/day3_casino/casino_playroom/cards_closeup/cards_idle.png") focus_mask True action Return("cards")
@@ -476,12 +476,10 @@ screen day3_cards_closeup_environment():
 screen day3_club_front_environment():
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/local_club/club_door_idle.png" hover brighten("gui/day3_casino/local_club/club_door_idle.png") focus_mask True action Return("inside_club")
     textbutton "Back to Outside" action Return("outside") align (0.05, 0.95)
-    use day3_ui_buttons
 
 screen day3_club_inside_environment():
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/local_club/inside_club/go_to_outside_club.png" hover brighten("gui/day3_casino/local_club/inside_club/go_to_outside_club.png") focus_mask True action Return("outside")
     imagebutton xpos -17 ypos 0 idle "gui/day3_casino/local_club/inside_club/gossiper_idle.png" hover brighten("gui/day3_casino/local_club/inside_club/gossiper_idle.png") focus_mask True action Return("gossiper")
-    use day3_ui_buttons
 
 
 # ==========================================
@@ -515,13 +513,7 @@ screen day5_depot_investigation():
     if "tourist" not in day5_clicked_points:
         imagebutton xpos 1200 ypos 400 idle "ui_assets/tourist_neutral.png" hover "ui_assets/tourist_hover.png" action Return("tourist")
     # --- EXIT BUTTON ---
-    if len(day5_clues_found) > 0 and len(day5_items_found) > 0 and len(day5_witnesses_found) > 0 and evidence_phone:
-        imagebutton xalign 0.5 yalign 0.95 idle "ui_assets/ui_button_write_idle.png" hover "ui_assets/ui_button_write_hover.png" action Return("newsroom")
-       
-    # --- TOGGLES ---
-    imagebutton xalign 0.95 yalign 0.05 idle "ui_assets/ui_icon_notepad_idle.png" hover "ui_assets/ui_icon_notepad_hover.png" action ToggleScreen("reporters_notepad")
-    imagebutton xalign 0.95 yalign 0.15 idle "ui_assets/ui_icon_bag_idle.png" hover "ui_assets/ui_icon_bag_hover.png" action ToggleScreen("inventory_bag")
-
+ 
 screen backroom_environment():
     # Replace xpos/ypos and idle images with your exact layout hotspot assets
     imagebutton xpos 400 ypos 300 idle "safe_distant_idle.png" action Return("safe")
