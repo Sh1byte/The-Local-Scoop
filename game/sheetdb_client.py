@@ -1,14 +1,13 @@
 import requests
 
 def fetch_newspaper_article(clue, item, witness, day="day1"):
-    # Replace this with your actual SheetDB API URL from sheetdb.io
     base_api_url = "https://sheetdb.io/api/v1/czxhec0kt3a7k"
     
     # Appends the sheet tab parameter (e.g., ?sheet=day1, ?sheet=day2)
     api_url = f"{base_api_url}?sheet={day}"
 
     try:
-        response = requests.get(api_url, timeout=5)
+        response = requests.get(api_url, timeout=3)
         data = response.json()
 
         # Loop through the spreadsheet rows to find the exact match
