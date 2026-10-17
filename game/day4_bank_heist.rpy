@@ -1,45 +1,87 @@
-# Day 4 Global Variables
-default took_briefcase = False
-
 label day4_start:
-    # Day 4: The 3rd Plot Point
-    scene bg main_street
+    $ current_day = 4 # Hides the global HUD bag icon
     
-    "The town breaks out into total chaos."
-    "The Iron Syndicate attempts a massive mid-town bank robbery. However, just as they run out of the bank with the money, The River Boys ambush them in the street!"
-    
-    "I am watching from behind a parked car. Smoke fills the air, police sirens wail, and bullets fly."
-    "During the fight, a heavy leather briefcase full of stolen bank cash slides across the pavement and hits my shoes."
-    "I am hidden by the smoke. I have only two choices."
-
-    menu:
-        "Take it and run":
-            $ took_briefcase = True
-            "I grab the heavy briefcase of cash and sprint away down an alley, keeping the money for myself."
-            "Safe back at the office, I write my daily report."
-            jump day4_newspaper_path_a
-            
-        "Do nothing":
-            $ took_briefcase = False
-            "I freeze in shock."
-            "A moment later, the massive leader of the Iron Syndicate stomps through the smoke to grab the briefcase."
-            "His mask is torn from the fight. I look at his face and gasp—it is Editor Vance, my grumpy boss!"
-            "He has been controlling the newspaper to cover up his gang's crimes."
-            "Realizing a reporter has seen his true identity, Vance raises his gun and fires directly at me."
-            
-            scene black
-            
-            "..."
-            "The screen instantly cuts to black. The audience is left believing I have been killed."
-            jump day5_path_b_start
-
-label day4_newspaper_path_a:
+    # SCENE 1: KENNETH'S OFFICE
     scene bg newsroom
-    "Time to publish the story. There are no clues to piece together today, just the raw truth of the violence."
     
-    # Static output for Day 4 Path A
-    "THE DAILY HERALD"
-    "Headline: War on Main Street: Bank Heist Ends in Bloody Gang Ambush"
-    "Body: Main Street was turned into a war zone today as a brazen bank robbery by the Iron Syndicate was violently interrupted by their rivals, The River Boys. In the chaotic shootout that followed, the stolen bank funds vanished into the smoke. Law enforcement was powerless to stop the open street warfare. The missing money has pushed the tension between these two violent factions past the point of no return."
+    kenneth "I TOLD BOTH OF YOU TO DROP THE GANG STORY AND FOCUS ON SOMETHING ELSE. YET YOU DISRESPECTED MY ORDER AND SNUCK BEHIND MY BACK TO MAKE A REPORT ABOUT THE CASINO ISSUE!!"
+    arthur "But boss, these events seem to be connected and part of something much bigger."
+    "Yeah, and I even overheard a group of people at the bar saying that the man behind one of the gangs is someone powerful who can control the entire town."
+    kenneth "I get it that you both want this big break, but meddling with something as dangerous as this could cost me my 2 greatest reporters."
     
-    jump day5_path_a_start
+    
+    kenneth "I think both of you need to take a day off. I'll be confiscating your camera and take the day to do something other than putting yourselves in danger."
+    
+    scene black with fade
+    
+    # SCENE 2: THE BANK HEIST
+    scene bg main_street with fade
+    
+    "(Since the boss laid me off, I think I'll treat myself to some alone time at the mall.)"
+    "(But first I'll need to get some money from the bank.)"
+    
+    
+    "Police" "STOP RIGHT THERE! AND SURRENDER, YOUR GANG HAS CAUSED THIS TOWN TOO MUCH DAMAGE!!"
+    "Man in mask" "SHIT! THE COPS ARE HERE!"
+    
+    
+    call screen day4_timer_choice
+    $ choice = _return
+    
+    if choice == "take":
+        # CHOICE 1: TOOK THE BRIEFCASE
+        
+        "(I AM IN BIG TROUBLE!!)"
+        "(IT'S FINE, THEY DIDN'T SEE MY FACE, I'LL BE FINE)"
+        "(I should stop somewhere to catch my breath.)"
+                
+        "HOLY SHIT, IT'S MONEY! A BRIEFCASE FULL OF MONEY!"
+        "(Maybe they would think that the rival gang took the money and this would finally start a war between the two.)"
+        "Looks like the problem will solve itself."
+        jump day5_path_a_start
+        
+    elif choice == "leave":
+        # CHOICE 2: DID NOT TAKE THE BRIEFCASE
+        
+        "(HOLY COW, I THOUGHT I WAS A GONNER!)"
+        "(“TAKE A BREAK,” HE SAID!)"
+        "(“DO SOMETHING OTHER THAN PUTTING YOURSELVES IN DANGER,” HE SAID!)"
+        
+        
+        "I think I'm safe here."
+        "Well, I guess mall time is cancelled. I should go home and rest."
+        jump day5_path_a_start
+        
+    elif choice == "timeout":
+        # CHOICE 3: TIMER RAN OUT (CAUGHT BY KENNETH)
+        
+        "(I wonder what could be insi—)"
+        "Man in mask" "HEY YOU! GET AWAY FROM THERE!"
+        
+        
+        "I'm sorry, I wasn't gonna do anything, please don't shoot me!"
+        "Man in mask" "I TOLD YOU TO GET AWAY, NOT RAISE YOUR HANDS AND BEG!"
+        
+        
+        "Right, right. I'm sorry."
+        
+        
+        "BOSS?!"
+        "Man in mask" "Why did you have to notice, kid?"
+        "So all this time you weren't keeping us away from the gang stories to protect us? You were keeping us away to protect you!"
+        "Man in mask" "Eyy, he's all caught up."
+        "I get it now. You're the man powerful enough to control the entire town—the boss of the local newspaper company. Powerful enough to control the town's feelings."
+        "Man in mask" "You don't have to analyze the situation anymore, because you won't get the chance to write a report about this."
+        
+        scene black
+        jump day5_path_b_start
+
+screen day4_timer_choice():
+    # 5-second red timer overlay
+    timer 5.0 action Return("timeout")
+    
+    vbox:
+        align (0.5, 0.8)
+        spacing 20
+        textbutton "GET THE BRIEFCASE AND RUN" action Return("take") text_size 35 text_color "#FF0000" text_outlines [(2, "#000000", 0, 0)]
+        textbutton "DON'T TAKE THE BRIEFCASE, RUN" action Return("leave") text_size 35 text_color "#FF0000" text_outlines [(2, "#000000", 0, 0)]

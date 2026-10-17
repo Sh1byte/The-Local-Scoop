@@ -8,7 +8,7 @@ label calculate_day1_credibility:
     
     if day1_clue == "The Smashed Paint Can":
         $ day1_score += 1
-    if day1_item == "The Janitor's Keyring":
+    if day1_item == "Missing blueprint":
         $ day1_score += 1
     if day1_witness == "Watchman 1":
         $ day1_score += 1
