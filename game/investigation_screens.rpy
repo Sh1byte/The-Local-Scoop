@@ -1,9 +1,8 @@
 default current_day = 1
-
 init python:
     def brighten(image_path, amount=0.2):
         return Transform(image_path, matrixcolor=BrightnessMatrix(amount))
-        
+       
     # Icon mapping for the Inventory Grid UI
     item_icons = {
         "Battery": "gui/icons/battery.png",
@@ -16,7 +15,11 @@ init python:
         "Blurry Photograph": "gui/icons/photo.png",
         "The Expensive Cigar": "gui/icons/cigar.png",
         "The Dropped Lottery Ticket": "gui/icons/ticket.png",
-        "The Extortion Letter": "gui/icons/letter.png"
+        "The Extortion Letter": "gui/icons/letter.png",
+        "The Rusty Toolbox": "gui/icons/toolbox.png",
+        "The Empty Wallet": "gui/icons/wallet.png",
+        "The Burner Phone": "gui/icons/phone.png",
+        "The Train Ticket Stub": "gui/icons/ticketstub.png"
     }
 
 screen global_hud():
@@ -253,7 +256,11 @@ screen inventory_bag():
             "Blurry Photograph": "A blurry photo recovered from the melted camera. Shows the fire starting.",
             "The Expensive Cigar": "A half-smoked, imported cigar dropped nearby.",
             "The Dropped Lottery Ticket": "A winning scratch ticket.",
-            "The Extortion Letter": "Signed with the blue anchor stamp of The River Boys."
+            "The Extortion Letter": "Signed with the blue anchor stamp of The River Boys.",
+            "The Rusty Toolbox": "Heavy junk left behind by a mechanic. It adds nothing to my story.",
+            "The Empty Wallet": "A pickpocket's discarded trash that distracts from the big picture.",
+            "The Burner Phone": "Dropped near the medical supplies, confirming a massive gang war at the shipping docks at midnight.",
+            "The Train Ticket Stub": "Found in the injured driver's pocket, proving the gangs were planning to leave town."
         }
        
     vpgrid:
@@ -266,7 +273,7 @@ screen inventory_bag():
             fixed:
                 xysize (170, 140)
                
-                if item in item_icons:
+                if item in item_icons and renpy.loadable(item_icons[item]):
                     # Make the icon a clickable button that shows a notification
                     imagebutton:
                         align (0.5, 0.5)
@@ -275,7 +282,11 @@ screen inventory_bag():
                         action Notify(item_descriptions.get(item, "A mysterious item."))
                         at Transform(zoom=2)
                 else:
-                    text "[item]" size 16 color "#ffffff" align (0.5, 0.5)
+                    textbutton "[item]":
+                        align (0.5, 0.5)
+                        text_size 16
+                        text_color "#ffffff"
+                        action Notify(item_descriptions.get(item, "A mysterious item."))
 
 
 # ==========================================
@@ -485,35 +496,138 @@ screen day3_club_inside_environment():
 # ==========================================
 # DAY 5 DEPOT SCREEN
 # ==========================================
+# ==========================================
+# DAY 5 DEPOT SCREENS
+# ==========================================
+
+# --- DEPOT ENTRANCE (MAIN HUB) ---
 screen day5_depot_investigation():
-    # --- CLUES ---
-    if "tiretracks" not in day5_clicked_points:
-        imagebutton xpos 200 ypos 650 idle "ui_assets/clue_tiretracks.png" hover "ui_assets/clue_tiretracks_hover.png" action Return("tiretracks")
-    if "dogtracks" not in day5_clicked_points:
-        imagebutton xpos 800 ypos 700 idle "ui_assets/clue_dogtracks.png" hover "ui_assets/clue_dogtracks_hover.png" action Return("dogtracks")
-    if "oilpuddle" not in day5_clicked_points:
-        imagebutton xpos 300 ypos 750 idle "ui_assets/clue_oilpuddle.png" hover "ui_assets/clue_oilpuddle_hover.png" action Return("oilpuddle")
-    # --- ITEMS ---
-    if "ticketstub" not in day5_clicked_points:
-        imagebutton xpos 400 ypos 450 idle "ui_assets/item_ticketstub.png" hover "ui_assets/item_ticketstub_hover.png" action Return("ticketstub")
-    if "wallet" not in day5_clicked_points:
-        imagebutton xpos 600 ypos 500 idle "ui_assets/item_wallet.png" hover "ui_assets/item_wallet_hover.png" action Return("wallet")
-    if "toolbox" not in day5_clicked_points:
-        imagebutton xpos 700 ypos 600 idle "ui_assets/item_toolbox.png" hover "ui_assets/item_toolbox_hover.png" action Return("toolbox")
-    # --- HIDDEN EVIDENCE ---
-    if "phone" not in day5_clicked_points:
-        imagebutton xpos 900 ypos 850 idle "ui_assets/evidence_phone.png" hover "ui_assets/evidence_phone_hover.png" action Return("phone")
-    # --- WITNESSES ---
-    if "medic" not in day5_clicked_points:
-        imagebutton xpos 1100 ypos 300 idle "ui_assets/medic_neutral.png" hover "ui_assets/medic_hover.png" action Return("medic")
-    if "engineer" not in day5_clicked_points:
-        imagebutton xpos 100 ypos 350 idle "ui_assets/engineer_neutral.png" hover "ui_assets/engineer_hover.png" action Return("engineer")
-    if "hobo" not in day5_clicked_points:
-        imagebutton xpos 850 ypos 250 idle "ui_assets/hobo_neutral.png" hover "ui_assets/hobo_hover.png" action Return("hobo")
-    if "tourist" not in day5_clicked_points:
-        imagebutton xpos 1200 ypos 400 idle "ui_assets/tourist_neutral.png" hover "ui_assets/tourist_hover.png" action Return("tourist")
-    # --- EXIT BUTTON ---
- 
+    add "gui/day5_abandoned_station/Depot_Entrance/bg Depot_Entrance.jpg"
+
+    # Navigation Hotspots
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Depot_Entrance/go_to_Maintenance_Bay.png" hover brighten("gui/day5_abandoned_station/Depot_Entrance/go_to_Maintenance_Bay.png") focus_mask True action Return("go_to_maintenance_bay")
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Depot_Entrance/go_to_Train_Tracks.png" hover brighten("gui/day5_abandoned_station/Depot_Entrance/go_to_Train_Tracks.png") focus_mask True action Return("go_to_abandoned_tracks")
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Depot_Entrance/go_to_Triage.png" hover brighten("gui/day5_abandoned_station/Depot_Entrance/go_to_Triage.png") focus_mask True action Return("go_to_triage")
+
+    # NPC & Witness
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Depot_Entrance/Arthur_Day5.png" hover brighten("gui/day5_abandoned_station/Depot_Entrance/Arthur_Day5.png") focus_mask True action Return("arthur")
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Depot_Entrance/Tourist.png" hover brighten("gui/day5_abandoned_station/Depot_Entrance/Tourist.png") focus_mask True action Return("tourist")
+
+
+# --- MAINTENANCE BAY ---
+screen day5_maintenance_bay_environment():
+    add "gui/day5_abandoned_station/Maintenance_Bay/bg Maintenance_Bay_NoToolbox.jpg"
+
+    # Close-up Hotspot (Leaking Oil Puddle)
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Maintenance_Bay/go_to_OilLeak_CloseUp.png" hover brighten("gui/day5_abandoned_station/Maintenance_Bay/go_to_OilLeak_CloseUp.png") focus_mask True action Return("go_to_oilleak_closeup")
+
+    # Obtainable Item: The Rusty Toolbox (disappears when clicked)
+    if "The Rusty Toolbox" not in inventory_bag_items:
+        imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Maintenance_Bay/Toolbox_idle.png" hover brighten("gui/day5_abandoned_station/Maintenance_Bay/Toolbox_idle.png") focus_mask True action [Notify("You got The Rusty Toolbox."), Return("toolbox")]
+
+    # Witness: Train Engineer 1
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Maintenance_Bay/Train_Engineer.png" hover brighten("gui/day5_abandoned_station/Maintenance_Bay/Train_Engineer.png") focus_mask True action Return("engineer")
+
+    # Return to Depot Entrance
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Maintenance_Bay/go_to_Depot_Entrance_MaintenanceBay.png" hover brighten("gui/day5_abandoned_station/Maintenance_Bay/go_to_Depot_Entrance_MaintenanceBay.png") focus_mask True action Return("depot_entrance")
+    key "K_ESCAPE" action Return("depot_entrance")
+
+screen day5_oilleak_closeup_environment():
+    add "gui/day5_abandoned_station/Maintenance_Bay/Oil_Leak_CloseUp.jpg"
+    textbutton "Back" xalign 0.05 yalign 0.95 action Return("back") text_size 30 text_color "#FFFFFF"
+    key "K_ESCAPE" action Return("back")
+
+
+# --- ABANDONED TRACKS ---
+screen day5_abandoned_tracks_environment():
+    if "The Empty Wallet" not in inventory_bag_items:
+        add "gui/day5_abandoned_station/Abandoned_Tracks/bg Abandoned_Tracks_Wallet.jpg"
+    else:
+        add "gui/day5_abandoned_station/Abandoned_Tracks/bg Abandoned_Tracks_NoWallet.jpg"
+
+    # Close-up Hotspots
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/go_to_Bloody_Tracks_CloseUp.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/go_to_Bloody_Tracks_CloseUp.png") focus_mask True action Return("go_to_tracks_closeup")
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/go_to_Grass_CloseUp.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/go_to_Grass_CloseUp.png") focus_mask True action Return("go_to_grass_closeup")
+
+    # Witness: Hobo 1
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/Homeless_Man_Idle.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/Homeless_Man_Idle.png") focus_mask True action Return("hobo")
+
+    # Return to Depot Entrance
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/go_to_Depot_Entrance.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/go_to_Depot_Entrance.png") focus_mask True action Return("depot_entrance")
+    key "K_ESCAPE" action Return("depot_entrance")
+
+screen day5_tracks_closeup_environment():
+    add "gui/day5_abandoned_station/Abandoned_Tracks/Tracks_CloseUp.jpg"
+
+    # Clues: Bloody Tire Tracks & Wild Dog Tracks
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/Tire_Tracks.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/Tire_Tracks.png") focus_mask True action Return("tiretracks")
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/Animal_Tracks.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/Animal_Tracks.png") focus_mask True action Return("dogtracks")
+
+    textbutton "Back" xalign 0.05 yalign 0.95 action Return("back") text_size 30 text_color "#FFFFFF"
+    key "K_ESCAPE" action Return("back")
+
+screen day5_grass_closeup_environment():
+    add "gui/day5_abandoned_station/Abandoned_Tracks/Grass_CloseUp_NoWallet.jpg"
+
+    # Obtainable Item: The Empty Wallet (disappears when clicked)
+    if "The Empty Wallet" not in inventory_bag_items:
+        imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/Wallet_idle.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/Wallet_idle.png") focus_mask True action [Notify("You got The Empty Wallet."), Return("wallet")]
+
+    textbutton "Back" xalign 0.05 yalign 0.95 action Return("back") text_size 30 text_color "#FFFFFF"
+    key "K_ESCAPE" action Return("back")
+
+
+# --- MAKESHIFT TRIAGE & TENT ---
+screen day5_triage_environment():
+    if "The Burner Phone" not in inventory_bag_items and not evidence_phone:
+        add "gui/day5_abandoned_station/Triage/bg Makeshift_Triage_Phone.jpg"
+    else:
+        add "gui/day5_abandoned_station/Triage/bg Makeshift_Triage_NoPhone.jpg"
+
+    # Close-up & Tent Hotspots
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/go_to_Crate_CloseUp.png" hover brighten("gui/day5_abandoned_station/Triage/go_to_Crate_CloseUp.png") focus_mask True action Return("go_to_crate_closeup")
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/go_to_Tent.png" hover brighten("gui/day5_abandoned_station/Triage/go_to_Tent.png") focus_mask True action Return("go_to_tent")
+
+    # Witness: Medic 1
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/Medic.png" hover brighten("gui/day5_abandoned_station/Triage/Medic.png") focus_mask True action Return("medic")
+
+    # Return to Depot Entrance
+    textbutton "Back to Depot Entrance" xalign 0.05 yalign 0.95 action Return("depot_entrance") text_size 30 text_color "#FFFFFF"
+    key "K_ESCAPE" action Return("depot_entrance")
+
+screen day5_crate_closeup_environment():
+    add "gui/day5_abandoned_station/Triage/Crate_CloseUp_NoPhone.jpg"
+
+    # Obtainable Evidence Item: The Burner Phone (disappears when clicked)
+    if "The Burner Phone" not in inventory_bag_items and not evidence_phone:
+        imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/Phone_idle.png" hover brighten("gui/day5_abandoned_station/Triage/Phone_idle.png") focus_mask True action [Notify("You got The Burner Phone."), Return("phone")]
+
+    textbutton "Back" xalign 0.05 yalign 0.95 action Return("back") text_size 30 text_color "#FFFFFF"
+    key "K_ESCAPE" action Return("back")
+
+screen day5_triage_tent_environment():
+    if "The Train Ticket Stub" not in inventory_bag_items:
+        add "gui/day5_abandoned_station/Triage/Tent/bg Inside_Tent_Ticket.jpg"
+    else:
+        add "gui/day5_abandoned_station/Triage/Tent/bg Inside_Tent_NoTicket.jpg"
+
+    # Close-up Hotspot (Driver's Coat)
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/Tent/go_to_Coat_CloseUp.png" hover brighten("gui/day5_abandoned_station/Triage/Tent/go_to_Coat_CloseUp.png") focus_mask True action Return("go_to_coat_closeup")
+
+    # Return outside to Makeshift Triage
+    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/Tent/go_to_Triage_Tent.png" hover brighten("gui/day5_abandoned_station/Triage/Tent/go_to_Triage_Tent.png") focus_mask True action Return("back_to_triage")
+    key "K_ESCAPE" action Return("back_to_triage")
+
+screen day5_coat_closeup_environment():
+    add "gui/day5_abandoned_station/Triage/Tent/Coat_CloseUp_NoTicket.jpg"
+
+    # Obtainable Story Item: The Train Ticket Stub (disappears when clicked)
+    if "The Train Ticket Stub" not in inventory_bag_items:
+        imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/Tent/Ticket_idle.png" hover brighten("gui/day5_abandoned_station/Triage/Tent/Ticket_idle.png") focus_mask True action [Notify("You got The Train Ticket Stub."), Return("ticketstub")]
+
+    textbutton "Back" xalign 0.05 yalign 0.95 action Return("back") text_size 30 text_color "#FFFFFF"
+    key "K_ESCAPE" action Return("back")
+
 screen backroom_environment():
     # Replace xpos/ypos and idle images with your exact layout hotspot assets
     imagebutton xpos 400 ypos 300 idle "safe_distant_idle.png" action Return("safe")

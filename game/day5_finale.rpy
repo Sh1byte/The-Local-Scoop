@@ -1,3 +1,4 @@
+define arthur = Character("Arthur", color="#cccccc")
 define medic = Character("Medic", color="#cccccc")
 define engineer = Character("Train Engineer", color="#cccccc")
 define hobo = Character("Hobo", color="#cccccc")
@@ -7,77 +8,271 @@ default day5_clue = ""
 default day5_item = ""
 default day5_witness = ""
 default evidence_phone = False
-
 default day5_clues_found = []
 default day5_items_found = []
 default day5_witnesses_found = []
 default day5_clicked_points = []
 
+# ==========================================
+# START & DEPOT ENTRANCE (MAIN HUB)
+# ==========================================
 label day5_path_a_start:
-    scene bg rail_depot
-    "The morning of the 5th day arrives. Arthur meets me at the old rail depot."
+    $ current_day = 5
+    show screen global_hud
+    scene expression "gui/day5_abandoned_station/Depot_Entrance/bg Depot_Entrance.jpg"
+    "The morning of the 5th day arrives. Because the money is missing, both gangs blame each other."
+    "I've been dispatched to investigate a morning lead at an old rail depot where a getaway driver was found injured."
+    "Arthur meets me here in the morning sun, completely unaware that I stole the cash."
     jump day5_investigation_hub
 
 label day5_investigation_hub:
+    scene expression "gui/day5_abandoned_station/Depot_Entrance/bg Depot_Entrance.jpg"
     call screen day5_depot_investigation
     $ clicked_object = _return
-    $ day5_clicked_points.append(clicked_object)
-    
-    if clicked_object == "tiretracks":
-        "They show the exact escape route of the ambushed gangsters."
-        $ day5_clues_found.append("The Bloody Tire Tracks")
+
+    if clicked_object not in day5_clicked_points:
+        $ day5_clicked_points.append(clicked_object)
+
+    if clicked_object == "arthur":
+        show expression "gui/day5_abandoned_station/Depot_Entrance/Arthur_Day5.png"
+        arthur "Morning! Word is a getaway driver from last night's chaos was dumped here in bad shape."
+        arthur "Whoever took that bank cash really kicked the hornet's nest. Let's look around the depot and piece together what happened."
         jump day5_investigation_hub
-    elif clicked_object == "dogtracks":
-        "Just stray animals drawn to the blood."
-        $ day5_clues_found.append("The Wild Dog Tracks")
-        jump day5_investigation_hub
-    elif clicked_object == "oilpuddle":
-        "Looks like normal car trouble."
-        $ day5_clues_found.append("The Leaking Oil Puddle")
-        jump day5_investigation_hub
-        
-    elif clicked_object == "ticketstub":
-        "I found a Train Ticket Stub."
-        $ day5_items_found.append("The Train Ticket Stub")
-        $ inventory_bag_items.append("The Train Ticket Stub")
-        jump day5_investigation_hub
-    elif clicked_object == "wallet":
-        "Just an Empty Wallet."
-        $ day5_items_found.append("The Empty Wallet")
-        $ inventory_bag_items.append("The Empty Wallet")
-        jump day5_investigation_hub
-    elif clicked_object == "toolbox":
-        "Heavy junk left behind by a mechanic."
-        $ day5_items_found.append("The Rusty Toolbox")
-        $ inventory_bag_items.append("The Rusty Toolbox")
-        jump day5_investigation_hub
-        
-    elif clicked_object == "phone":
-        "A Burner Phone confirming a midnight dock war."
-        $ evidence_phone = True 
-        jump day5_investigation_hub
-        
-    elif clicked_object == "medic":
-        medic "They forced me to treat a wounded gangster muttering about the docks!"
-        $ day5_witnesses_found.append("Medic 1")
-        jump day5_investigation_hub
-    elif clicked_object == "engineer":
-        engineer "That driver just fell off a moving cargo train."
-        $ day5_witnesses_found.append("Train Engineer 1")
-        jump day5_investigation_hub
-    elif clicked_object == "hobo":
-        hobo "The government is poisoning the water supply!"
-        $ day5_witnesses_found.append("Hobo 1")
-        jump day5_investigation_hub
+
     elif clicked_object == "tourist":
-        tourist "I thought they were filming a zombie movie."
-        $ day5_witnesses_found.append("Tourist 1")
+        show expression "gui/day5_abandoned_station/Depot_Entrance/Tourist.png"
+        tourist "I've been snapping photos all morning! I'm pretty sure they were just filming a zombie action movie here with fake blood."
+        if "Tourist 1" not in day5_witnesses_found:
+            $ day5_witnesses_found.append("Tourist 1")
         jump day5_investigation_hub
-        
+
+    elif clicked_object == "go_to_maintenance_bay":
+        "(Let's check out the maintenance bay.)"
+        jump day5_maintenance_bay_hub
+
+    elif clicked_object == "go_to_abandoned_tracks":
+        "(Let's head over to the abandoned tracks.)"
+        jump day5_abandoned_tracks_hub
+
+    elif clicked_object == "go_to_triage":
+        "(Looks like a makeshift medical area over there. Let's check it out.)"
+        jump day5_triage_hub
+
     elif clicked_object == "newsroom":
         jump day5_morning_newspaper
 
+
+# ==========================================
+# AREA 1: MAINTENANCE BAY
+# ==========================================
+label day5_maintenance_bay_hub:
+    if "The Rusty Toolbox" not in inventory_bag_items:
+        scene expression "gui/day5_abandoned_station/Maintenance_Bay/bg Maintenance_Bay_Toolbox.jpg"
+    else:
+        scene expression "gui/day5_abandoned_station/Maintenance_Bay/bg Maintenance_Bay_NoToolbox.jpg"
+
+    call screen day5_maintenance_bay_environment
+    $ clicked_object = _return
+
+    if clicked_object not in day5_clicked_points:
+        $ day5_clicked_points.append(clicked_object)
+
+    if clicked_object == "engineer":
+        show expression "gui/day5_abandoned_station/Maintenance_Bay/Train_Engineer.png"
+        engineer "Nothing mysterious about it. That driver just fell off a moving cargo train."
+        if "Train Engineer 1" not in day5_witnesses_found:
+            $ day5_witnesses_found.append("Train Engineer 1")
+        jump day5_maintenance_bay_hub
+
+    elif clicked_object == "toolbox":
+        "Heavy junk left behind by a mechanic. It adds nothing to my story, though I'll stash it in my bag."
+        if "The Rusty Toolbox" not in day5_items_found:
+            $ day5_items_found.append("The Rusty Toolbox")
+        if "The Rusty Toolbox" not in inventory_bag_items:
+            $ inventory_bag_items.append("The Rusty Toolbox")
+        jump day5_maintenance_bay_hub
+
+    elif clicked_object == "go_to_oilleak_closeup":
+        "(Looks like there's a dark puddle leaking on the floor over there.)"
+        jump day5_oilleak_closeup_hub
+
+    elif clicked_object == "depot_entrance":
+        jump day5_investigation_hub
+
+label day5_oilleak_closeup_hub:
+    scene expression "gui/day5_abandoned_station/Maintenance_Bay/Oil_Leak_CloseUp.jpg"
+    if "The Leaking Oil Puddle" not in day5_clues_found:
+        $ day5_clues_found.append("The Leaking Oil Puddle")
+    "Looks like normal car trouble, hiding the fact there was a violent shootout here."
+    call screen day5_oilleak_closeup_environment
+    jump day5_maintenance_bay_hub
+
+
+# ==========================================
+# AREA 2: ABANDONED TRACKS
+# ==========================================
+label day5_abandoned_tracks_hub:
+    if "The Empty Wallet" not in inventory_bag_items:
+        scene expression "gui/day5_abandoned_station/Abandoned_Tracks/bg Abandoned_Tracks_Wallet.jpg"
+    else:
+        scene expression "gui/day5_abandoned_station/Abandoned_Tracks/bg Abandoned_Tracks_NoWallet.jpg"
+
+    call screen day5_abandoned_tracks_environment
+    $ clicked_object = _return
+
+    if clicked_object not in day5_clicked_points:
+        $ day5_clicked_points.append(clicked_object)
+
+    if clicked_object == "hobo":
+        show expression "gui/day5_abandoned_station/Abandoned_Tracks/Homeless_Man_Idle.png"
+        hobo "Wake up! The government is poisoning the water supply!"
+        if "Hobo 1" not in day5_witnesses_found:
+            $ day5_witnesses_found.append("Hobo 1")
+        jump day5_abandoned_tracks_hub
+
+    elif clicked_object == "go_to_tracks_closeup":
+        "(Looks like there are some tracks on the ground near the rails.)"
+        jump day5_tracks_closeup_hub
+
+    elif clicked_object == "go_to_grass_closeup":
+        if "The Empty Wallet" not in inventory_bag_items:
+            "(Looks like there's something on the grass.)"
+        else:
+            "(Nothing else left in the grass.)"
+        jump day5_grass_closeup_hub
+
+    elif clicked_object == "depot_entrance":
+        jump day5_investigation_hub
+
+label day5_tracks_closeup_hub:
+    scene expression "gui/day5_abandoned_station/Abandoned_Tracks/Tracks_CloseUp.jpg"
+    call screen day5_tracks_closeup_environment
+    $ clicked_object = _return
+
+    if clicked_object == "tiretracks":
+        "Bloody tire tracks. They show the exact escape route of the ambushed gangsters."
+        if "The Bloody Tire Tracks" not in day5_clues_found:
+            $ day5_clues_found.append("The Bloody Tire Tracks")
+        jump day5_tracks_closeup_hub
+
+    elif clicked_object == "dogtracks":
+        "Wild dog tracks. Just stray animals drawn to the blood."
+        if "The Wild Dog Tracks" not in day5_clues_found:
+            $ day5_clues_found.append("The Wild Dog Tracks")
+        jump day5_tracks_closeup_hub
+
+    elif clicked_object == "back":
+        jump day5_abandoned_tracks_hub
+
+label day5_grass_closeup_hub:
+    scene expression "gui/day5_abandoned_station/Abandoned_Tracks/Grass_CloseUp_NoWallet.jpg"
+    call screen day5_grass_closeup_environment
+    $ clicked_object = _return
+
+    if clicked_object == "wallet":
+        "An empty wallet. Just a pickpocket's discarded trash that distracts from the big picture."
+        if "The Empty Wallet" not in day5_items_found:
+            $ day5_items_found.append("The Empty Wallet")
+        if "The Empty Wallet" not in inventory_bag_items:
+            $ inventory_bag_items.append("The Empty Wallet")
+        jump day5_grass_closeup_hub
+
+    elif clicked_object == "back":
+        jump day5_abandoned_tracks_hub
+
+
+# ==========================================
+# AREA 3: MAKESHIFT TRIAGE & TENT
+# ==========================================
+label day5_triage_hub:
+    if "The Burner Phone" not in inventory_bag_items and not evidence_phone:
+        scene expression "gui/day5_abandoned_station/Triage/bg Makeshift_Triage_Phone.jpg"
+    else:
+        scene expression "gui/day5_abandoned_station/Triage/bg Makeshift_Triage_NoPhone.jpg"
+
+    call screen day5_triage_environment
+    $ clicked_object = _return
+
+    if clicked_object not in day5_clicked_points:
+        $ day5_clicked_points.append(clicked_object)
+
+    if clicked_object == "medic":
+        show expression "gui/day5_abandoned_station/Triage/Medic.png"
+        medic "They forced me at gunpoint to treat a wounded gangster! He kept muttering about an all-out war at the shipping docks at midnight!"
+        if "Medic 1" not in day5_witnesses_found:
+            $ day5_witnesses_found.append("Medic 1")
+        jump day5_triage_hub
+
+    elif clicked_object == "go_to_crate_closeup":
+        if "The Burner Phone" not in inventory_bag_items and not evidence_phone:
+            "(Looks like there's something dropped near the medical crates.)"
+        else:
+            "(Nothing else near the medical supplies.)"
+        jump day5_crate_closeup_hub
+
+    elif clicked_object == "go_to_tent":
+        "(Looks like the wounded driver was treated inside this tent. Let's take a look inside.)"
+        jump day5_triage_tent_hub
+
+    elif clicked_object == "depot_entrance":
+        jump day5_investigation_hub
+
+label day5_crate_closeup_hub:
+    scene expression "gui/day5_abandoned_station/Triage/Crate_CloseUp_NoPhone.jpg"
+    call screen day5_crate_closeup_environment
+    $ clicked_object = _return
+
+    if clicked_object == "phone":
+        "A cheap burner phone dropped near the medical supplies. The messages confirm a massive gang war at the shipping docks at midnight!"
+        $ evidence_phone = True
+        if "The Burner Phone" not in inventory_bag_items:
+            $ inventory_bag_items.append("The Burner Phone")
+        jump day5_crate_closeup_hub
+
+    elif clicked_object == "back":
+        jump day5_triage_hub
+
+label day5_triage_tent_hub:
+    if "The Train Ticket Stub" not in inventory_bag_items:
+        scene expression "gui/day5_abandoned_station/Triage/Tent/bg Inside_Tent_Ticket.jpg"
+    else:
+        scene expression "gui/day5_abandoned_station/Triage/Tent/bg Inside_Tent_NoTicket.jpg"
+
+    call screen day5_triage_tent_environment
+    $ clicked_object = _return
+
+    if clicked_object == "go_to_coat_closeup":
+        if "The Train Ticket Stub" not in inventory_bag_items:
+            "(Looks like there's something sticking out of the driver's coat pocket.)"
+        else:
+            "(Nothing else left in the coat pocket.)"
+        jump day5_coat_closeup_hub
+
+    elif clicked_object == "back_to_triage":
+        jump day5_triage_hub
+
+label day5_coat_closeup_hub:
+    scene expression "gui/day5_abandoned_station/Triage/Tent/Coat_CloseUp_NoTicket.jpg"
+    call screen day5_coat_closeup_environment
+    $ clicked_object = _return
+
+    if clicked_object == "ticketstub":
+        "I found a Train Ticket Stub in the injured driver's pocket. It proves the gangs were planning to leave town."
+        if "The Train Ticket Stub" not in day5_items_found:
+            $ day5_items_found.append("The Train Ticket Stub")
+        if "The Train Ticket Stub" not in inventory_bag_items:
+            $ inventory_bag_items.append("The Train Ticket Stub")
+        jump day5_coat_closeup_hub
+
+    elif clicked_object == "back":
+        jump day5_triage_tent_hub
+
+
+# ==========================================
+# NEWSPAPER MINIGAME & API EXECUTION
+# ==========================================
 label day5_morning_newspaper:
+    hide screen global_hud
     scene bg newsroom
     "Time to review my Reporter's Notepad and write the final story."
 
@@ -169,7 +364,7 @@ label day5_api_execution:
         article_result = sheetdb_client.fetch_newspaper_article(day5_clue, day5_item, day5_witness, "day5")
         daily_headline = article_result.get("headline", "Error: Story Not Found")
         daily_body = article_result.get("body", "Error: Check database connection.")
-        
+       
     "THE DAILY HERALD"
     "Headline: [daily_headline]"
     "[daily_body]"

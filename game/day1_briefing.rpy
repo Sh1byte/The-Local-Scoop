@@ -50,8 +50,8 @@ label stage1_briefing:
             jump day3_start
         "Day 4":
             jump day4_start
-        "Safe":
-            jump safe_close_up
+        "Day 5":
+            jump day5_path_a_start
 
 label day1_path:
     kenneth "Listen up, rookie. I don't want you digging into the rising crime rate. That's an order."
