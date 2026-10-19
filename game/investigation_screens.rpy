@@ -660,11 +660,12 @@ screen newspaper_results_ui(headline, body, rating, score):
     # This displays your blank zoomed-in newspaper asset
     add "gui/newspaper_zoomed.jpg"
     
-    # This positions the text over the blank columns of the image
+    # This positions the text over the single wide box of the new image
     vbox:
-        # You will need to adjust these numbers (x, y) to line up with your specific image
-        pos (450, 300) 
-        xsize 1000 # Keeps the text from spilling off the page
+        # Shifted left and up slightly to align with the new border
+        pos (380, 280) 
+        # Widened to 1150 so it fills the single large box without spilling over
+        xsize 1150 
         spacing 25
         
         # The dynamic text fetched from SheetDB, styled to look like printed ink
