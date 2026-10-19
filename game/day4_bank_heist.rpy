@@ -38,6 +38,9 @@ label day4_start:
         "HOLY SHIT, IT'S MONEY! A BRIEFCASE FULL OF MONEY!"
         "(Maybe they would think that the rival gang took the money and this would finally start a war between the two.)"
         "Looks like the problem will solve itself."
+
+        $ renpy.force_autosave(True)
+
         jump day5_path_a_start
         
     elif choice == "leave":
@@ -50,6 +53,9 @@ label day4_start:
         
         "I think I'm safe here."
         "Well, I guess mall time is cancelled. I should go home and rest."
+
+        $ renpy.force_autosave(True)
+        
         jump day5_path_a_start
         
     elif choice == "timeout":
@@ -74,6 +80,9 @@ label day4_start:
         "Man in mask" "You don't have to analyze the situation anymore, because you won't get the chance to write a report about this."
         
         scene black
+
+        $ renpy.force_autosave(True)
+
         jump day5_path_b_start
 
 screen day4_timer_choice():

@@ -498,4 +498,7 @@ label day3_api_execution:
     "[daily_body]"
     "Editor's Note: This article was rated as [daily_rating]!"
     "My total journalistic credibility is now [total_credibility_score]."
+
+    $ renpy.force_autosave(True)
+
     jump day4_start

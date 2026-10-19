@@ -145,6 +145,10 @@ default preferences.afm_time = 15
 
 define config.save_directory = "TheLocalScoop-1789995224"
 
+define config.has_autosave = True
+define config.autosave_slots = 1
+define config.autosave_frequency = 0
+
 
 ## Icon ########################################################################
 ##
