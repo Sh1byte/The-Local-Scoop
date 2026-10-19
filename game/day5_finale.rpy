@@ -365,11 +365,11 @@ label day5_api_execution:
         daily_headline = article_result.get("headline", "Error: Story Not Found")
         daily_body = article_result.get("body", "Error: Check database connection.")
        
-    "THE DAILY HERALD"
-    "Headline: [daily_headline]"
-    "[daily_body]"
-    "Editor's Note: This article was rated as [daily_rating]!"
-    "My final journalistic credibility is [total_credibility_score]."
+    scene desk_newspaper
+    "Let's see how the final story turned out..."
+    
+    call screen newspaper_results_ui(daily_headline, daily_body, daily_rating, total_credibility_score)
+    
     jump day5_path_a_climax
     
 label day5_path_a_climax:

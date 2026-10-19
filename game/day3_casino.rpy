@@ -15,6 +15,7 @@ image bg safe_closeup = im.Scale("gui/day3_casino/backroom/safe/vault_close_up.j
 image bg safe_minigame = im.Scale("gui/day3_casino/backroom/safe/safe_minigame/safe.png", 1920, 1080)
 image bg opened_safe = im.Scale("gui/day3_casino/backroom/safe/opened_safe/vault_open.jpg", 1920, 1080)
 image bg wiring_minigame = im.Scale("gui/day3_casino/casino_playroom/wire_minigame/bg_wire_box.jpg", 1920, 1080)
+image desk_newspaper = im.Scale("gui/desk_newspaper.jpg", 1920, 1080)
 
 # --- NEW CONDITIONAL BACKGROUNDS ---
 image bg playroom_fire = im.Scale("gui/day3_casino/casino_playroom/bg_playroom_fire.jpg", 1920, 1080)
@@ -493,11 +494,10 @@ label day3_api_execution:
         daily_headline = article_result.get("headline", "Error: Story Not Found")
         daily_body = article_result.get("body", "Error: Check database connection.")
         
-    "THE DAILY HERALD"
-    "Headline: [daily_headline]"
-    "[daily_body]"
-    "Editor's Note: This article was rated as [daily_rating]!"
-    "My total journalistic credibility is now [total_credibility_score]."
+    scene desk_newspaper
+    "Let's see how the casino edition turned out..."
+    
+    call screen newspaper_results_ui(daily_headline, daily_body, daily_rating, total_credibility_score)
 
     $ renpy.force_autosave(True)
 

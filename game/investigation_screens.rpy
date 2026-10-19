@@ -652,3 +652,27 @@ screen tutorial_office_environment():
     
     # The News Van icon acts as the "Finish Tutorial" button
     imagebutton xalign 0.95 yalign 0.05 idle "gui/tutorial/ui_icon_van_idle.png" hover brighten("gui/tutorial/ui_icon_van_idle.png") action Return("van") at Transform(zoom=0.1)
+
+# ==========================================
+# NEWSPAPER UI SCREEN
+# ==========================================
+screen newspaper_results_ui(headline, body, rating, score):
+    # This displays your blank zoomed-in newspaper asset
+    add "gui/newspaper_zoomed.jpg"
+    
+    # This positions the text over the blank columns of the image
+    vbox:
+        # You will need to adjust these numbers (x, y) to line up with your specific image
+        pos (450, 300) 
+        xsize 1000 # Keeps the text from spilling off the page
+        spacing 25
+        
+        # The dynamic text fetched from SheetDB, styled to look like printed ink
+        text headline size 45 bold True color "#1a1a1a"
+        text body size 30 color "#2b2b2b"
+        
+        text "Editor's Rating: [rating]" size 35 italic True color "#590000"
+        text "Total Credibility: [score]" size 35 bold True color "#1a1a1a"
+        
+    # A button at the bottom to continue the game
+    textbutton "Put away newspaper" action Return() align (0.5, 0.95) text_size 40 text_color "#ffffff" text_outlines [(2, "#000000", 0, 0)]

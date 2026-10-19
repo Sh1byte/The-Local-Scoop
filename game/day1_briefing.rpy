@@ -7,6 +7,7 @@ image bg inside_warehouse = im.Scale("gui/day1_inside_warehouse/bg_inside_wareho
 image bg tower_warehouse = im.Scale("gui/day_tower_warehouse/bg_tower_warehouse.png", 1920, 1072)
 image bg garage_back_warehouse = im.Scale("gui/day1_garage_warehouse/bg_garage_warehouse.png", 1920, 1072)
 image bg riverclose = im.Scale("gui/day1_back_warehouse/bg_riverclose.png", 1920, 1072)
+image desk_newspaper = im.Scale("gui/desk_newspaper.jpg", 1920, 1080)
 
 define kenneth = Character("Editor Kenneth", color="#b30000")
 define arthur = Character("Arthur", color="#ff9900")
@@ -612,11 +613,12 @@ label day1_api_execution:
         daily_headline = article_result.get("headline", "Error: Story Not Found")
         daily_body = article_result.get("body", "Error: Check database connection.")
         
-    "THE DAILY HERALD"
-    "Headline: [daily_headline]"
-    "[daily_body]"
-    "Editor's Note: This article was rated as [daily_rating]!"
-    "My total journalistic credibility is now [total_credibility_score]."
+    # Show the wide desk shot first
+    scene desk_newspaper
+    "Let's see how the morning edition turned out..."
+    
+    # Call the zoomed-in UI screen and pass it the variables
+    call screen newspaper_results_ui(daily_headline, daily_body, daily_rating, total_credibility_score)
 
     $ renpy.force_autosave(True)
 

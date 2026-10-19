@@ -18,6 +18,7 @@ image bg townhall_inside = "gui/day2_plaza/townhall/inside_townhall/townhall_ins
 image bg bench = "gui/day2_plaza/bench/bg_bench.png"
 image bg bench_bread = "gui/day2_plaza/bench/bg_bench_bread.jpg"
 image bg another_stall = im.Scale("gui/day2_plaza/market_stalls/another_stall/bg_anotherstall.png", 1920, 1072)
+image desk_newspaper = im.Scale("gui/desk_newspaper.jpg", 1920, 1080)
 
 define vendor = Character("Vendor", color="#cccccc")
 define shopper = Character("Shopper", color="#cccccc")
@@ -535,11 +536,10 @@ label day2_api_execution:
         daily_headline = article_result.get("headline", "Error: Story Not Found")
         daily_body = article_result.get("body", "Error: Check database connection.")
         
-    "THE DAILY HERALD"
-    "Headline: [daily_headline]"
-    "[daily_body]"
-    "Editor's Note: This article was rated as [daily_rating]!"
-    "My total journalistic credibility is now [total_credibility_score]."
+    scene desk_newspaper
+    "Let's see how the market edition turned out..."
+    
+    call screen newspaper_results_ui(daily_headline, daily_body, daily_rating, total_credibility_score)
 
     $ renpy.force_autosave(True)
 
