@@ -19,14 +19,14 @@ default day5_clicked_points = []
 label day5_path_a_start:
     $ current_day = 5
     show screen global_hud
-    scene expression "gui/day5_abandoned_station/Depot_Entrance/bg Depot_Entrance.jpg"
+    scene expression "gui/day5_abandoned_station/Depot_Entrance/bg Depot_Entrance.jpg" at topleft
     "The morning of the 5th day arrives. Because the money is missing, both gangs blame each other."
     "I've been dispatched to investigate a morning lead at an old rail depot where a getaway driver was found injured."
     "Arthur meets me here in the morning sun, completely unaware that I stole the cash."
     jump day5_investigation_hub
 
 label day5_investigation_hub:
-    scene expression "gui/day5_abandoned_station/Depot_Entrance/bg Depot_Entrance.jpg"
+    scene expression "gui/day5_abandoned_station/Depot_Entrance/bg Depot_Entrance.jpg" at topleft
     call screen day5_depot_investigation
     $ clicked_object = _return
 
@@ -34,13 +34,13 @@ label day5_investigation_hub:
         $ day5_clicked_points.append(clicked_object)
 
     if clicked_object == "arthur":
-        show expression "gui/day5_abandoned_station/Depot_Entrance/Arthur_Day5.png"
+        show expression "gui/day5_abandoned_station/Depot_Entrance/Arthur_Day5.png" at topleft
         arthur "Morning! Word is a getaway driver from last night's chaos was dumped here in bad shape."
         arthur "Whoever took that bank cash really kicked the hornet's nest. Let's look around the depot and piece together what happened."
         jump day5_investigation_hub
 
     elif clicked_object == "tourist":
-        show expression "gui/day5_abandoned_station/Depot_Entrance/Tourist.png"
+        show expression "gui/day5_abandoned_station/Depot_Entrance/Tourist.png" at topleft
         tourist "I've been snapping photos all morning! I'm pretty sure they were just filming a zombie action movie here with fake blood."
         if "Tourist 1" not in day5_witnesses_found:
             $ day5_witnesses_found.append("Tourist 1")
@@ -67,9 +67,9 @@ label day5_investigation_hub:
 # ==========================================
 label day5_maintenance_bay_hub:
     if "The Rusty Toolbox" not in inventory_bag_items:
-        scene expression "gui/day5_abandoned_station/Maintenance_Bay/bg Maintenance_Bay_Toolbox.jpg"
+        scene expression "gui/day5_abandoned_station/Maintenance_Bay/bg Maintenance_Bay_Toolbox.jpg" at topleft
     else:
-        scene expression "gui/day5_abandoned_station/Maintenance_Bay/bg Maintenance_Bay_NoToolbox.jpg"
+        scene expression "gui/day5_abandoned_station/Maintenance_Bay/bg Maintenance_Bay_NoToolbox.jpg" at topleft
 
     call screen day5_maintenance_bay_environment
     $ clicked_object = _return
@@ -78,7 +78,7 @@ label day5_maintenance_bay_hub:
         $ day5_clicked_points.append(clicked_object)
 
     if clicked_object == "engineer":
-        show expression "gui/day5_abandoned_station/Maintenance_Bay/Train_Engineer.png"
+        show expression "gui/day5_abandoned_station/Maintenance_Bay/Train_Engineer.png" at topleft
         engineer "Nothing mysterious about it. That driver just fell off a moving cargo train."
         if "Train Engineer 1" not in day5_witnesses_found:
             $ day5_witnesses_found.append("Train Engineer 1")
@@ -100,7 +100,7 @@ label day5_maintenance_bay_hub:
         jump day5_investigation_hub
 
 label day5_oilleak_closeup_hub:
-    scene expression "gui/day5_abandoned_station/Maintenance_Bay/Oil_Leak_CloseUp.jpg"
+    scene expression "gui/day5_abandoned_station/Maintenance_Bay/Oil_Leak_CloseUp.jpg" at topleft
     if "The Leaking Oil Puddle" not in day5_clues_found:
         $ day5_clues_found.append("The Leaking Oil Puddle")
     "Looks like normal car trouble, hiding the fact there was a violent shootout here."
@@ -113,9 +113,9 @@ label day5_oilleak_closeup_hub:
 # ==========================================
 label day5_abandoned_tracks_hub:
     if "The Empty Wallet" not in inventory_bag_items:
-        scene expression "gui/day5_abandoned_station/Abandoned_Tracks/bg Abandoned_Tracks_Wallet.jpg"
+        scene expression "gui/day5_abandoned_station/Abandoned_Tracks/bg Abandoned_Tracks_Wallet.jpg" at topleft
     else:
-        scene expression "gui/day5_abandoned_station/Abandoned_Tracks/bg Abandoned_Tracks_NoWallet.jpg"
+        scene expression "gui/day5_abandoned_station/Abandoned_Tracks/bg Abandoned_Tracks_NoWallet.jpg" at topleft
 
     call screen day5_abandoned_tracks_environment
     $ clicked_object = _return
@@ -124,7 +124,7 @@ label day5_abandoned_tracks_hub:
         $ day5_clicked_points.append(clicked_object)
 
     if clicked_object == "hobo":
-        show expression "gui/day5_abandoned_station/Abandoned_Tracks/Homeless_Man_Idle.png"
+        show expression "gui/day5_abandoned_station/Abandoned_Tracks/Homeless_Man_Idle.png" at topleft
         hobo "Wake up! The government is poisoning the water supply!"
         if "Hobo 1" not in day5_witnesses_found:
             $ day5_witnesses_found.append("Hobo 1")
@@ -145,7 +145,7 @@ label day5_abandoned_tracks_hub:
         jump day5_investigation_hub
 
 label day5_tracks_closeup_hub:
-    scene expression "gui/day5_abandoned_station/Abandoned_Tracks/Tracks_CloseUp.jpg"
+    scene expression "gui/day5_abandoned_station/Abandoned_Tracks/Tracks_CloseUp.jpg" at topleft
     call screen day5_tracks_closeup_environment
     $ clicked_object = _return
 
@@ -165,7 +165,7 @@ label day5_tracks_closeup_hub:
         jump day5_abandoned_tracks_hub
 
 label day5_grass_closeup_hub:
-    scene expression "gui/day5_abandoned_station/Abandoned_Tracks/Grass_CloseUp_NoWallet.jpg"
+    scene expression "gui/day5_abandoned_station/Abandoned_Tracks/Grass_CloseUp_NoWallet.jpg" at topleft
     call screen day5_grass_closeup_environment
     $ clicked_object = _return
 
@@ -186,9 +186,9 @@ label day5_grass_closeup_hub:
 # ==========================================
 label day5_triage_hub:
     if "The Burner Phone" not in inventory_bag_items and not evidence_phone:
-        scene expression "gui/day5_abandoned_station/Triage/bg Makeshift_Triage_Phone.jpg"
+        scene expression "gui/day5_abandoned_station/Triage/bg Makeshift_Triage_Phone.jpg" at topleft
     else:
-        scene expression "gui/day5_abandoned_station/Triage/bg Makeshift_Triage_NoPhone.jpg"
+        scene expression "gui/day5_abandoned_station/Triage/bg Makeshift_Triage_NoPhone.jpg" at topleft
 
     call screen day5_triage_environment
     $ clicked_object = _return
@@ -197,7 +197,7 @@ label day5_triage_hub:
         $ day5_clicked_points.append(clicked_object)
 
     if clicked_object == "medic":
-        show expression "gui/day5_abandoned_station/Triage/Medic.png"
+        show expression "gui/day5_abandoned_station/Triage/Medic.png" at topleft
         medic "They forced me at gunpoint to treat a wounded gangster! He kept muttering about an all-out war at the shipping docks at midnight!"
         if "Medic 1" not in day5_witnesses_found:
             $ day5_witnesses_found.append("Medic 1")
@@ -218,7 +218,7 @@ label day5_triage_hub:
         jump day5_investigation_hub
 
 label day5_crate_closeup_hub:
-    scene expression "gui/day5_abandoned_station/Triage/Crate_CloseUp_NoPhone.jpg"
+    scene expression "gui/day5_abandoned_station/Triage/Crate_CloseUp_NoPhone.jpg" at topleft
     call screen day5_crate_closeup_environment
     $ clicked_object = _return
 
@@ -234,9 +234,9 @@ label day5_crate_closeup_hub:
 
 label day5_triage_tent_hub:
     if "The Train Ticket Stub" not in inventory_bag_items:
-        scene expression "gui/day5_abandoned_station/Triage/Tent/bg Inside_Tent_Ticket.jpg"
+        scene expression "gui/day5_abandoned_station/Triage/Tent/bg Inside_Tent_Ticket.jpg" at topleft
     else:
-        scene expression "gui/day5_abandoned_station/Triage/Tent/bg Inside_Tent_NoTicket.jpg"
+        scene expression "gui/day5_abandoned_station/Triage/Tent/bg Inside_Tent_NoTicket.jpg" at topleft
 
     call screen day5_triage_tent_environment
     $ clicked_object = _return
@@ -252,7 +252,7 @@ label day5_triage_tent_hub:
         jump day5_triage_hub
 
 label day5_coat_closeup_hub:
-    scene expression "gui/day5_abandoned_station/Triage/Tent/Coat_CloseUp_NoTicket.jpg"
+    scene expression "gui/day5_abandoned_station/Triage/Tent/Coat_CloseUp_NoTicket.jpg" at topleft
     call screen day5_coat_closeup_environment
     $ clicked_object = _return
 

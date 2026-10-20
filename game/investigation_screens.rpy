@@ -494,9 +494,6 @@ screen day3_club_inside_environment():
 
 
 # ==========================================
-# DAY 5 DEPOT SCREEN
-# ==========================================
-# ==========================================
 # DAY 5 DEPOT SCREENS
 # ==========================================
 
@@ -516,14 +513,14 @@ screen day5_depot_investigation():
 
 # --- MAINTENANCE BAY ---
 screen day5_maintenance_bay_environment():
-    add "gui/day5_abandoned_station/Maintenance_Bay/bg Maintenance_Bay_NoToolbox.jpg"
+    if "The Rusty Toolbox" not in inventory_bag_items:
+        add "gui/day5_abandoned_station/Maintenance_Bay/bg Maintenance_Bay_Toolbox.jpg"
+        imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Maintenance_Bay/Toolbox_idle.png" hover brighten("gui/day5_abandoned_station/Maintenance_Bay/Toolbox_idle.png") focus_mask True action [Notify("You got The Rusty Toolbox."), Return("toolbox")]
+    else:
+        add "gui/day5_abandoned_station/Maintenance_Bay/bg Maintenance_Bay_NoToolbox.jpg"
 
     # Close-up Hotspot (Leaking Oil Puddle)
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Maintenance_Bay/go_to_OilLeak_CloseUp.png" hover brighten("gui/day5_abandoned_station/Maintenance_Bay/go_to_OilLeak_CloseUp.png") focus_mask True action Return("go_to_oilleak_closeup")
-
-    # Obtainable Item: The Rusty Toolbox (disappears when clicked)
-    if "The Rusty Toolbox" not in inventory_bag_items:
-        imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Maintenance_Bay/Toolbox_idle.png" hover brighten("gui/day5_abandoned_station/Maintenance_Bay/Toolbox_idle.png") focus_mask True action [Notify("You got The Rusty Toolbox."), Return("toolbox")]
 
     # Witness: Train Engineer 1
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Maintenance_Bay/Train_Engineer.png" hover brighten("gui/day5_abandoned_station/Maintenance_Bay/Train_Engineer.png") focus_mask True action Return("engineer")
@@ -542,12 +539,12 @@ screen day5_oilleak_closeup_environment():
 screen day5_abandoned_tracks_environment():
     if "The Empty Wallet" not in inventory_bag_items:
         add "gui/day5_abandoned_station/Abandoned_Tracks/bg Abandoned_Tracks_Wallet.jpg"
+        imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/go_to_Grass_CloseUp.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/go_to_Grass_CloseUp.png") focus_mask True action Return("go_to_grass_closeup")
     else:
         add "gui/day5_abandoned_station/Abandoned_Tracks/bg Abandoned_Tracks_NoWallet.jpg"
 
-    # Close-up Hotspots
+    # Close-up Hotspot (Tracks)
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/go_to_Bloody_Tracks_CloseUp.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/go_to_Bloody_Tracks_CloseUp.png") focus_mask True action Return("go_to_tracks_closeup")
-    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/go_to_Grass_CloseUp.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/go_to_Grass_CloseUp.png") focus_mask True action Return("go_to_grass_closeup")
 
     # Witness: Hobo 1
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/Homeless_Man_Idle.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/Homeless_Man_Idle.png") focus_mask True action Return("hobo")
@@ -579,13 +576,13 @@ screen day5_grass_closeup_environment():
 
 # --- MAKESHIFT TRIAGE & TENT ---
 screen day5_triage_environment():
-    if "The Burner Phone" not in inventory_bag_items and not evidence_phone:
+    if not evidence_phone and "The Burner Phone" not in inventory_bag_items:
         add "gui/day5_abandoned_station/Triage/bg Makeshift_Triage_Phone.jpg"
+        imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/go_to_Crate_CloseUp.png" hover brighten("gui/day5_abandoned_station/Triage/go_to_Crate_CloseUp.png") focus_mask True action Return("go_to_crate_closeup")
     else:
         add "gui/day5_abandoned_station/Triage/bg Makeshift_Triage_NoPhone.jpg"
 
-    # Close-up & Tent Hotspots
-    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/go_to_Crate_CloseUp.png" hover brighten("gui/day5_abandoned_station/Triage/go_to_Crate_CloseUp.png") focus_mask True action Return("go_to_crate_closeup")
+    # Tent Hotspot
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/go_to_Tent.png" hover brighten("gui/day5_abandoned_station/Triage/go_to_Tent.png") focus_mask True action Return("go_to_tent")
 
     # Witness: Medic 1
@@ -599,7 +596,7 @@ screen day5_crate_closeup_environment():
     add "gui/day5_abandoned_station/Triage/Crate_CloseUp_NoPhone.jpg"
 
     # Obtainable Evidence Item: The Burner Phone (disappears when clicked)
-    if "The Burner Phone" not in inventory_bag_items and not evidence_phone:
+    if not evidence_phone and "The Burner Phone" not in inventory_bag_items:
         imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/Phone_idle.png" hover brighten("gui/day5_abandoned_station/Triage/Phone_idle.png") focus_mask True action [Notify("You got The Burner Phone."), Return("phone")]
 
     textbutton "Back" xalign 0.05 yalign 0.95 action Return("back") text_size 30 text_color "#FFFFFF"
@@ -608,11 +605,9 @@ screen day5_crate_closeup_environment():
 screen day5_triage_tent_environment():
     if "The Train Ticket Stub" not in inventory_bag_items:
         add "gui/day5_abandoned_station/Triage/Tent/bg Inside_Tent_Ticket.jpg"
+        imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/Tent/go_to_Coat_CloseUp.png" hover brighten("gui/day5_abandoned_station/Triage/Tent/go_to_Coat_CloseUp.png") focus_mask True action Return("go_to_coat_closeup")
     else:
         add "gui/day5_abandoned_station/Triage/Tent/bg Inside_Tent_NoTicket.jpg"
-
-    # Close-up Hotspot (Driver's Coat)
-    imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/Tent/go_to_Coat_CloseUp.png" hover brighten("gui/day5_abandoned_station/Triage/Tent/go_to_Coat_CloseUp.png") focus_mask True action Return("go_to_coat_closeup")
 
     # Return outside to Makeshift Triage
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/Tent/go_to_Triage_Tent.png" hover brighten("gui/day5_abandoned_station/Triage/Tent/go_to_Triage_Tent.png") focus_mask True action Return("back_to_triage")
