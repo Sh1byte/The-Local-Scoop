@@ -43,7 +43,7 @@ default safe_unlocked = False
 default slot_machine_shorted = False
 
 label day3_start:
-    # Clear out unused items from Day 2 Bag (Keeping the Extortion Letter)
+    $ current_day = 3
     python:
         for item in ["Blurry Photograph", "The Expensive Cigar", "The Dropped Lottery Ticket"]:
             if item in inventory_bag_items:
@@ -422,7 +422,7 @@ label day3_opened_safe_view:
 # NEWSROOM MINIGAME
 # ==========================================
 label day3_newspaper_minigame:
-    scene bg newsroom
+    scene news_creation with dissolve
     "Time to review my Reporter's Notepad and write the casino edition."
 
 label select_day3_clue:

@@ -46,7 +46,7 @@ default day2_witnesses_found = []
 default day2_clicked_points = []
 
 label day2_start:
-    # Clear out unused items from Day 1 Bag (Keeping the Brass Lighter)
+    $ current_day = 2
     python:
         for item in ["The Broken Pocket Watch", "The Lost Dog Collar"]:
             if item in inventory_bag_items:
@@ -58,7 +58,7 @@ label day2_start:
     scene d2newsroom2 with dissolve
     kenneth "{cps=28}Get over there and bring me a story{/cps}{w=1}{nw}"
     scene d2newsroom1 with dissolve
-    kenneth "{cps=28}Also I heard that a fruit stand burned down, don't mind that and just focus on the new store story{/cps}{w=2.5}{nw}"
+    kenneth "{cps=28}Also I heard that a fruit stand burned down, don't mind that and just focus on the new store story{/cps}{w=5}{nw}"
     jump day2_investigation_hub
 
 label day2_investigation_hub:
@@ -448,7 +448,7 @@ label day2_bench:
         jump day2_bench
 
 label day2_newspaper_minigame:
-    scene bg newsroom
+    scene news_creation with dissolve
     "Time to review my Reporter's Notepad and write the market edition."
 
 label select_day2_clue:

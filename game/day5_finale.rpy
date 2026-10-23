@@ -281,7 +281,7 @@ label day5_coat_closeup_hub:
 # ==========================================
 label day5_morning_newspaper:
     hide screen global_hud
-    scene bg newsroom
+    scene news_creation with dissolve
     "Time to review my Reporter's Notepad and write the final story."
 
 label select_day5_clue:

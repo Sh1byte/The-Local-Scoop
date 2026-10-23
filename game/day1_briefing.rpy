@@ -10,6 +10,7 @@ image bg riverclose = im.Scale("gui/day1_back_warehouse/bg_riverclose.png", 1920
 image desk_newspaper = im.Scale("gui/desk_newspaper.jpg", 1920, 1080)
 image newsroom1 = "gui/newsroom_scenes/Day1_Scene1.jpg"
 image newsroom2 = "gui/newsroom_scenes/Day1_Scene2.jpg"
+image news_creation = "gui/newsroom_scenes/Newspaper_Making.jpg"
 
 define kenneth = Character("Editor Kenneth", color="#b30000")
 define arthur = Character("Arthur", color="#ff9900")
@@ -40,6 +41,7 @@ default day1_clicked_points = []
 default inventory_bag_items = []
 
 label stage1_briefing:
+    $ current_day = 1
     scene bg newsroom
     
     menu:
@@ -525,7 +527,7 @@ label day1_warehouse_office:
         jump day1_investigation_hub
 
 label day1_newspaper_minigame:
-    scene bg newsroom
+    scene news_creation with dissolve
     "Time to review my Reporter's Notepad and write the evening edition."
 
 label select_day1_clue:
