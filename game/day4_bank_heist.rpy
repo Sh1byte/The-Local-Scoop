@@ -1,3 +1,5 @@
+default took_cash = False
+
 # ==============================================================================
 # DAY 4 IMAGE DEFINITIONS (1920 x 1080)
 # ==============================================================================
@@ -91,18 +93,18 @@ transform day4_yellow_timer_bar(duration=15.0):
     xzoom 1.0
     linear duration xzoom 0.0
 
-screen day4_timer_choice():
+screen day4_timer_choice(has_all_evidence=False):
     modal True
     zorder 50
 
-    # 15-second timer; jumps to Choice 3 ("timeout") when time runs out
-    timer 15.0 action Return("timeout")
+    # Only enable the 15-second timer if the player gathered ALL police evidence
+    if has_all_evidence:
+        timer 15.0 action Return("timeout")
 
     # Side-by-side red choices
     hbox:
         align (0.5, 0.82)
         spacing 220
-
         textbutton "TAKE IT":
             at day4_choice_hover
             action Return("take")
@@ -115,7 +117,6 @@ screen day4_timer_choice():
             text_hover_color "#FF5555"
             text_outlines [(3, "#000000", 0, 0)]
             text_hover_outlines [(4, "#FFFF00", 0, 0), (2, "#000000", 0, 0)]
-
         textbutton "LEAVE IT":
             at day4_choice_hover
             action Return("leave")
@@ -129,9 +130,10 @@ screen day4_timer_choice():
             text_outlines [(3, "#000000", 0, 0)]
             text_hover_outlines [(4, "#FFFF00", 0, 0), (2, "#000000", 0, 0)]
 
-    # Dark backing track + shrinking yellow timer line at the bottom
-    add Solid("#000000AA", xsize=1720, ysize=14) xalign 0.5 yalign 0.96
-    add Solid("#FFFF00", xsize=1720, ysize=14) at day4_yellow_timer_bar(15.0)
+    # Only show the shrinking yellow timer bar if the timer is active
+    if has_all_evidence:
+        add Solid("#000000AA", xsize=1720, ysize=14) xalign 0.5 yalign 0.96
+        add Solid("#FFFF00", xsize=1720, ysize=14) at day4_yellow_timer_bar(15.0)
 
 
 # ==============================================================================
@@ -290,41 +292,40 @@ label day4_start:
     # --------------------------------------------------------------------------
     # PLAYER CHOICE (15 SECONDS)
     # --------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
+    # PLAYER CHOICE (TIMED ONLY IF ALL POLICE EVIDENCE IS GATHERED)
+    # --------------------------------------------------------------------------
+    $ all_police_evidence = (evidence_lighter and evidence_letter and evidence_ledger)
     hide screen day4_cutscene_lock
-    call screen day4_timer_choice
+    call screen day4_timer_choice(has_all_evidence=all_police_evidence)
     $ choice = _return
     show screen day4_cutscene_lock
 
     if choice == "take":
+        $ took_cash = True
         # ----------------------------------------------------------------------
         # CHOICE 1: TOOK THE BRIEFCASE
         # ----------------------------------------------------------------------
         #Scene C1.1 showing the player picking up the briefcase
         scene day4_c1_1 with dissolve
         "{cps=22}Acting on pure adrenaline, I reached down, grabbed the handle of the briefcase, and pulled it off the ground.{/cps}{w=2.5}{nw}"
-
         #Scene C1.2 showing the player running away from the bank with the briefcase
         scene day4_c1_2 with dissolve
         "{cps=22}(I AM IN BIG TROUBLE!!){/cps}{w=2.2}{nw}"
         "{cps=22}(IT'S FINE, THEY DIDN'T SEE MY FACE, I'LL BE FINE){/cps}{w=2.5}{nw}"
-
         #Scene C1.3 showing the player slowing down to catch his breath
         scene day4_c1_3 with dissolve
         "{cps=22}(I should stop somewhere to catch my breath.){/cps}{w=2.5}{nw}"
-
         #Scene C1.4 showing player in an alley trying to open the briefcase
         scene day4_c1_4 with dissolve
         "{cps=22}Ducking deep into a secluded alleyway far from the gunfire, I checked my surroundings and unlatched the locks on the briefcase.{/cps}{w=2.8}{nw}"
-
         #Scene C1.5 showing the player opening the briefcase and seeing money inside
         scene day4_c1_5 with dissolve
         "{cps=22}HOLY SHIT, IT'S MONEY! A BRIEFCASE FULL OF MONEY!{/cps}{w=2.5}{nw}"
         "{cps=22}(Maybe they would think that the rival gang took the money and this would finally start a war between the two.){/cps}{w=3.0}{nw}"
-
         #Scene C1.6 showing the player clutching the briefcase with a grin on his face
         scene day4_c1_6 with dissolve
         "{cps=22}Looks like the problem will solve itself.{/cps}{w=2.5}{nw}"
-
         # Restore normal game controls before jumping to Day 5
         hide screen day4_cutscene_lock
         $ preferences.text_cps = _day4_old_cps
@@ -332,34 +333,29 @@ label day4_start:
         $ _rollback = True
         $ _dismiss_pause = True
         $ quick_menu = True
-
         $ renpy.force_autosave(True)
         jump day5_path_a_start
 
     elif choice == "leave":
+        $ took_cash = False
         # ----------------------------------------------------------------------
         # CHOICE 2: DID NOT TAKE THE BRIEFCASE
         # ----------------------------------------------------------------------
         #Scene C2.1 showing the foot of the player facing away from the briefcase
         scene day4_c2_1 with dissolve
         "{cps=22}No amount of money was worth getting killed over. I took a step back and turned away from the briefcase.{/cps}{w=2.5}{nw}"
-
         #Scene C2.2 showing the player running away from the bank
         scene day4_c2_2 with dissolve
         "{cps=22}Without looking back, I sprinted out of the alley as fast as my legs could carry me, desperate to get away from the gunfire.{/cps}{w=2.8}{nw}"
-
         #Scene C2.3 showing the player running much further away from the bank
         scene day4_c2_3 with dissolve
         "{cps=22}(HOLY COW, I THOUGHT I WAS A GONNER!){/cps}{w=2.5}{nw}"
-
         #Scene C2.4 showing the player going into a park to catch his breath
         scene day4_c2_4 with dissolve
         "{cps=22}I think I'm safe here.{/cps}{w=2.2}{nw}"
-
         #Scene C2.5 showing the player sitting on a bench in the park
         scene day4_c2_5 with dissolve
         "{cps=22}Well, I guess mall time is cancelled. I should go home and rest.{/cps}{w=2.5}{nw}"
-
         # Restore normal game controls before jumping to Day 5
         hide screen day4_cutscene_lock
         $ preferences.text_cps = _day4_old_cps
@@ -367,9 +363,8 @@ label day4_start:
         $ _rollback = True
         $ _dismiss_pause = True
         $ quick_menu = True
-
         $ renpy.force_autosave(True)
-        jump day5_path_a_start
+        jump day5_path_a_start 
 
     elif choice == "timeout":
         # ----------------------------------------------------------------------

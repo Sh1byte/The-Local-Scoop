@@ -22,9 +22,18 @@ label day5_path_a_start:
     $ current_day = 5
     show screen global_hud
     scene expression "gui/day5_abandoned_station/Depot_Entrance/bg Depot_Entrance.jpg" at topleft
-    "The morning of the 5th day arrives. Because the money is missing, both gangs blame each other."
-    "I've been dispatched to investigate a morning lead at an old rail depot where a getaway driver was found injured."
-    "Arthur meets me here in the morning sun, completely unaware that I stole the cash."
+
+    if took_cash:
+        "Boss Kenneth's office is empty, that's odd since he was never late for work"
+        "Would you look at that, it's already my 5th day on the job and I only managed to get myself involved in one shootout. The robbers took the money and fled the bank."
+        "But it looks like they we're ambushed by the rival gang."
+        "I've been dispatched to investigate this lead at an old rail depot where a getaway driver was found injured."
+    else:
+        "Boss Kenneth's office is empty, that's odd since he was never late for work"
+        "Would you look at that, it's already my 5th day on the job. Because the money is missing, both gangs blame each other."
+        "I've been dispatched to investigate a morning lead at an old rail depot where a getaway driver was found injured."
+        "Arthur meets me here in the morning sun, completely unaware that I stole the cash."
+
     jump day5_investigation_hub
 
 label day5_investigation_hub:
@@ -280,6 +289,7 @@ label day5_coat_closeup_hub:
 # NEWSPAPER MINIGAME & API EXECUTION
 # ==========================================
 label day5_morning_newspaper:
+    $ hide_all_investigation_screens()
     hide screen global_hud
     scene news_creation with dissolve
     "Time to review my Reporter's Notepad and write the final story."

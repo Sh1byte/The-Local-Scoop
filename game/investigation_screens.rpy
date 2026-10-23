@@ -1,8 +1,49 @@
 default current_day = 1
+
 init python:
     def brighten(image_path, amount=0.2):
         return Transform(image_path, matrixcolor=BrightnessMatrix(amount))
-       
+
+    def hide_all_investigation_screens():
+        screens_to_hide = [
+            # Popups & Tutorial
+            "inventory_bag", "news_van_screen", "tutorial_office_environment",
+            # Day 1 Screens & Overlays
+            "day1_warehouse_investigation", "day1_warehouse_back_environment",
+            "day1_warehouse_riverclose_environment", "day1_warehouse_inside_front_environment",
+            "day1_warehouse_inside_back_environment", "day1_warehouse_garage_environment",
+            "day1_warehouse_tower_environment", "day1_warehouse_office_environment",
+            "tower_clipboard_overlay", "flashlight_environment",
+            "flashlight_open_environment", "flashlight_empty_environment",
+            "key_holder_environment", "drawer_files_environment",
+            "drawer3_environment", "development_environment",
+            # Day 2 Screens & Overlays
+            "day2_market_investigation", "day2_ruined_stall_environment",
+            "day2_cashier_environment", "day2_zoomstall_view",
+            "day2_extortion_letter_view", "day2_another_stall_view",
+            "day2_bakery_environment", "day2_bakery_kitchen_environment",
+            "day2_electric_shop_environment", "day2_townhall_environment",
+            "day2_townhall_inside_environment", "day2_plaza_return",
+            "day2_bench_environment", "day2_blurry_photo_overlay",
+            # Day 3 Screens & Overlays
+            "day3_outside_casino", "day3_casino_lobby",
+            "day3_cashier_environment", "day3_underground_casino",
+            "day3_backroom_environment", "day3_safe_closeup_environment",
+            "day3_opened_safe_environment", "safe_puzzle_screen",
+            "day3_playroom_environment", "day3_cards_closeup_environment",
+            "day3_club_front_environment", "day3_club_inside_environment",
+            "day3_wire_minigame_screen", "backroom_environment",
+            "safe_closeup_environment",
+            # Day 5 Screens & Overlays
+            "day5_depot_investigation", "day5_maintenance_bay_environment",
+            "day5_oilleak_closeup_environment", "day5_abandoned_tracks_environment",
+            "day5_tracks_closeup_environment", "day5_grass_closeup_environment",
+            "day5_triage_environment", "day5_crate_closeup_environment",
+            "day5_triage_tent_environment", "day5_coat_closeup_environment"
+        ]
+        for scr in screens_to_hide:
+            renpy.hide_screen(scr)
+
     # Icon mapping for the Inventory Grid UI
     item_icons = {
         "Battery": "gui/icons/battery.png",
@@ -23,38 +64,41 @@ init python:
     }
 
 screen global_hud():
-    zorder 100 # <--- Add this line to force the HUD to the front
-
+    zorder 100
     if current_day != 4:
         # Persistent Bag Icon
         imagebutton xalign 0.88 yalign 0.05 idle "gui/warehouse/ui_icon_bag_idle.png" hover brighten("gui/warehouse/ui_icon_bag_idle.png") action ToggleScreen("inventory_bag") at Transform(zoom=0.1)
-
         # News Van Icon
         imagebutton xalign 0.95 yalign 0.05 idle "gui/warehouse/ui_icon_van_idle.png" hover brighten("gui/warehouse/ui_icon_van_idle.png") action Show("news_van_screen") at Transform(zoom=0.1)
 
 screen news_van_screen():
     modal True
+    zorder 150
    
     python:
         # Check if the player has gathered enough core evidence based on the current day
         can_write = False
-        if current_day == 1 and len(day1_clues_found) > 0 and len(day1_items_found) > 0 and len(day1_witnesses_found) > 0: can_write = True
-        elif current_day == 2 and len(day2_clues_found) > 0 and len(day2_items_found) > 0 and len(day2_witnesses_found) > 0: can_write = True
-        elif current_day == 3 and len(day3_clues_found) > 0 and len(day3_items_found) > 0 and len(day3_witnesses_found) > 0: can_write = True
-        elif current_day == 5 and len(day5_clues_found) > 0 and len(day5_items_found) > 0 and len(day5_witnesses_found) > 0: can_write = True
+        if current_day == 1 and len(day1_clues_found) > 0 and len(day1_items_found) > 0 and len(day1_witnesses_found) > 0:
+            can_write = True
+        elif current_day == 2 and len(day2_clues_found) > 0 and len(day2_items_found) > 0 and len(day2_witnesses_found) > 0:
+            can_write = True
+        elif current_day == 3 and len(day3_clues_found) > 0 and len(day3_items_found) > 0 and any(w in day3_witnesses_found for w in ["Dealer 1", "Cleaner 1", "Waitress 1", "Drunk Patron 1"]):
+            can_write = True
+        elif current_day == 5 and len(day5_clues_found) > 0 and len(day5_items_found) > 0 and len(day5_witnesses_found) > 0:
+            can_write = True
 
     if can_write:
         # Normal Background when ready to write
-        add "gui/warehouse/bg van.jpg" 
-        
-        # Show typewriter to create the news
-        imagebutton xalign 0.5 yalign 0.5 idle "gui/warehouse/typwriter_idle.png" hover brighten("gui/warehouse/typwriter_idle.png") action [Hide("news_van_screen"), Jump("newspaper_minigame_router")]
-        
+        add "gui/warehouse/bg van.jpg"
+       
+        # Show typewriter to create the news (hides all active room cutouts before jumping)
+        imagebutton xalign 0.5 yalign 0.5 idle "gui/warehouse/typwriter_idle.png" hover brighten("gui/warehouse/typwriter_idle.png") action [Function(hide_all_investigation_screens), Jump("newspaper_minigame_router")]
+       
     else:
         # Blurred Background with Dark Overlay when evidence is missing
         add "gui/warehouse/bg van.jpg" at Transform(blur=15)
-        add Solid("#000000AA") # Adds a semi-transparent black shadow over the screen
-        
+        add Solid("#000000AA")
+       
         # Not enough evidence notification
         text "(The evidence isn't enough to create a good story, maybe I should look for more)" xalign 0.5 yalign 0.5 size 30 color "#FFFFFF" outlines [(2, "#000000", 0, 0)]
 
@@ -62,6 +106,7 @@ screen news_van_screen():
     textbutton "Leave Van" xalign 0.02 yalign 0.05 action Hide("news_van_screen") text_size 30 text_color "#FFF"
 
 label newspaper_minigame_router:
+    $ hide_all_investigation_screens()
     if current_day == 1:
         jump day1_newspaper_minigame
     elif current_day == 2:

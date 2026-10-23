@@ -448,6 +448,7 @@ label day2_bench:
         jump day2_bench
 
 label day2_newspaper_minigame:
+    $ hide_all_investigation_screens()
     scene news_creation with dissolve
     "Time to review my Reporter's Notepad and write the market edition."
 

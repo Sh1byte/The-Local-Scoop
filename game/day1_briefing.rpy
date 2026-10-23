@@ -400,6 +400,8 @@ label day1_warehouse_garage_back:
         jump day1_warehouse_garage_back
         
     elif clicked_object == "garage_driver":
+        if "Delivery Driver 1" not in day1_witnesses_found:
+            $ day1_witnesses_found.append("Delivery Driver 1")
         driver "It was a rival shipping company trying to steal business."
         driver "Nobody plays fair in this town. I don't know why I even bother."
         hide screen day1_warehouse_garage_environment
@@ -527,6 +529,7 @@ label day1_warehouse_office:
         jump day1_investigation_hub
 
 label day1_newspaper_minigame:
+    $ hide_all_investigation_screens()
     scene news_creation with dissolve
     "Time to review my Reporter's Notepad and write the evening edition."
 
@@ -615,8 +618,7 @@ label select_day1_witness:
 label day1_api_execution:
     call calculate_day1_credibility
     python:
-        api_item = "The Janitor's Keyring" if day1_item == "Missing blueprint" else day1_item
-        article_result = sheetdb_client.fetch_newspaper_article(day1_clue, api_item, day1_witness, "day1")
+        article_result = sheetdb_client.fetch_newspaper_article(day1_clue, day1_item, day1_witness, "day1")
         daily_headline = article_result.get("headline", "Error: Story Not Found")
         daily_body = article_result.get("body", "Error: Check database connection.")
         
