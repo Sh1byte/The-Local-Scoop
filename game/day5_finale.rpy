@@ -1,3 +1,5 @@
+image d5newsroom1 = "gui/newsroom_scenes/Day5_Scene1.jpg"
+
 define arthur = Character("Arthur", color="#cccccc")
 define medic = Character("Medic", color="#cccccc")
 define engineer = Character("Train Engineer", color="#cccccc")
@@ -36,11 +38,12 @@ label day5_investigation_hub:
     if clicked_object == "arthur":
         show expression "gui/day5_abandoned_station/Depot_Entrance/Arthur_Day5.png" at topleft
         arthur "Morning! Word is a getaway driver from last night's chaos was dumped here in bad shape."
-        arthur "Whoever took that bank cash really kicked the hornet's nest. Let's look around the depot and piece together what happened."
+        arthur "Then the rival gang came here to finish the job, to hit them when their weak but it looks like the robbers ran off"
         jump day5_investigation_hub
 
     elif clicked_object == "tourist":
         show expression "gui/day5_abandoned_station/Depot_Entrance/Tourist.png" at topleft
+        tourist "I didn't know this town would be this active!"
         tourist "I've been snapping photos all morning! I'm pretty sure they were just filming a zombie action movie here with fake blood."
         if "Tourist 1" not in day5_witnesses_found:
             $ day5_witnesses_found.append("Tourist 1")
@@ -80,12 +83,13 @@ label day5_maintenance_bay_hub:
     if clicked_object == "engineer":
         show expression "gui/day5_abandoned_station/Maintenance_Bay/Train_Engineer.png" at topleft
         engineer "Nothing mysterious about it. That driver just fell off a moving cargo train."
+        engineer "I was working on the tracks when I saw him fall."
         if "Train Engineer 1" not in day5_witnesses_found:
             $ day5_witnesses_found.append("Train Engineer 1")
         jump day5_maintenance_bay_hub
 
     elif clicked_object == "toolbox":
-        "Heavy junk left behind by a mechanic. It adds nothing to my story, though I'll stash it in my bag."
+        "Heavy junk left behind by a mechanic."
         if "The Rusty Toolbox" not in day5_items_found:
             $ day5_items_found.append("The Rusty Toolbox")
         if "The Rusty Toolbox" not in inventory_bag_items:
@@ -94,6 +98,7 @@ label day5_maintenance_bay_hub:
 
     elif clicked_object == "go_to_oilleak_closeup":
         "(Looks like there's a dark puddle leaking on the floor over there.)"
+        
         jump day5_oilleak_closeup_hub
 
     elif clicked_object == "depot_entrance":
@@ -103,7 +108,8 @@ label day5_oilleak_closeup_hub:
     scene expression "gui/day5_abandoned_station/Maintenance_Bay/Oil_Leak_CloseUp.jpg" at topleft
     if "The Leaking Oil Puddle" not in day5_clues_found:
         $ day5_clues_found.append("The Leaking Oil Puddle")
-    "Looks like normal car trouble, hiding the fact there was a violent shootout here."
+    "Looks like normal car trouble"
+    "Wait, what is that red drop beside the puddle?"
     call screen day5_oilleak_closeup_environment
     jump day5_maintenance_bay_hub
 
@@ -126,6 +132,7 @@ label day5_abandoned_tracks_hub:
     if clicked_object == "hobo":
         show expression "gui/day5_abandoned_station/Abandoned_Tracks/Homeless_Man_Idle.png" at topleft
         hobo "Wake up! The government is poisoning the water supply!"
+        hobo "I drank from a rusty faucet and my stomach hurt ALL WEEK"
         if "Hobo 1" not in day5_witnesses_found:
             $ day5_witnesses_found.append("Hobo 1")
         jump day5_abandoned_tracks_hub
@@ -156,7 +163,8 @@ label day5_tracks_closeup_hub:
         jump day5_tracks_closeup_hub
 
     elif clicked_object == "dogtracks":
-        "Wild dog tracks. Just stray animals drawn to the blood."
+        "Wild dog tracks. Maybe they are drawn to the smell of blood."
+        "Or they just went for a hunt and stumbled here accidentaly"
         if "The Wild Dog Tracks" not in day5_clues_found:
             $ day5_clues_found.append("The Wild Dog Tracks")
         jump day5_tracks_closeup_hub
@@ -170,7 +178,7 @@ label day5_grass_closeup_hub:
     $ clicked_object = _return
 
     if clicked_object == "wallet":
-        "An empty wallet. Just a pickpocket's discarded trash that distracts from the big picture."
+        "An empty wallet. Could this belong to a pickpocket?"
         if "The Empty Wallet" not in day5_items_found:
             $ day5_items_found.append("The Empty Wallet")
         if "The Empty Wallet" not in inventory_bag_items:
@@ -198,7 +206,7 @@ label day5_triage_hub:
 
     if clicked_object == "medic":
         show expression "gui/day5_abandoned_station/Triage/Medic.png" at topleft
-        medic "They forced me at gunpoint to treat a wounded gangster! He kept muttering about an all-out war at the shipping docks at midnight!"
+        medic "They forced me at gunpoint to treat a wounded gangster! He kept muttering about how they're gonna get revenge on the shipping docks!"
         if "Medic 1" not in day5_witnesses_found:
             $ day5_witnesses_found.append("Medic 1")
         jump day5_triage_hub
@@ -223,7 +231,7 @@ label day5_crate_closeup_hub:
     $ clicked_object = _return
 
     if clicked_object == "phone":
-        "A cheap burner phone dropped near the medical supplies. The messages confirm a massive gang war at the shipping docks at midnight!"
+        "A cheap burner phone dropped near the medical supplies. The messages confirm there will be a massive gang war at midnight!"
         $ evidence_phone = True
         if "The Burner Phone" not in inventory_bag_items:
             $ inventory_bag_items.append("The Burner Phone")
@@ -257,7 +265,7 @@ label day5_coat_closeup_hub:
     $ clicked_object = _return
 
     if clicked_object == "ticketstub":
-        "I found a Train Ticket Stub in the injured driver's pocket. It proves the gangs were planning to leave town."
+        "This is a Train Ticket Stub in the injured driver's pocket. Looks like they we're planning to leave town until they got ambushed by the rival gang"
         if "The Train Ticket Stub" not in day5_items_found:
             $ day5_items_found.append("The Train Ticket Stub")
         if "The Train Ticket Stub" not in inventory_bag_items:

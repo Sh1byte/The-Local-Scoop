@@ -16,6 +16,8 @@ image bg safe_minigame = im.Scale("gui/day3_casino/backroom/safe/safe_minigame/s
 image bg opened_safe = im.Scale("gui/day3_casino/backroom/safe/opened_safe/vault_open.jpg", 1920, 1080)
 image bg wiring_minigame = im.Scale("gui/day3_casino/casino_playroom/wire_minigame/bg_wire_box.jpg", 1920, 1080)
 image desk_newspaper = im.Scale("gui/desk_newspaper.jpg", 1920, 1080)
+image d3newsroom1 = "gui/newsroom_scenes/Day3_Scene1.jpg"
+image d3newsroom2 = "gui/newsroom_scenes/Day3_Scene2.jpg"
 
 # --- NEW CONDITIONAL BACKGROUNDS ---
 image bg playroom_fire = im.Scale("gui/day3_casino/casino_playroom/bg_playroom_fire.jpg", 1920, 1080)
@@ -48,10 +50,14 @@ label day3_start:
                 inventory_bag_items.remove(item)
 
     scene bg newsroom
+    scene d3newsroom1 with dissolve
+    kenneth "What is this report that landed on my desk!?"
+    kenneth "I told you to not cover the burned stall"
+    scene d3newsroom2 with dissolve
     kenneth "Both of you, drop the gang story entirely!"
-    
-    scene bg casino_basement
-    arthur "Look, this is getting deadly. We are a team now."
+    kenneth "The two gangs are powerful organizations. If you keep digging, you'll be in danger."
+    "(Sorry boss, but this gang dispute sounds like an interesting story)"
+    "(I'll go to the casino tomorrow, I heard there was a shootout that happened there earlier)"
     jump day3_outside
 
 # ==========================================
@@ -83,6 +89,7 @@ label day3_club_front:
     
     if action == "inside_club":
         if "The VIP Pass" in inventory_bag_items:
+            "Club Bouncer" "Welcome to the club sir. Enjoy your stay."
             hide screen day3_club_front_environment
             jump day3_club_inside
         else:
@@ -136,8 +143,8 @@ label day3_lobby:
             hide screen day3_casino_lobby
             jump day3_underground
         else:
-            "Casino Bouncer" "You can't go down there unless there's an emergency."
-            "Maybe if I cause a distraction to the slot machine in the Playroom, I can tell him to go there."
+            "Casino Bouncer" "Hit the road dude, this aint no public place this is private property."
+            "Maybe if I cause a distraction to the slot machine in the Playroom, I can force him to go there."
             hide screen day3_casino_lobby
             jump day3_lobby
     elif action == "cashier":
@@ -175,19 +182,23 @@ label day3_playroom:
         hide screen day3_playroom_environment
         jump day3_wire_minigame
     elif action == "arthur":
-        arthur "I realize the danger now. I agree to split the work with you."
+        arthur "Dude, this is getting dangerous."
+        arthur "We're in this together right? We need to be careful."
         if "Arthur" not in day3_witnesses_found:
             $ day3_witnesses_found.append("Arthur")
         hide screen day3_playroom_environment
         jump day3_playroom
     elif action == "jukebox":
         "The Smashed Jukebox. Broken glass and loose wiring."
+        "It really is a mess in here. I should take a picture of this for my story."
         if "The Smashed Jukebox" not in day3_clues_found:
             $ day3_clues_found.append("The Smashed Jukebox")
         hide screen day3_playroom_environment
         jump day3_playroom
     elif action == "drunk":
         drunk "A rival casino owner drove a bulldozer into the wall!"
+        drunk "I was drunk and passed out, but I saw the whole thing!"
+        "But there are no holes on the wall. Maybe he is exaggerating."
         if "Drunk Patron 1" not in day3_witnesses_found:
             $ day3_witnesses_found.append("Drunk Patron 1")
         hide screen day3_playroom_environment
@@ -208,12 +219,14 @@ label day3_cards_closeup:
         jump day3_playroom
     elif action == "cards":
         "Decks of crooked playing cards littered everywhere."
+        "It looks like they need to fire their maid."
         if "The Scattered Marked Cards" not in day3_clues_found:
             $ day3_clues_found.append("The Scattered Marked Cards")
         hide screen day3_cards_closeup_environment
         jump day3_cards_closeup
     elif action == "earring":
         "A fake diamond earring on the floor."
+        "I thought casino is where rich people gamble, but this is a cheap imitation."
         if "The Diamond Earring" not in day3_items_found:
             $ day3_items_found.append("The Diamond Earring")
             $ inventory_bag_items.append("The Diamond Earring")
@@ -262,18 +275,21 @@ label day3_underground:
         jump day3_backroom
     elif action == "bullethole":
         "Over fifty bullet holes scar the masonry."
+        "This is a clue that proves heavy firepower was used in the attack."
         if "The Bullet-Riddled Wall" not in day3_clues_found:
             $ day3_clues_found.append("The Bullet-Riddled Wall")
         hide screen day3_underground_casino
         jump day3_underground
     elif action == "cleaner":
         cleaner "The police raided the place in secret and took all the money!"
+        cleaner "I was just cleaning the place when they came in and took everything!"
         if "Cleaner 1" not in day3_witnesses_found:
             $ day3_witnesses_found.append("Cleaner 1")
         hide screen day3_underground_casino
         jump day3_underground
     elif action == "waitress":
         waitress "An angry ghost haunts the basement!"
+        waitress "I was serving drinks when I saw a shadowy figure and heard a loud crash!"
         if "Waitress 1" not in day3_witnesses_found:
             $ day3_witnesses_found.append("Waitress 1")
         hide screen day3_underground_casino
@@ -287,6 +303,7 @@ label day3_underground:
         jump day3_underground
     elif action == "vippass":
         "It's a VIP Pass to a local club. A silver casino card."
+        "With this, I can get into the club"
         if "The VIP Pass" not in day3_items_found:
             $ day3_items_found.append("The VIP Pass")
             $ inventory_bag_items.append("The VIP Pass")
@@ -314,7 +331,8 @@ label day3_backroom:
         hide screen day3_backroom_environment
         jump day3_safe_close_up
     elif action == "dealer":
-        dealer "The Iron Syndicate raided us because this place is owned by The River Boys!"
+        dealer "The Iron Syndicate raided us because this is the River Boys' casino!"
+        dealer "The tension between the two gangs has been building for years, and it looks like it about to explode!"
         if "Dealer 1" not in day3_witnesses_found:
             $ day3_witnesses_found.append("Dealer 1")
         hide screen day3_backroom_environment
@@ -334,7 +352,8 @@ label day3_safe_close_up:
         hide screen day3_safe_closeup_environment
         jump day3_backroom
     elif action == "clue_paper":
-        "The note has a jack-o-lantern and a genie, maybe this is a clue. It says '3 - 1 - 3'."
+        "The note has a jack-o-lantern and a genie, maybe this is a clue. It says Jack-O-Lantern and a genie."
+        "When do I see jack-o-lanterns and for the genies, could it be the number of wishes? Maybe this is an elaborate clue."
         hide screen day3_safe_closeup_environment
         jump day3_safe_close_up
     elif action == "safe_interact":
@@ -391,6 +410,7 @@ label day3_opened_safe_view:
     
     if action == "bloody_ledger":
         "I found a Bloody Ledger listing illegal weapon purchases inside the safe."
+        "The details are all here, the buyers, the sellers, the dates, and the prices."
         $ evidence_ledger = True
         hide screen day3_opened_safe_environment
         jump day3_opened_safe_view

@@ -19,6 +19,8 @@ image bg bench = "gui/day2_plaza/bench/bg_bench.png"
 image bg bench_bread = "gui/day2_plaza/bench/bg_bench_bread.jpg"
 image bg another_stall = im.Scale("gui/day2_plaza/market_stalls/another_stall/bg_anotherstall.png", 1920, 1072)
 image desk_newspaper = im.Scale("gui/desk_newspaper.jpg", 1920, 1080)
+image d2newsroom1 = "gui/newsroom_scenes/Day2_Scene1.jpg"
+image d2newsroom2 = "gui/newsroom_scenes/Day2_Scene2.jpg"
 
 define vendor = Character("Vendor", color="#cccccc")
 define shopper = Character("Shopper", color="#cccccc")
@@ -51,15 +53,17 @@ label day2_start:
                 inventory_bag_items.remove(item)
 
     scene bg newsroom
-    kenneth "Market plaza. Fruit stand burned to the ground in broad daylight. Go."
-    
-    scene bg market_plaza at day2_plaza_origin
-    arthur "Go back to the office, rookie."
+    scene d2newsroom1 with dissolve
+    kenneth "{cps=28}Something happened in the market plaza. A new electronics store just opened{/cps}{w=2.5}{nw}"
+    scene d2newsroom2 with dissolve
+    kenneth "{cps=28}Get over there and bring me a story{/cps}{w=1}{nw}"
+    scene d2newsroom1 with dissolve
+    kenneth "{cps=28}Also I heard that a fruit stand burned down, don't mind that and just focus on the new store story{/cps}{w=2.5}{nw}"
     jump day2_investigation_hub
 
 label day2_investigation_hub:
-    scene bg market_plaza at day2_plaza_origin
-    call screen day2_market_investigation
+    scene bg market_plaza at day2_plaza_origin 
+    call screen day2_market_investigation 
     $ clicked_object = _return
     
     show screen day2_market_investigation

@@ -8,6 +8,8 @@ image bg tower_warehouse = im.Scale("gui/day_tower_warehouse/bg_tower_warehouse.
 image bg garage_back_warehouse = im.Scale("gui/day1_garage_warehouse/bg_garage_warehouse.png", 1920, 1072)
 image bg riverclose = im.Scale("gui/day1_back_warehouse/bg_riverclose.png", 1920, 1072)
 image desk_newspaper = im.Scale("gui/desk_newspaper.jpg", 1920, 1080)
+image newsroom1 = "gui/newsroom_scenes/Day1_Scene1.jpg"
+image newsroom2 = "gui/newsroom_scenes/Day1_Scene2.jpg"
 
 define kenneth = Character("Editor Kenneth", color="#b30000")
 define arthur = Character("Arthur", color="#ff9900")
@@ -55,14 +57,17 @@ label stage1_briefing:
             jump day5_path_a_start
 
 label day1_path:
-    kenneth "Listen up, rookie. I don't want you digging into the rising crime rate. That's an order."
-    kenneth "Head down to the riverside shipping warehouse. Someone vandalized it. Get a simple quote and come back."
+    scene bg newsroom
+    scene newsroom1 with dissolve
+    kenneth "{cps=28}Listen up, rookie. I don't want you digging into the rising crime rate. That's an order.{/cps}{w=2.5}{nw}"
+    kenneth "{cps=28}Head down to the riverside shipping warehouse. Someone vandalized it. Get a simple quote and come back.{/cps}{w=2.5}{nw}"
     
-    scene bg warehouse
-    arthur "Well, look who finally showed up. Stay out of my way, rookie."
+    scene newsroom2 with dissolve
+    arthur "{cps=28}Stay out of my way rookie! this is my story{/cps}{w=2.5}{nw}"
     jump day1_investigation_hub
 
 label day1_investigation_hub:
+    scene bg warehouse 
     call screen day1_warehouse_investigation
     $ clicked_object = _return
     
