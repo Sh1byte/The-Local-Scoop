@@ -180,7 +180,7 @@ screen tower_clipboard_overlay():
 screen flashlight_environment():
     modal True
     add "gui/day_tower_warehouse/flashlight/flashlight.png"
-    imagebutton xpos 0 ypos 0 idle "gui/day_tower_warehouse/flashlight/fl_open_idle.png" hover brighten("gui/day_tower_warehouse/flashlight/fl_open_idle.png") focus_mask True action Show("flashlight_open_environment")
+    imagebutton xpos 0 ypos 0 idle "gui/day_tower_warehouse/flashlight/fl_open_idle.png" hover brighten("gui/day_tower_warehouse/flashlight/fl_open_idle.png") focus_mask True action If(battery_obtained, Show("flashlight_empty_environment"), Show("flashlight_open_environment"))
     textbutton "Close" xalign 0.92 yalign 0.08 action Hide("flashlight_environment")
     key "K_ESCAPE" action Hide("flashlight_environment")
 
@@ -188,8 +188,14 @@ screen flashlight_open_environment():
     modal True
     add "gui/day_tower_warehouse/flashlight/flashlight_open.png"
     imagebutton xpos 0 ypos 0 idle "gui/day_tower_warehouse/flashlight/fl_empty_idle.png" hover brighten("gui/day_tower_warehouse/flashlight/fl_empty_idle.png") focus_mask True action Show("flashlight_empty_environment")
-    textbutton "Close" xalign 0.92 yalign 0.08 action Hide("flashlight_open_environment")
-    key "K_ESCAPE" action Hide("flashlight_open_environment")
+    textbutton "Close" xalign 0.92 yalign 0.08 action [
+        Hide("flashlight_open_environment"),
+        Hide("flashlight_environment")
+    ]
+    key "K_ESCAPE" action [
+        Hide("flashlight_open_environment"),
+        Hide("flashlight_environment")
+    ]
 
 screen flashlight_empty_environment():
     modal True
@@ -224,7 +230,7 @@ screen day1_warehouse_tower_environment():
     add "gui/day_tower_warehouse/bg_tower_warehouse.png"
     imagebutton xpos 0 ypos 0 idle "gui/day_tower_warehouse/jogger.png" hover brighten("gui/day_tower_warehouse/jogger.png") focus_mask True action Return("jogger")
     imagebutton xpos 0 ypos 0 idle "gui/day_tower_warehouse/tower_clipboard.png" hover brighten("gui/day_tower_warehouse/tower_clipboard.png") focus_mask True action Show("tower_clipboard_overlay")
-    imagebutton xpos 0 ypos 0 idle "gui/day_tower_warehouse/tower_flashlight.png" hover brighten("gui/day_tower_warehouse/tower_flashlight.png") focus_mask True action Show("flashlight_environment")
+    imagebutton xpos 0 ypos 0 idle "gui/day_tower_warehouse/tower_flashlight.png" hover brighten("gui/day_tower_warehouse/tower_flashlight.png") focus_mask True action If(battery_obtained, Show("flashlight_empty_environment"), Show("flashlight_environment"))
     key "K_ESCAPE" action Return("return_to_front")
 
 screen day1_warehouse_office_environment():
