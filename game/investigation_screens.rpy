@@ -697,23 +697,27 @@ screen tutorial_office_environment():
 # NEWSPAPER UI SCREEN
 # ==========================================
 screen newspaper_results_ui(headline, body, rating, score):
-    # This displays your blank zoomed-in newspaper asset
+    # This displays your straight, un-slanted zoomed-in newspaper asset
     add "gui/newspaper_zoomed.jpg"
     
-    # This positions the text over the single wide box of the new image
+    # This aligns the text block perfectly over the straight box
     vbox:
-        # Shifted left and up slightly to align with the new border
-        pos (380, 280) 
-        # Widened to 1150 so it fills the single large box without spilling over
-        xsize 1150 
-        spacing 25
+        # Shifting the position further right (600) and slightly up (310)
+        # to clear the left margin and align with the square box
+        pos (600,375) 
+        # Shrinking the width to 720 so text wraps before the right border
+        xsize 720 
+        spacing 15 # Tightened slightly for a natural read inside the vertical height
         
-        # The dynamic text fetched from SheetDB, styled to look like printed ink
-        text headline size 45 bold True color "#1a1a1a"
-        text body size 30 color "#2b2b2b"
+        # Sized nicely to look natural and not overflow
+        text headline size 28 bold True color "#1a1a1a"
+        text body size 18 color "#2b2b2b" line_spacing 3
         
-        text "Editor's Rating: [rating]" size 35 italic True color "#590000"
-        text "Total Credibility: [score]" size 35 bold True color "#1a1a1a"
+        # Give some visual separation before the rating and score
+        null height 10
         
-    # A button at the bottom to continue the game
-    textbutton "Put away newspaper" action Return() align (0.5, 0.95) text_size 40 text_color "#ffffff" text_outlines [(2, "#000000", 0, 0)]
+        text "Editor's Rating: [rating]" size 22 italic True color "#590000"
+        text "Total Credibility: [score]" size 22 bold True color "#1a1a1a"
+        
+    # Standard textbutton at the bottom, repositioned slightly to prevent conflict
+    textbutton "Put away newspaper" action Return() align (0.5, 0.93) text_size 28 text_color "#ffffff" text_outlines [(2, "#000000", 0, 0)]
