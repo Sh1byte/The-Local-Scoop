@@ -18,6 +18,7 @@ image bg wiring_minigame = im.Scale("gui/day3_casino/casino_playroom/wire_miniga
 image desk_newspaper = im.Scale("gui/desk_newspaper.jpg", 1920, 1080)
 image d3newsroom1 = "gui/newsroom_scenes/Day3_Scene1.jpg"
 image d3newsroom2 = "gui/newsroom_scenes/Day3_Scene2.jpg"
+
 # --- NEW CONDITIONAL BACKGROUNDS ---
 image bg playroom_fire = im.Scale("gui/day3_casino/casino_playroom/bg_playroom_fire.jpg", 1920, 1080)
 image bg playroom_bouncer = im.Scale("gui/day3_casino/casino_playroom/bg_playroom_bouncer.jpg", 1920, 1080)
@@ -39,14 +40,23 @@ default day3_witnesses_found = []
 default safe_unlocked = False
 default slot_machine_shorted = False
 
+# ==========================================
+# DAY 3 BRIEFING
+# ==========================================
 label day3_start:
     $ current_day = 3
     python:
         for item in ["Blurry Photograph", "The Expensive Cigar", "The Dropped Lottery Ticket"]:
             if item in inventory_bag_items:
                 inventory_bag_items.remove(item)
+
+    play sting "audio/sting_day_transition.ogg" volume 0.75
+    play music "audio/bgm_newsroom.ogg" fadeout 1.0 fadein 1.5 volume 0.55 if_changed
+    play ambient "audio/amb_newsroom.ogg" fadeout 0.8 fadein 1.0 volume 0.40 if_changed
+
     scene bg newsroom
     scene d3newsroom1 with dissolve
+    play sound "audio/sfx_paper_rustle.ogg"
     kenneth "What is this report that landed on my desk!?"
     kenneth "I told you to not cover the burned stall"
     scene d3newsroom2 with dissolve
@@ -54,6 +64,8 @@ label day3_start:
     kenneth "The two gangs are powerful organizations. If you keep digging, you'll be in danger."
     "(Sorry boss, but this gang dispute sounds like an interesting story)"
     "(I'll go to the casino tomorrow, I heard there was a shootout that happened there earlier)"
+
+    play sound "audio/sfx_footsteps_move.ogg"
     show screen global_hud
     jump day3_outside
 
@@ -64,48 +76,68 @@ label day3_outside:
     $ current_day = 3
     show screen global_hud
     scene bg casino_outside at topleft
+    play music "audio/bgm_day3_casino.ogg" fadeout 1.0 fadein 1.2 volume 0.55 if_changed
+    play ambient "audio/amb_night_street.ogg" fadeout 0.8 fadein 1.0 volume 0.45 if_changed
+
     call screen day3_outside_casino
     $ action = _return
-   
+
     if action == "casino":
+        play sound "audio/sfx_door_open.ogg"
         jump day3_lobby
     elif action == "club_front":
+        play sound "audio/sfx_footsteps_move.ogg"
         jump day3_club_front
     elif action == "newsroom":
+        play sound "audio/sfx_van_door.ogg"
         jump day3_newspaper_minigame
     else:
         jump day3_outside
 
 label day3_club_front:
     scene bg club_front at topleft
+    play music "audio/bgm_day3_casino.ogg" fadeout 1.0 fadein 1.0 volume 0.50 if_changed
+    play ambient "audio/amb_night_street.ogg" fadeout 0.8 fadein 0.8 volume 0.50 if_changed
+
     call screen day3_club_front_environment
     $ action = _return
-   
+
     if action == "inside_club":
         if "The VIP Pass" in inventory_bag_items or "The VIP Pass" in day3_items_found:
+            play sound "audio/sfx_pickup_item.ogg"
             "Club Bouncer" "Welcome to the club sir. Enjoy your stay."
+            play sound "audio/sfx_door_open.ogg"
             jump day3_club_inside
         else:
+            play sound "audio/ui_evidence_locked.ogg"
             "Club Bouncer" "You need a VIP Pass to get past this door."
             jump day3_club_front
     elif action == "outside":
+        play sound "audio/sfx_footsteps_move.ogg"
         jump day3_outside
     elif action == "newsroom":
+        play sound "audio/sfx_van_door.ogg"
         jump day3_newspaper_minigame
     else:
         jump day3_club_front
 
 label day3_club_inside:
     scene bg club_inside at topleft
+    play music "audio/bgm_day3_club.ogg" fadeout 1.0 fadein 1.0 volume 0.55 if_changed
+    stop ambient fadeout 0.8
+
     call screen day3_club_inside_environment
     $ action = _return
-   
+
     if action == "outside":
+        play sound "audio/sfx_door_open.ogg"
         jump day3_club_front
     elif action == "gossiper":
+        play sound "audio/ui_notepad_flip.ogg"
         "Gossiping group" "They say the leader of one of the gang is someone powerful enough to control the whole town..."
         jump day3_club_inside
     elif action == "newsroom":
+        play sound "audio/sfx_van_door.ogg"
         jump day3_newspaper_minigame
     else:
         jump day3_club_inside
@@ -115,48 +147,68 @@ label day3_lobby:
         scene bg casino_lobby_nobouncer at topleft
     else:
         scene bg casino_lobby at topleft
-       
+
+    play music "audio/bgm_day3_casino.ogg" fadeout 1.0 fadein 1.0 volume 0.55 if_changed
+    play ambient "audio/amb_casino_crime.ogg" fadeout 0.8 fadein 0.8 volume 0.45 if_changed
+
     call screen day3_casino_lobby
     $ action = _return
-   
+
     if action == "outside":
+        play sound "audio/sfx_door_open.ogg"
         jump day3_outside
     elif action == "playroom":
+        play sound "audio/sfx_door_open.ogg"
         jump day3_playroom
     elif action == "underground":
         if slot_machine_shorted:
+            play sound "audio/sfx_door_open.ogg"
             jump day3_underground
         else:
+            play sound "audio/ui_evidence_locked.ogg"
             "Casino Bouncer" "Hit the road dude, this aint no public place this is private property."
             "Maybe if I cause a distraction to the slot machine in the Playroom, I can force him to go there."
             jump day3_lobby
     elif action == "cashier":
+        play sound "audio/sfx_footsteps_move.ogg"
         jump day3_cashier_closeup
     elif action == "newsroom":
+        play sound "audio/sfx_van_door.ogg"
         jump day3_newspaper_minigame
     else:
         jump day3_lobby
 
 label day3_cashier_closeup:
     scene bg cashier_closeup at topleft
+    play music "audio/bgm_day3_casino.ogg" fadeout 1.0 fadein 1.0 volume 0.55 if_changed
+    play ambient "audio/amb_casino_crime.ogg" fadeout 0.8 fadein 0.8 volume 0.45 if_changed
+
     call screen day3_cashier_environment
     $ action = _return
+    play sound "audio/ui_cancel.ogg"
     jump day3_lobby
 
 label day3_playroom:
     if slot_machine_shorted:
         scene bg playroom_bouncer at topleft
+        play ambient "audio/amb_playroom_fire.ogg" fadeout 0.8 fadein 0.8 volume 0.50 if_changed
     else:
         scene bg casino_playroom at topleft
-       
+        play ambient "audio/amb_casino_crime.ogg" fadeout 0.8 fadein 0.8 volume 0.45 if_changed
+
+    play music "audio/bgm_day3_casino.ogg" fadeout 1.0 fadein 1.0 volume 0.50 if_changed
+
     call screen day3_playroom_environment
     $ action = _return
-   
+
     if action == "lobby":
+        play sound "audio/sfx_door_open.ogg"
         jump day3_lobby
     elif action == "cards_closeup":
+        play sound "audio/sfx_footsteps_move.ogg"
         jump day3_cards_closeup
     elif action == "wire_minigame":
+        play sound "audio/ui_click.ogg"
         jump day3_wire_minigame
     elif action == "arthur":
         arthur "Dude, this is getting dangerous."
@@ -167,10 +219,12 @@ label day3_playroom:
             $ day3_clues_found.append("The Smashed Jukebox")
             $ renpy.notify("Clue found: The Smashed Jukebox.")
         "The Smashed Jukebox. Broken glass and loose wiring."
+        play sound "audio/sfx_camera_shutter.ogg"
         "It really is a mess in here. I should take a picture of this for my story."
         jump day3_playroom
     elif action == "drunk":
         if "Drunk Patron 1" not in day3_witnesses_found:
+            play sound "audio/ui_notepad_flip.ogg"
             $ day3_witnesses_found.append("Drunk Patron 1")
             $ renpy.notify("Witness interviewed: Drunk Patron.")
         drunk "A rival casino owner drove a bulldozer into the wall!"
@@ -178,6 +232,7 @@ label day3_playroom:
         "But there are no holes on the wall. Maybe he is exaggerating."
         jump day3_playroom
     elif action == "newsroom":
+        play sound "audio/sfx_van_door.ogg"
         jump day3_newspaper_minigame
     else:
         jump day3_playroom
@@ -186,10 +241,12 @@ label day3_cards_closeup:
     scene bg cards_closeup at topleft
     call screen day3_cards_closeup_environment
     $ action = _return
-   
+
     if action == "back":
+        play sound "audio/ui_cancel.ogg"
         jump day3_playroom
     elif action == "cards":
+        play sound "audio/sfx_paper_rustle.ogg"
         if "The Scattered Marked Cards" not in day3_clues_found:
             $ day3_clues_found.append("The Scattered Marked Cards")
             $ renpy.notify("Clue found: The Scattered Marked Cards.")
@@ -197,6 +254,7 @@ label day3_cards_closeup:
         "It looks like they need to fire their maid."
         jump day3_cards_closeup
     elif action == "earring":
+        play sound "audio/sfx_pickup_item.ogg"
         if "The Diamond Earring" not in day3_items_found:
             $ day3_items_found.append("The Diamond Earring")
         if "The Diamond Earring" not in inventory_bag_items:
@@ -213,37 +271,50 @@ label day3_wire_minigame:
         "The bouncer is distracted."
         "I should move quickly."
         jump day3_playroom
-       
+
     call screen day3_wire_minigame_screen
     $ action = _return
-   
+
     if action == "win":
         $ slot_machine_shorted = True
         play sound "audio/sfx_spark.ogg"
-       
+        play ambient "audio/amb_playroom_fire.ogg" fadeout 0.5 fadein 0.8 volume 0.55 if_changed
+
         scene bg playroom_fire at topleft
         "SPARK! The crossed wires pop violently and smoke begins to rise from the cabinet."
-       
+
+        play sound "audio/sfx_bouncer_rush.ogg"
         scene bg playroom_bouncer at topleft with fade
         "The Casino Bouncer shouts in panic and runs over to inspect the Playroom!"
         jump day3_playroom
-       
+
     elif action == "back":
+        play sound "audio/ui_cancel.ogg"
         jump day3_playroom
     else:
         jump day3_playroom
 
+# ==========================================
+# UNDERGROUND CASINO, BACKROOM & SAFE PUZZLE
+# ==========================================
 label day3_underground:
     scene bg underground_casino at topleft
+    play music "audio/bgm_day3_underground.ogg" fadeout 1.0 fadein 1.2 volume 0.55 if_changed
+    play ambient "audio/amb_casino_crime.ogg" fadeout 0.8 fadein 0.8 volume 0.45 if_changed
+
     call screen day3_underground_casino
     $ action = _return
-   
+
     if action == "lobby":
+        play sound "audio/sfx_door_open.ogg"
         jump day3_lobby
     elif action == "backroom":
+        play sound "audio/sfx_door_open.ogg"
         jump day3_backroom
     elif action == "bullethole":
+        play sound "audio/sfx_camera_shutter.ogg"
         if "The Bullet-Riddled Wall" not in day3_clues_found:
+            play sting "audio/sting_clue_major.ogg" volume 0.75
             $ day3_clues_found.append("The Bullet-Riddled Wall")
             $ renpy.notify("Clue found: The Bullet-Riddled Wall.")
         "Over fifty bullet holes scar the masonry."
@@ -251,6 +322,7 @@ label day3_underground:
         jump day3_underground
     elif action == "cleaner":
         if "Cleaner 1" not in day3_witnesses_found:
+            play sound "audio/ui_notepad_flip.ogg"
             $ day3_witnesses_found.append("Cleaner 1")
             $ renpy.notify("Witness interviewed: Cleaner.")
         cleaner "The police raided the place in secret and took all the money!"
@@ -258,12 +330,14 @@ label day3_underground:
         jump day3_underground
     elif action == "waitress":
         if "Waitress 1" not in day3_witnesses_found:
+            play sound "audio/ui_notepad_flip.ogg"
             $ day3_witnesses_found.append("Waitress 1")
             $ renpy.notify("Witness interviewed: Waitress.")
         waitress "An angry ghost haunts the basement!"
         waitress "I was serving drinks when I saw a shadowy figure and heard a loud crash!"
         jump day3_underground
     elif action == "creditcard":
+        play sound "audio/sfx_pickup_item.ogg"
         if "The Stolen Credit Card" not in day3_items_found:
             $ day3_items_found.append("The Stolen Credit Card")
         if "The Stolen Credit Card" not in inventory_bag_items:
@@ -272,7 +346,9 @@ label day3_underground:
         "A stolen plastic credit card."
         jump day3_underground
     elif action == "vippass":
+        play sound "audio/sfx_pickup_item.ogg"
         if "The VIP Pass" not in day3_items_found:
+            play sting "audio/sting_clue_major.ogg" volume 0.70
             $ day3_items_found.append("The VIP Pass")
         if "The VIP Pass" not in inventory_bag_items:
             $ inventory_bag_items.append("The VIP Pass")
@@ -281,6 +357,7 @@ label day3_underground:
         "With this, I can get into the club"
         jump day3_underground
     elif action == "newsroom":
+        play sound "audio/sfx_van_door.ogg"
         jump day3_newspaper_minigame
     else:
         jump day3_underground
@@ -290,41 +367,55 @@ label day3_backroom:
         scene bg backroom_open at topleft
     else:
         scene bg backroom at topleft
-       
+
+    play music "audio/bgm_day3_underground.ogg" fadeout 1.0 fadein 1.0 volume 0.55 if_changed
+    play ambient "audio/amb_casino_crime.ogg" fadeout 0.8 fadein 0.8 volume 0.45 if_changed
+
     call screen day3_backroom_environment
     $ action = _return
-   
+
     if action == "underground":
+        play sound "audio/sfx_door_open.ogg"
         jump day3_underground
     elif action == "vault":
+        play sound "audio/sfx_footsteps_move.ogg"
         jump day3_safe_close_up
     elif action == "dealer":
         if "Dealer 1" not in day3_witnesses_found:
+            play sound "audio/ui_notepad_flip.ogg"
             $ day3_witnesses_found.append("Dealer 1")
             $ renpy.notify("Witness interviewed: Dealer.")
         dealer "The Iron Syndicate raided us because this is the River Boys' casino!"
         dealer "The tension between the two gangs has been building for years, and it looks like it about to explode!"
         jump day3_backroom
     elif action == "newsroom":
+        play sound "audio/sfx_van_door.ogg"
         jump day3_newspaper_minigame
     else:
         jump day3_backroom
 
 label day3_safe_close_up:
     scene bg safe_closeup at topleft
+    play music "audio/bgm_day3_underground.ogg" fadeout 1.0 fadein 1.0 volume 0.55 if_changed
+    play ambient "audio/amb_casino_crime.ogg" fadeout 0.8 fadein 0.8 volume 0.40 if_changed
+
     call screen day3_safe_closeup_environment
     $ action = _return
-   
+
     if action == "back":
+        play sound "audio/ui_cancel.ogg"
         jump day3_backroom
     elif action == "clue_paper":
+        play sound "audio/sfx_paper_rustle.ogg"
         "The note has a jack-o-lantern and a genie, maybe this is a clue. It says Jack-O-Lantern and a genie."
         "When do I see jack-o-lanterns and for the genies, could it be the number of wishes? Maybe this is an elaborate clue."
         jump day3_safe_close_up
     elif action == "safe_interact":
         if safe_unlocked:
+            play sound "audio/sfx_door_open.ogg"
             jump day3_opened_safe_view
         else:
+            play sound "audio/ui_click.ogg"
             jump day3_safe_minigame
     else:
         jump day3_safe_close_up
@@ -337,11 +428,13 @@ label day3_safe_minigame_loop:
     scene bg safe_minigame at topleft
     call screen safe_puzzle_screen(safe_current_digit, safe_entered_code)
     $ action = _return
-   
+
     if action == "turn_right":
+        play sound "audio/sfx_safe_tick.ogg"
         $ safe_current_digit = (safe_current_digit - 1) % 10
         jump day3_safe_minigame_loop
     elif action == "turn_left":
+        play sound "audio/sfx_safe_tick.ogg"
         $ safe_current_digit = (safe_current_digit + 1) % 10
         jump day3_safe_minigame_loop
     elif action == "enter_digit":
@@ -349,14 +442,19 @@ label day3_safe_minigame_loop:
         if len(safe_entered_code) == 3:
             if safe_entered_code == "313":
                 $ safe_unlocked = True
+                play sound "audio/sfx_safe_unlock.ogg"
                 "Click. The heavy mechanism unlocks."
                 jump day3_opened_safe_view
             else:
+                play sound "audio/sfx_safe_error.ogg"
                 "Bzzt. Wrong combination. The dial resets."
                 $ safe_entered_code = ""
                 jump day3_safe_minigame_loop
+        else:
+            play sound "audio/sfx_safe_enter.ogg"
         jump day3_safe_minigame_loop
     elif action == "exit":
+        play sound "audio/ui_cancel.ogg"
         jump day3_safe_close_up
     else:
         jump day3_safe_minigame_loop
@@ -365,9 +463,11 @@ label day3_opened_safe_view:
     scene bg opened_safe at topleft
     call screen day3_opened_safe_environment
     $ action = _return
-   
+
     if action == "bloody_ledger":
         $ evidence_ledger = True
+        play sound "audio/sfx_paper_rustle.ogg"
+        play sting "audio/sting_clue_major.ogg" volume 0.80
         if "The Bloody Ledger" not in inventory_bag_items:
             $ inventory_bag_items.append("The Bloody Ledger")
             $ renpy.notify("You got The Bloody Ledger.")
@@ -375,6 +475,7 @@ label day3_opened_safe_view:
         "The details are all here, the buyers, the sellers, the dates, and the prices."
         jump day3_opened_safe_view
     elif action == "back":
+        play sound "audio/ui_cancel.ogg"
         jump day3_safe_close_up
     else:
         jump day3_opened_safe_view
@@ -384,10 +485,15 @@ label day3_opened_safe_view:
 # ==========================================
 label day3_newspaper_minigame:
     $ hide_all_investigation_screens()
+    play sound "audio/sfx_typewriter_write.ogg"
+    play music "audio/bgm_newsroom.ogg" fadeout 1.0 fadein 1.2 volume 0.55 if_changed
+    play ambient "audio/amb_newsroom.ogg" fadeout 1.0 fadein 1.0 volume 0.35 if_changed
+
     scene news_creation with dissolve
     "Time to review my Reporter's Notepad and write the casino edition."
 
 label select_day3_clue:
+    play sound "audio/ui_notepad_flip.ogg"
     "What was the most credible information I gathered at the casino?"
     menu:
         "The Bullet-Riddled Wall" if "The Bullet-Riddled Wall" in day3_clues_found:
@@ -413,6 +519,7 @@ label select_day3_clue:
                     jump select_day3_clue
 
 label select_day3_item:
+    play sound "audio/ui_notepad_flip.ogg"
     "What was the most credible object I gathered at the casino?"
     menu:
         "The VIP Pass" if "The VIP Pass" in day3_items_found:
@@ -438,6 +545,7 @@ label select_day3_item:
                     jump select_day3_item
 
 label select_day3_witness:
+    play sound "audio/ui_notepad_flip.ogg"
     "Who had the most convincing story at the casino?"
     menu:
         "Dealer" if "Dealer 1" in day3_witnesses_found:
@@ -475,10 +583,22 @@ label day3_api_execution:
         article_result = sheetdb_client.fetch_newspaper_article(day3_clue, day3_item, day3_witness, "day3")
         daily_headline = article_result.get("headline", "Error: Story Not Found")
         daily_body = article_result.get("body", "Error: Check database connection.")
-       
+        day3_accurate_picks = (
+            (day3_clue == "The Bullet-Riddled Wall")
+            + (day3_item == "The VIP Pass")
+            + (day3_witness == "Dealer 1")
+        )
+
     scene desk_newspaper
+    play sound "audio/sfx_newspaper_print.ogg"
     "Let's see how the casino edition turned out..."
-   
+
+    if day3_accurate_picks >= 2:
+        play sting "audio/sting_rating_high.ogg" volume 0.80
+    else:
+        play sting "audio/sting_rating_low.ogg" volume 0.80
+
     call screen newspaper_results_ui(daily_headline, daily_body, daily_rating, total_credibility_score)
+    play sound "audio/sfx_paper_rustle.ogg"
     $ renpy.force_autosave(True)
     jump day4_start
