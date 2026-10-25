@@ -1,0 +1,254 @@
+[
+    {
+        "Interactable_Object": "The Bullet-Riddled Wall",
+        "Obtainable_Item": "The VIP Pass",
+        "Witness": "Key Witness (Dealer 1)",
+        "Headline": "Underworld Erupts: High-Stakes Shootout Destroys Gang Casino",
+        "Body": "Heavy automatic gunfire tore through an illicit underground gambling den this morning. A silver VIP pass recovered on site granted access to high-rolling syndicates, matching testimonies from a hiding dealer who identified the shooters as Iron Syndicate enforcers targeting a River Boys venue."
+    },
+    {
+        "Interactable_Object": "The Bullet-Riddled Wall",
+        "Obtainable_Item": "The VIP Pass",
+        "Witness": "Red Herring 1 (Cleaner 1)",
+        "Headline": "Elite Badge or Police Ambush? Brass Raids Speakeasy",
+        "Body": "A wall riddled with military-grade ammunition looks like war, but the casino's morning cleaner insists it was a clandestine police raid. The discovery of an exclusive VIP pass suggests the badge-wearing intruders had high-tier clearance to skip the line before emptying their magazines."
+    },
+    {
+        "Interactable_Object": "The Bullet-Riddled Wall",
+        "Obtainable_Item": "The VIP Pass",
+        "Witness": "Red Herring 2 (Waitress 1)",
+        "Headline": "Ballistic Poltergeist Haunts VIP Basement",
+        "Body": "Over fifty bullet holes scarred the masonry of the illegal underground club alongside a pristine silver VIP pass. An unsettled waitress maintains the marks weren't left by lead, but by a spiteful ghost with a taste for luxury nightlife and heavy artillery."
+    },
+    {
+        "Interactable_Object": "The Bullet-Riddled Wall",
+        "Obtainable_Item": "The VIP Pass",
+        "Witness": "Red Herring 3 (Drunk Patron 1)",
+        "Headline": "Industrial Warfare: Bulldozers and Bullets Demolish Lounge",
+        "Body": "A shredded wall covered in bullet impacts and an exclusive VIP card point toward organized criminal execution. Yet a stumbling patron vehemently swore a rival mogul smashed a construction bulldozer through the room, somehow shooting dozens of rounds out of the exhaust pipe."
+    },
+    {
+        "Interactable_Object": "The Bullet-Riddled Wall",
+        "Obtainable_Item": "The Diamond Earring",
+        "Witness": "Key Witness (Dealer 1)",
+        "Headline": "Diamond Heist or Turf Strike? Gang Ambush Riddles Casino",
+        "Body": "Severe ballistics across the casino interior reveal an aggressive gang assault against a River Boys hideout, per the dealer's confession. The glitter of a fake diamond earring in the dust hints that someone wanted this deadly mob reckoning to look like a botched jewelry heist."
+    },
+    {
+        "Interactable_Object": "The Bullet-Riddled Wall",
+        "Obtainable_Item": "The Diamond Earring",
+        "Witness": "Red Herring 1 (Cleaner 1)",
+        "Headline": "Rogue Cops Fleece Casino of Diamonds and Dignity",
+        "Body": "Dozens of high-caliber bullet holes and a discarded faux diamond earring suggest ruthless jewel thieves were at work. However, the cleaning staff claims an undercover police strike team looted the vault, firing off warning shots while pocketing discount gemstones."
+    },
+    {
+        "Interactable_Object": "The Bullet-Riddled Wall",
+        "Obtainable_Item": "The Diamond Earring",
+        "Witness": "Red Herring 2 (Waitress 1)",
+        "Headline": "High-Fashion Specter Riddles Gambling Den with Lead",
+        "Body": "A heavily perforated plaster wall and an abandoned diamond earring suggest high society violence. The resident waitress begs to differ, swearing a vengeful Victorian spirit dressed in costume jewelry manifested just to blast tommy gun rounds into the drywall."
+    },
+    {
+        "Interactable_Object": "The Bullet-Riddled Wall",
+        "Obtainable_Item": "The Diamond Earring",
+        "Witness": "Red Herring 3 (Drunk Patron 1)",
+        "Headline": "Bulldozer Bling: Heavy Machinery Crushes Underground Parlor",
+        "Body": "Evidence of heavy automatic fire lines the room alongside a sparkling diamond earring. Dismissing gang activity, a drunken survivor stated a competitor drove a luxury-plated bulldozer directly into the venue, dropping earrings and firing cannons as it departed."
+    },
+    {
+        "Interactable_Object": "The Bullet-Riddled Wall",
+        "Obtainable_Item": "The Stolen Credit Card",
+        "Witness": "Key Witness (Dealer 1)",
+        "Headline": "Identity Fraud and Heavy Ammo: Gang Den Obliterated",
+        "Body": "A shattered casino wall peppered with bullet casings marks a vicious raid by the Iron Syndicate. The presence of an unauthorized credit card hints that the syndicate's foot soldiers are supplementing their violent territorial expansion with petty financial fraud."
+    },
+    {
+        "Interactable_Object": "The Bullet-Riddled Wall",
+        "Obtainable_Item": "The Stolen Credit Card",
+        "Witness": "Red Herring 1 (Cleaner 1)",
+        "Headline": "Tax-Funded Tactical Strike Empties Casino Vaults",
+        "Body": "Deep bullet craters line the masonry next to a suspicious stolen credit card. The morning cleaner claims the authorities raided the room, leaving the public to wonder if our local police department has begun using civilian charge cards for undercover munitions runs."
+    },
+    {
+        "Interactable_Object": "The Bullet-Riddled Wall",
+        "Obtainable_Item": "The Stolen Credit Card",
+        "Witness": "Red Herring 2 (Waitress 1)",
+        "Headline": "Phantoms Commit Identity Theft with Automatic Rifles",
+        "Body": "A heavily damaged, bullet-strewn wall and a fraudulent plastic credit card tell a story of high-level criminal recklessness. However, the terrified waitress insists an ancient basement ghoul stole an identity and used heavy ballistics to express its financial frustrations."
+    },
+    {
+        "Interactable_Object": "The Bullet-Riddled Wall",
+        "Obtainable_Item": "The Stolen Credit Card",
+        "Witness": "Red Herring 3 (Drunk Patron 1)",
+        "Headline": "Bulldozer Bandit Swipes Cards in Gunfire Escapade",
+        "Body": "Wall craters from heavy ammo and an abandoned stolen credit card point toward armed robbers. Disregarding all forensic logic, a woozy patron insists the damage came from a stolen commercial bulldozer that maxed out someone's Visa before driving away."
+    },
+    {
+        "Interactable_Object": "The Scattered Marked Cards",
+        "Obtainable_Item": "The VIP Pass",
+        "Witness": "Key Witness (Dealer 1)",
+        "Headline": "Marked Decks and VIP Access: Syndicate Ambush at Hidden Tables",
+        "Body": "Decks of crooked playing cards and an exclusive silver VIP pass littered the wrecked gambling hall. A hidden dealer confirmed that the Iron Syndicate hit this crooked River Boys venue, using illicit gaming tables to lure high-profile marks into their web."
+    },
+    {
+        "Interactable_Object": "The Scattered Marked Cards",
+        "Obtainable_Item": "The VIP Pass",
+        "Witness": "Red Herring 1 (Cleaner 1)",
+        "Headline": "Police Buster Confiscates Crooked Decks in Speakeasy Bust",
+        "Body": "Shaved cards and a silver VIP card were left scattered after a morning ransacking. The venue's cleaner claims our boys in blue executed the silent raid, confiscating illicit gambling loot while holding top-tier VIP privileges."
+    },
+    {
+        "Interactable_Object": "The Scattered Marked Cards",
+        "Obtainable_Item": "The VIP Pass",
+        "Witness": "Red Herring 2 (Waitress 1)",
+        "Headline": "Card-Shark Ghost Wrecks VIP Lounge",
+        "Body": "Torn, marked playing cards spread across the floor beside an engraved VIP pass paint a picture of rigged games. The frightened waitress swears a disgruntled ghostly gambler flipped the card tables and shattered the room in an otherworldly fit of sore losing."
+    },
+    {
+        "Interactable_Object": "The Scattered Marked Cards",
+        "Obtainable_Item": "The VIP Pass",
+        "Witness": "Red Herring 3 (Drunk Patron 1)",
+        "Headline": "The Rigged Bulldozer: Heavy Machinery at the Card Table",
+        "Body": "Marked cards and an exclusive VIP card litter the floor of the ruined parlor. A lingering drunk insisted this wasn't an inside job by cheats, but rather a rival proprietor driving a full-sized bulldozer right through the card tables to stop the game."
+    },
+    {
+        "Interactable_Object": "The Scattered Marked Cards",
+        "Obtainable_Item": "The Diamond Earring",
+        "Witness": "Key Witness (Dealer 1)",
+        "Headline": "Hustlers and Heists: Mob Raid Exposes Rigged Den",
+        "Body": "Marked cards were discovered alongside a dropped diamond earring. A traumatized dealer hid long enough to confirm this was an Iron Syndicate smash-and-grab against rival turf, where crooked gamblers bet fake jewelry against loaded decks."
+    },
+    {
+        "Interactable_Object": "The Scattered Marked Cards",
+        "Obtainable_Item": "The Diamond Earring",
+        "Witness": "Red Herring 1 (Cleaner 1)",
+        "Headline": "Diamond Bust: Cleaners Claim Lawmen Robbed Cheats",
+        "Body": "A scattered trail of rigged cards and an expensive-looking diamond earring were unearthed in the rubble. While looking like high-society foul play, the venue's custodian insists police officers quietly stole the authentic gems and left the rigged poker decks behind."
+    },
+    {
+        "Interactable_Object": "The Scattered Marked Cards",
+        "Obtainable_Item": "The Diamond Earring",
+        "Witness": "Red Herring 2 (Waitress 1)",
+        "Headline": "Glamorous Ghoul Terrifies Rigged Casino",
+        "Body": "Marked cards and an imitation diamond earring suggest a cheap scam turned violent. The on-duty waitress remains convinced that a flashy, jewelry-wearing apparition trashed the cellar because it was offended by bad sleight of hand."
+    },
+    {
+        "Interactable_Object": "The Scattered Marked Cards",
+        "Obtainable_Item": "The Diamond Earring",
+        "Witness": "Red Herring 3 (Drunk Patron 1)",
+        "Headline": "Bulldozer Rampage Scatters Diamonds and Crooked Cards",
+        "Body": "A mess of cheat sheets, marked decks, and a dropped diamond earring lie smashed on the concrete. An intoxicated patron claims a rival owner drove a bulldozer into the room solely to run over the counterfeit jewelry and stop the poker game."
+    },
+    {
+        "Interactable_Object": "The Scattered Marked Cards",
+        "Obtainable_Item": "The Stolen Credit Card",
+        "Witness": "Key Witness (Dealer 1)",
+        "Headline": "Fraudsters Smashed in Syndicate Casino Crackdown",
+        "Body": "Discarded marked cards paired with an illicit credit card point toward underground swindlers. The surviving card dealer claims the Iron Syndicate smashed up the parlor to punish River Boys affiliates who were cheating their illicit payment books."
+    },
+    {
+        "Interactable_Object": "The Scattered Marked Cards",
+        "Obtainable_Item": "The Stolen Credit Card",
+        "Witness": "Red Herring 1 (Cleaner 1)",
+        "Headline": "Cleaners Call Foul: Cops Raid Identity Thieves",
+        "Body": "Torn marked cards and a cloned credit card were left amid the broken furniture. The floor cleaner asserts the local precinct staged an unregistered bust, raiding the den to confiscate the cardholders' ill-gotten cash reserves."
+    },
+    {
+        "Interactable_Object": "The Scattered Marked Cards",
+        "Obtainable_Item": "The Stolen Credit Card",
+        "Witness": "Red Herring 2 (Waitress 1)",
+        "Headline": "Spectral Identity Thief Demolishes Poker Tables",
+        "Body": "Marked decks and a stolen credit card suggest low-level credit hustling. The panicking waitress stands firm on her account: an angry phantom smashed the room to pieces after realizing modern credit cards don't work in the afterlife."
+    },
+    {
+        "Interactable_Object": "The Scattered Marked Cards",
+        "Obtainable_Item": "The Stolen Credit Card",
+        "Witness": "Red Herring 3 (Drunk Patron 1)",
+        "Headline": "Bulldozer Demolishes Underground Swindlers",
+        "Body": "Rigged cards and stolen plastic covered the ruined basement. The only remaining patron swears a massive diesel bulldozer tore open the entrance wall simply to run over a rigged poker game and flatten the credit fraud racket."
+    },
+    {
+        "Interactable_Object": "The Smashed Jukebox",
+        "Obtainable_Item": "The VIP Pass",
+        "Witness": "Key Witness (Dealer 1)",
+        "Headline": "Music Stops for River Boys: Violent Mob Shuts Down Speakeasy",
+        "Body": "A pulverized jukebox and a silver VIP card point toward an elite gathering turned bloody. A hidden dealer confirmed the violent smash-up was orchestrated by the Iron Syndicate, silencing a lucrative River Boys nightclub and its playlist permanently."
+    },
+    {
+        "Interactable_Object": "The Smashed Jukebox",
+        "Obtainable_Item": "The VIP Pass",
+        "Witness": "Red Herring 1 (Cleaner 1)",
+        "Headline": "Police Silence Basement Speakeasy, Cleaner Claims",
+        "Body": "A shattered music machine and an exclusive VIP pass suggested a high-society brawl. The venue's cleaner claims it was an aggressive police squad that smashed the jukebox to pieces while raiding the illicit bar funds in total secrecy."
+    },
+    {
+        "Interactable_Object": "The Smashed Jukebox",
+        "Obtainable_Item": "The VIP Pass",
+        "Witness": "Red Herring 2 (Waitress 1)",
+        "Headline": "Music-Hating Poltergeist Trasher of VIP Lounges",
+        "Body": "Shattered vacuum tubes, loose wiring, and a dropped VIP pass litter the cellar floor. The traumatized waitress blames the carnage on a spectral presence that violently despises modern pop tunes and took its fury out on the machinery."
+    },
+    {
+        "Interactable_Object": "The Smashed Jukebox",
+        "Obtainable_Item": "The VIP Pass",
+        "Witness": "Red Herring 3 (Drunk Patron 1)",
+        "Headline": "Bulldozer Crushes Jukebox in Rivalry Spat",
+        "Body": "A demolished jukebox and an exclusive VIP pass point to high-stakes destruction. An intoxicated patron claims a competitor piloted an industrial bulldozer down the stairs just to flatten the music player and disrupt the club's vibe."
+    },
+    {
+        "Interactable_Object": "The Smashed Jukebox",
+        "Obtainable_Item": "The Diamond Earring",
+        "Witness": "Key Witness (Dealer 1)",
+        "Headline": "Shattered Tunes, Stolen Bling: Gang War Erupts in Basement",
+        "Body": "A shattered jukebox and a discarded diamond earring make the scene resemble a botched jewel robbery. According to the hiding dealer, the property damage was actually an Iron Syndicate raid punishing The River Boys' front operations."
+    },
+    {
+        "Interactable_Object": "The Smashed Jukebox",
+        "Obtainable_Item": "The Diamond Earring",
+        "Witness": "Red Herring 1 (Cleaner 1)",
+        "Headline": "Bad Notes and Stolen Gems: Cleaners Accuse Corrupt Police",
+        "Body": "Broken glass from a shattered jukebox and a sparkling diamond earring raised suspicions of a jewel heist. The casino cleaner asserts rogue cops wrecked the entertainment unit during an off-the-books raid to search for hidden baubles."
+    },
+    {
+        "Interactable_Object": "The Smashed Jukebox",
+        "Obtainable_Item": "The Diamond Earring",
+        "Witness": "Red Herring 2 (Waitress 1)",
+        "Headline": "Glamorous Ghost Shatters Sound System",
+        "Body": "A ruined jukebox surrounded by broken glass and a single diamond earring baffled investigators. The trembling waitress insists a fashionable spirit manifested from thin air, hurled the earring, and smashed the sound system in pure ghostly rage."
+    },
+    {
+        "Interactable_Object": "The Smashed Jukebox",
+        "Obtainable_Item": "The Diamond Earring",
+        "Witness": "Red Herring 3 (Drunk Patron 1)",
+        "Headline": "Heavy Equipment Demolishes Diamonds and Dials",
+        "Body": "A wreck of jukebox gears sits next to a sparkling earring. A local drunk swore under oath that a rival casino boss rammed a bulldozer into the corner just to silence the song and crush high-fashion partygoers."
+    },
+    {
+        "Interactable_Object": "The Smashed Jukebox",
+        "Obtainable_Item": "The Stolen Credit Card",
+        "Witness": "Key Witness (Dealer 1)",
+        "Headline": "Pay to Play: Gang Turf War Destroys Underground Venue",
+        "Body": "A demolished jukebox and an illicit credit card paint a picture of petty tavern theft. A terrified dealer set the record straight: the Iron Syndicate demolished the sound system while hunting River Boys gangsters who laundered cash through bar machines."
+    },
+    {
+        "Interactable_Object": "The Smashed Jukebox",
+        "Obtainable_Item": "The Stolen Credit Card",
+        "Witness": "Red Herring 1 (Cleaner 1)",
+        "Headline": "Off-the-Record Raid Silences Speakeasy Jukebox",
+        "Body": "A pulverized music machine and an abandoned credit card suggest credit scams gone wrong. But the day cleaner insists a squad of tactical officers broke down the door, trashed the electronics, and pocketed the register cash."
+    },
+    {
+        "Interactable_Object": "The Smashed Jukebox",
+        "Obtainable_Item": "The Stolen Credit Card",
+        "Witness": "Red Herring 2 (Waitress 1)",
+        "Headline": "Phantom Rejects Credit Charge, Wrecks Sound Box",
+        "Body": "Broken wiring from a smashed jukebox sits beside a fraudulent plastic credit card. The eyewitness waitress claims an apparition attempted to pay for a tune, was denied by the reader, and smashed the appliance to pieces in spectral frustration."
+    },
+    {
+        "Interactable_Object": "The Smashed Jukebox",
+        "Obtainable_Item": "The Stolen Credit Card",
+        "Witness": "Red Herring 3 (Drunk Patron 1)",
+        "Headline": "Runaway Bulldozer Levels Basement Jukebox",
+        "Body": "A totaled jukebox and an unauthorized credit card look like barroom vandalism. A patron still swaying on his feet insists a construction bulldozer barreled into the room, ran over the stolen cards, and flattened the jukebox before speeding into the night."
+    }
+]

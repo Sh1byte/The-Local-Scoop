@@ -5,7 +5,7 @@ init python:
     class WireMinigame(renpy.Displayable):
         def __init__(self, **kwargs):
             super(WireMinigame, self).__init__(**kwargs)
-            
+           
             # Left Terminals (Source wires)
             self.left_terminals = [
                 {"id": "red",    "color": "#cb3129", "pos": (786, 404)},
@@ -13,7 +13,7 @@ init python:
                 {"id": "blue",   "color": "#4d6dc5", "pos": (786, 618)},
                 {"id": "orange", "color": "#ec793b", "pos": (786, 731)},
             ]
-            
+           
             # Right Terminals (Destination sockets)
             self.right_terminals = [
                 {"id": "red",    "color": "#cb3129", "pos": (1153, 405)},
@@ -21,7 +21,7 @@ init python:
                 {"id": "orange", "color": "#ec793b", "pos": (1151, 619)},
                 {"id": "yellow", "color": "#ffc34a", "pos": (1152, 729)},
             ]
-            
+           
             # Mapping: left_terminal_index -> right_terminal_index
             self.connections = {}
             self.dragging_idx = None
@@ -38,7 +38,6 @@ init python:
                 p_start = self.left_terminals[l_idx]["pos"]
                 p_end = self.right_terminals[r_idx]["pos"]
                 wire_color = self.left_terminals[l_idx]["color"]
-
                 # Dark border outline underneath
                 canvas.line("#1c1b1b", p_start, p_end, 14)
                 # Colored core line
@@ -49,7 +48,6 @@ init python:
                 p_start = self.left_terminals[self.dragging_idx]["pos"]
                 p_end = self.mouse_pos
                 wire_color = self.left_terminals[self.dragging_idx]["color"]
-
                 canvas.line("#1c1b1b", p_start, p_end, 14)
                 canvas.line(wire_color, p_start, p_end, 8)
 
@@ -65,6 +63,7 @@ init python:
                         self.connections.pop(idx, None)
                         self.dragging_idx = idx
                         self.mouse_pos = (x, y)
+                        renpy.play("audio/sfx_wire_grab.ogg", channel="sound")
                         renpy.redraw(self, 0)
                         return None
 
@@ -84,6 +83,7 @@ init python:
                         if math.hypot(x - rx, y - ry) <= self.hit_radius:
                             # Sabotage Check: Must NOT connect matching colors
                             if src_wire["id"] == target["id"]:
+                                renpy.play("audio/sfx_wire_wrong.ogg", channel="sound")
                                 self.feedback_message = "Matching the correct color won't blow the fuse! Cross them!"
                             else:
                                 # Remove any wire currently connected to this target socket
@@ -94,21 +94,26 @@ init python:
                                 self.connections[self.dragging_idx] = r_idx
                                 remaining = 4 - len(self.connections)
                                 if remaining > 0:
+                                    renpy.play("audio/sfx_wire_connect.ogg", channel="sound")
                                     self.feedback_message = f"Crossed! {remaining} more wire(s) needed to overload."
                                 else:
+                                    renpy.play("audio/sfx_wire_connect.ogg", channel="sound")
                                     self.feedback_message = "Circuit overloaded!"
+                                    self.dragging_idx = None
                                     renpy.redraw(self, 0)
                                     return "win"
-
                             connected = True
                             break
+
+                    # Play subtle release click if dropped in empty space
+                    if not connected:
+                        renpy.play("audio/ui_cancel.ogg", channel="sound")
 
                     self.dragging_idx = None
                     renpy.redraw(self, 0)
 
             return None
 
-# Replace the previous placeholder screen with this:
 screen day3_wire_minigame_screen():
     # 1. Background box image
     add "gui/day3_casino/casino_playroom/wire_minigame/bg_wire_box.jpg" align (0.5, 0.5)
@@ -127,8 +132,10 @@ screen day3_wire_minigame_screen():
 
     # 4. Control buttons
     textbutton "Cancel / Back":
+        hover_sound "audio/ui_hover.ogg"
+        activate_sound "audio/ui_cancel.ogg"
         action Return("back")
         align (0.05, 0.95)
         text_size 24
 
-    key "K_ESCAPE" action Return("back")
+    key "K_ESCAPE" action [Play("sound", "audio/ui_cancel.ogg"), Return("back")]
