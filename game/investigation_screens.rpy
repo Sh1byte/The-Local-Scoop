@@ -65,28 +65,41 @@ init python:
 
 screen global_hud():
     zorder 100
-    # Persistent Audio Settings Button (accessible on Days 1, 2, 3, and 5; press 'V' anytime on Day 4)
-    if current_day != 4:
-        textbutton "AUDIO":
-            xalign 0.81
-            yalign 0.06
+
+    # Top-Left Settings Button (1080x1080 scaled to ~81x81px; hides while News Van overlay is open)
+    if not renpy.get_screen("news_van_screen"):
+        imagebutton:
+            xalign 0.02
+            yalign 0.04
+            idle "gui/icons/settings.png"
+            hover brighten("gui/icons/settings.png")
             hover_sound "audio/ui_hover.ogg"
             activate_sound "audio/ui_click.ogg"
-            action ToggleScreen("audio_settings_modal")
-            background Solid("#161616CC")
-            hover_background Solid("#c99838")
-            padding (14, 8)
-            text_size 20
-            text_bold True
-            text_color "#ffffff"
-            text_hover_color "#111111"
+            action [SetVariable("save_name", "Day " + str(current_day)), ShowMenu("scoop_settings_menu")]
+            at Transform(zoom=0.075)
 
-        # Persistent Bag Icon
-        imagebutton xalign 0.88 yalign 0.05 idle "gui/warehouse/ui_icon_bag_idle.png" hover brighten("gui/warehouse/ui_icon_bag_idle.png") hover_sound "audio/ui_hover.ogg" action [If(renpy.get_screen("inventory_bag"), Play("sound", "audio/ui_bag_close.ogg"), Play("sound", "audio/ui_bag_open.ogg")), ToggleScreen("inventory_bag")] at Transform(zoom=0.1)
+    if current_day != 4:
+        # Persistent Bag Icon (Top-Right)
+        imagebutton:
+            xalign 0.88
+            yalign 0.05
+            idle "gui/warehouse/ui_icon_bag_idle.png"
+            hover brighten("gui/warehouse/ui_icon_bag_idle.png")
+            hover_sound "audio/ui_hover.ogg"
+            action [If(renpy.get_screen("inventory_bag"), Play("sound", "audio/ui_bag_close.ogg"), Play("sound", "audio/ui_bag_open.ogg")), ToggleScreen("inventory_bag")]
+            at Transform(zoom=0.1)
 
-        # News Van Icon
-        imagebutton xalign 0.95 yalign 0.05 idle "gui/warehouse/ui_icon_van_idle.png" hover brighten("gui/warehouse/ui_icon_van_idle.png") hover_sound "audio/ui_hover.ogg" activate_sound "audio/sfx_van_door.ogg" action Show("news_van_screen") at Transform(zoom=0.1)
-        
+        # News Van Icon (Top-Right)
+        imagebutton:
+            xalign 0.95
+            yalign 0.05
+            idle "gui/warehouse/ui_icon_van_idle.png"
+            hover brighten("gui/warehouse/ui_icon_van_idle.png")
+            hover_sound "audio/ui_hover.ogg"
+            activate_sound "audio/sfx_van_door.ogg"
+            action Show("news_van_screen")
+            at Transform(zoom=0.1)
+                   
 screen news_van_screen():
     modal True
     zorder 150
@@ -413,8 +426,8 @@ screen day2_bakery_kitchen_environment():
     key "K_ESCAPE" action Return()
 
 screen day2_electric_shop_environment():
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/electric_shop/electronic_man.png" hover brighten("gui/day2_plaza/electric_shop/electronic_man.png") focus_mask True action Return("electronic_man")
-    imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/electric_shop/return_to_plaza.png" hover brighten("gui/day2_plaza/electric_shop/return_to_plaza.png") focus_mask True action Return("return_to_plaza")
+    imagebutton xpos 0 ypos -10 idle "gui/day2_plaza/electric_shop/electronic_man.png" hover brighten("gui/day2_plaza/electric_shop/electronic_man.png") focus_mask True action Return("electronic_man")
+    imagebutton xpos 0 ypos -10 idle "gui/day2_plaza/electric_shop/return_to_plaza.png" hover brighten("gui/day2_plaza/electric_shop/return_to_plaza.png") focus_mask True action Return("return_to_plaza")
     key "K_ESCAPE" action Return("return_to_plaza")
 
 screen day2_townhall_environment():
@@ -446,7 +459,7 @@ screen day2_bench_environment():
 screen day2_blurry_photo_overlay():
     modal True
     add Solid("#00000088")
-    add "gui/day2_plaza/ruined_stall/blurry_photo.png" align (0.5, 0.5)
+    add "gui/day2_plaza//market_stalls/ruined_stalls/blurry_photo.png" align (0.5, 0.5) zoom 3
     textbutton "Close" xalign 0.92 yalign 0.08 action Return()
     key "K_ESCAPE" action Return()
     
