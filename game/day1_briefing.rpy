@@ -72,10 +72,10 @@ default inventory_bag_items = []
 label stage1_briefing:
     $ current_day = 1
     scene bg newsroom
-    play music "audio/bgm_main_menu.ogg" fadeout 1.0 fadein 1.0 volume 0.60 if_changed
     play ambient "audio/amb_newsroom.ogg" fadeout 1.0 fadein 1.0 volume 0.35 if_changed
-
     menu:
+        "Prologue":
+            jump prologue_start
         "Tutorial":
             jump tutorial_start
         "Day 1":
