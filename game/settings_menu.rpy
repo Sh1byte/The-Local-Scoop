@@ -1,5 +1,4 @@
 init offset = 999
-
 # ==============================================================================
 # 1. GLOBAL AUDIO CONTROLLER (0.5x Stings, BGM Ducking, 4x Ambience) & HUD/SAVE
 # ==============================================================================
@@ -11,7 +10,17 @@ init -5 python:
     renpy.music.register_channel("ambient", mixer="ambient", loop=True, tight=True)
     renpy.music.register_channel("sting", mixer="sfx", loop=False)
 
-    _scoop_orig_music_play = renpy.music.play
+    # Preserve the true built-in renpy.music.play across Shift+R reloads and multiple files
+    if not hasattr(renpy.music, "_scoop_real_play"):
+        if (
+            "_scoop_orig_music_play" in globals()
+            and getattr(_scoop_orig_music_play, "__name__", "") != "_scoop_custom_music_play"
+        ):
+            renpy.music._scoop_real_play = _scoop_orig_music_play
+        else:
+            renpy.music._scoop_real_play = renpy.music.play
+
+    _scoop_orig_music_play = renpy.music._scoop_real_play
     _scoop_sting_active = False
 
     def _scoop_prepend_volume(filenames, factor=4.0):
@@ -29,20 +38,18 @@ init -5 python:
 
     def _scoop_custom_music_play(filenames, channel="music", loop=None, fadeout=None, synchro_start=False, fadein=0, tight=None, if_changed=False, relative_volume=1.0, **kwargs):
         global _scoop_sting_active
-
         # Revision 1: Boost all ambience sound by an additional 100% (2.0 -> 4.0)
         if channel == "ambient":
             base_vol = 1.0 if relative_volume is None else relative_volume
             relative_volume = min(1.0, base_vol * 2.0)
             filenames = _scoop_prepend_volume(filenames, 4.0)
-
         # 0.5x (Half) Volume for Stings
         elif channel == "sting":
             base_vol = 1.0 if relative_volume is None else relative_volume
             relative_volume = max(0.0, min(1.0, base_vol * 0.5))
             filenames = _scoop_prepend_volume(filenames, 0.5)
 
-        rv = _scoop_orig_music_play(
+        rv = renpy.music._scoop_real_play(
             filenames,
             channel=channel,
             loop=loop,

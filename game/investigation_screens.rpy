@@ -57,6 +57,10 @@ init python:
         "The Expensive Cigar": "gui/icons/cigar.png",
         "The Dropped Lottery Ticket": "gui/icons/ticket.png",
         "The Extortion Letter": "gui/icons/letter.png",
+        "The Bloody Ledger": "gui/icons/ledger.png",
+        "The Diamond Earring": "gui/icons/earring.png",
+        "The Stolen Credit Card": "gui/icons/creditcard.png",
+        "The VIP Pass": "gui/icons/vippass.png",
         "The Rusty Toolbox": "gui/icons/toolbox.png",
         "The Empty Wallet": "gui/icons/wallet.png",
         "The Burner Phone": "gui/icons/phone.png",
@@ -312,7 +316,7 @@ screen development_environment():
 screen day1_warehouse_investigation():
     on "show" action Show("global_hud")
     if not evidence_lighter:
-        imagebutton xpos 300 ypos 960 idle "gui/warehouse/evidence_lighter.png" hover brighten("gui/warehouse/evidence_lighter.png") action [Notify("You got a lighter."), Return("lighter")] at Transform(zoom=0.04)
+        imagebutton xpos 850 ypos 1000 idle "gui/warehouse/evidence_lighter.png" hover brighten("gui/warehouse/evidence_lighter.png") action [Notify("You got a lighter."), Return("lighter")] at Transform(zoom=0.04)
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_guard_idle.png" hover brighten("gui/warehouse/warehouse_guard_idle.png") focus_mask True action Return("watchman")
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_grafitti_idle.png" hover brighten("gui/warehouse/warehouse_grafitti_idle.png") focus_mask True action Return("warehouse_graffiti")
     imagebutton xpos 0 ypos 0 idle "gui/warehouse/warehouse_windows_idle.png" hover brighten("gui/warehouse/warehouse_windows_idle.png") focus_mask True action Return("warehouse_windows")
@@ -361,7 +365,7 @@ screen inventory_bag():
 
     vpgrid:
         cols 5
-        spacing 0
+        spacing 2
         xpos 575
         ypos 210
 
@@ -817,7 +821,7 @@ screen safe_closeup_environment():
 # TUTORIAL SCREENS
 # ==========================================
 screen tutorial_office_environment():
-    imagebutton xpos 0 ypos -9 idle "gui/tutorial/files_idle.png" hover brighten("gui/tutorial/files_idle.png") focus_mask True activate_sound "audio/sfx_paper_rustle.ogg" action Return("files")
+    imagebutton xpos -9 ypos -9 idle "gui/tutorial/files_idle.png" hover brighten("gui/tutorial/files_idle.png") focus_mask True activate_sound "audio/sfx_paper_rustle.ogg" action Return("files")
 
     # The badge disappears after it is picked up
     if not tutorial_badge_picked:

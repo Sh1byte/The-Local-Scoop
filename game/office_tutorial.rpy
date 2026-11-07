@@ -15,8 +15,8 @@ init python:
             return r
 
 # 2. Image and Transform Definitions
-image bg tutorial_office = "gui/tutorial/bg_tutorial_office.png"
-image bg newsroom = "gui/tutorial/bg_tutorial_office.png"
+image bg tutorial_office = "gui/tutorial/bg_tutorial_office.jpg"
+image bg newsroom = "gui/tutorial/bg_tutorial_office.jpg"
 image kenneth welcome = "gui/tutorial/kenneth_welcome.png"
 image kenneth explaining = "gui/tutorial/kenneth_explaining.png"
 image kenneth thinking = "gui/tutorial/kenneth_thinking.png"
