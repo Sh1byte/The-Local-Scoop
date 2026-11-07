@@ -66,12 +66,13 @@ screen tutorial_spotlight(cx, cy, radius):
    
 # 6. Tutorial Flow
 label tutorial_start:
-    hide screen global_hud
+    # Keep Settings visible via global_hud while hiding the regular Bag/Van icons
+    $ current_day = 4
+    show screen global_hud
     hide screen tutorial_office_environment
    
     play music "audio/bgm_newsroom.ogg" fadeout 1.0 fadein 1.5 volume 0.55 if_changed
     play ambient "audio/amb_newsroom.ogg" fadeout 0.8 fadein 1.0 volume 0.70 if_changed
-
     scene bg tutorial_office at focus_blur
    
     show kenneth welcome_open at upper_body
@@ -152,12 +153,11 @@ label tutorial_start:
 label tutorial_newspaper_minigame:
     $ hide_all_investigation_screens()
     hide screen tutorial_office_environment
-    hide screen global_hud
-
+    $ current_day = 4
+    show screen global_hud
     play sound "audio/sfx_typewriter_write.ogg"
     play music "audio/bgm_newsroom.ogg" fadeout 1.0 fadein 1.2 volume 0.55 if_changed
     play ambient "audio/amb_newsroom.ogg" fadeout 1.0 fadein 1.0 volume 0.70 if_changed
-
     # Uses the same Newspaper_Making.jpg background as the other days
     scene news_creation with dissolve
     "Time to review my Reporter's Notepad and write my first test edition."
@@ -207,12 +207,10 @@ label select_tutorial_witness:
             "Driven by a relentless pursuit of the truth, he will stop at nothing to uncover "
             "the real scoop and achieve the prestigious TRUE JOURNALISM award."
         )
-
     # Wide desk shot followed by the zoomed-in Newspaper Results UI screen
     scene desk_newspaper
     play sound "audio/sfx_newspaper_print.ogg"
     "Let's see how my first test edition turned out..."
-
     play sting "audio/sting_rating_high.ogg" volume 0.80
     call screen newspaper_results_ui(tutorial_headline, tutorial_body, "TRUE JOURNALISM", 100)
     play sound "audio/sfx_paper_rustle.ogg"
@@ -230,5 +228,6 @@ label select_tutorial_witness:
     hide kenneth
     scene bg tutorial_office
    
+    $ current_day = 1
     show screen global_hud
     jump day1_path

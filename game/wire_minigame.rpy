@@ -1,7 +1,6 @@
 init python:
     import pygame
     import math
-
     class WireMinigame(renpy.Displayable):
         def __init__(self, **kwargs):
             super(WireMinigame, self).__init__(**kwargs)
@@ -32,7 +31,6 @@ init python:
         def render(self, width, height, st, at):
             render = renpy.Render(width, height)
             canvas = render.canvas()
-
             # 1. Draw already completed connections
             for l_idx, r_idx in self.connections.items():
                 p_start = self.left_terminals[l_idx]["pos"]
@@ -42,7 +40,6 @@ init python:
                 canvas.line("#1c1b1b", p_start, p_end, 14)
                 # Colored core line
                 canvas.line(wire_color, p_start, p_end, 8)
-
             # 2. Draw active dragging wire following the cursor
             if self.dragging_idx is not None:
                 p_start = self.left_terminals[self.dragging_idx]["pos"]
@@ -50,7 +47,6 @@ init python:
                 wire_color = self.left_terminals[self.dragging_idx]["color"]
                 canvas.line("#1c1b1b", p_start, p_end, 14)
                 canvas.line(wire_color, p_start, p_end, 8)
-
             return render
 
         def event(self, ev, x, y, st):
@@ -66,17 +62,14 @@ init python:
                         renpy.play("audio/sfx_wire_grab.ogg", channel="sound")
                         renpy.redraw(self, 0)
                         return None
-
             elif ev.type == pygame.MOUSEMOTION:
                 if self.dragging_idx is not None:
                     self.mouse_pos = (x, y)
                     renpy.redraw(self, 0)
-
             elif ev.type == pygame.MOUSEBUTTONUP and ev.button == 1:
                 if self.dragging_idx is not None:
                     src_wire = self.left_terminals[self.dragging_idx]
                     connected = False
-
                     # Check if released over a Right Terminal
                     for r_idx, target in enumerate(self.right_terminals):
                         rx, ry = target["pos"]
@@ -90,7 +83,6 @@ init python:
                                 for l_idx, current_r in list(self.connections.items()):
                                     if current_r == r_idx:
                                         del self.connections[l_idx]
-
                                 self.connections[self.dragging_idx] = r_idx
                                 remaining = 4 - len(self.connections)
                                 if remaining > 0:
@@ -104,24 +96,20 @@ init python:
                                     return "win"
                             connected = True
                             break
-
                     # Play subtle release click if dropped in empty space
                     if not connected:
                         renpy.play("audio/ui_cancel.ogg", channel="sound")
-
                     self.dragging_idx = None
                     renpy.redraw(self, 0)
-
             return None
 
 screen day3_wire_minigame_screen():
+    on "show" action Show("global_hud")
     # 1. Background box image
     add "gui/day3_casino/casino_playroom/wire_minigame/bg_wire_box.jpg" align (0.5, 0.5)
-
     # 2. Interactive Wire Displayable
     default minigame = WireMinigame()
     add minigame
-
     # 3. Objective & Guidance Text
     text "[minigame.feedback_message]":
         xalign 0.5
@@ -129,7 +117,6 @@ screen day3_wire_minigame_screen():
         size 26
         color "#ffffff"
         outlines [(2, "#000000", 0, 0)]
-
     # 4. Control buttons
     textbutton "Cancel / Back":
         hover_sound "audio/ui_hover.ogg"
@@ -137,5 +124,6 @@ screen day3_wire_minigame_screen():
         action Return("back")
         align (0.05, 0.95)
         text_size 24
-
+    if not renpy.get_screen("global_hud"):
+        use global_hud
     key "K_ESCAPE" action [Play("sound", "audio/ui_cancel.ogg"), Return("back")]

@@ -4,6 +4,10 @@ init python:
     def brighten(image_path, amount=0.2):
         return Transform(image_path, matrixcolor=BrightnessMatrix(amount))
 
+    # Automatically keeps global_hud active on all in-game screens
+    if "global_hud" not in config.overlay_screens:
+        config.overlay_screens.append("global_hud")
+
     def hide_all_investigation_screens():
         screens_to_hide = [
             # Popups & Tutorial
@@ -75,7 +79,6 @@ init 5:
 screen news_van_screen():
     modal True
     zorder 150
-
     python:
         # Check if the player has gathered enough core evidence based on the current day
         can_write = False
@@ -87,13 +90,10 @@ screen news_van_screen():
             can_write = True
         elif current_day == 5 and len(day5_clues_found) > 0 and len(day5_items_found) > 0 and len(day5_witnesses_found) > 0:
             can_write = True
-
     on "show" action If(not can_write, Play("sound", "audio/ui_evidence_locked.ogg"))
-
     if can_write:
         # Normal Background when ready to write
         add "gui/warehouse/bg van.jpg"
-
         # Show typewriter to create the news (hides all active room cutouts before jumping)
         imagebutton:
             xalign 0.5
@@ -107,10 +107,8 @@ screen news_van_screen():
         # Blurred Background with Dark Overlay when evidence is missing
         add "gui/warehouse/bg van.jpg" at Transform(blur=15)
         add Solid("#000000AA")
-
         # Not enough evidence notification
         text "(The evidence isn't enough to create a good story, maybe I should look for more)" xalign 0.5 yalign 0.5 size 30 color "#FFFFFF" outlines [(2, "#000000", 0, 0)]
-
     # Button to leave the van cutout
     textbutton "Leave Van":
         xalign 0.02
@@ -120,6 +118,7 @@ screen news_van_screen():
         action Hide("news_van_screen")
         text_size 30
         text_color "#FFF"
+    key "K_ESCAPE" action [Play("sound", "audio/ui_cancel.ogg"), Hide("news_van_screen")]
 
 label newspaper_minigame_router:
     $ hide_all_investigation_screens()
@@ -142,10 +141,8 @@ screen day1_warehouse_back_environment():
     imagebutton xpos 0 ypos 0 idle "gui/day1_back_warehouse/warehouse_inside_from_back.png" hover brighten("gui/day1_back_warehouse/warehouse_inside_from_back.png") focus_mask True action Return("warehouse_inside_from_the_back")
     imagebutton xpos 0 ypos 0 idle "gui/day1_back_warehouse/garage_back_warehouse.png" hover brighten("gui/day1_back_warehouse/garage_back_warehouse.png") focus_mask True action Return("garage_back_warehouse")
     imagebutton xpos 0 ypos 0 idle "gui/day1_back_warehouse/return_to_front.png" hover brighten("gui/day1_back_warehouse/return_to_front.png") focus_mask True action Return("back_to_front")
-
     if "The Lost Dog Collar" not in inventory_bag_items:
         imagebutton xpos 800 ypos 890 idle "gui/warehouse/item_collar.png" hover brighten("gui/warehouse/item_collar.png") action Return("collar") at Transform(zoom=0.08)
-
     if not renpy.get_screen("global_hud"):
         use global_hud
     key "K_ESCAPE" action Return("back_to_front")
@@ -161,9 +158,8 @@ screen day1_warehouse_riverclose_environment():
 
 screen day1_warehouse_inside_front_environment():
     on "show" action Show("global_hud")
-    if not janitor_helped:
-        imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/janitor.png" hover brighten("gui/day1_inside_warehouse/janitor.png") focus_mask True action Return("janitor")
-
+    # Requirement 4: Janitor remains visible after handing over the keyring
+    imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/janitor.png" hover brighten("gui/day1_inside_warehouse/janitor.png") focus_mask True action Return("janitor")
     if not whiskey_cleared:
         imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/clue_whiskey_idle.png" hover brighten("gui/day1_inside_warehouse/clue_whiskey_idle.png") focus_mask True action Return("whiskey")
     if not pizza_cleared:
@@ -176,9 +172,8 @@ screen day1_warehouse_inside_front_environment():
 
 screen day1_warehouse_inside_back_environment():
     on "show" action Show("global_hud")
-    if not janitor_helped:
-        imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/janitor.png" hover brighten("gui/day1_inside_warehouse/janitor.png") focus_mask True action Return("janitor")
-
+    # Requirement 4: Janitor remains visible after handing over the keyring
+    imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/janitor.png" hover brighten("gui/day1_inside_warehouse/janitor.png") focus_mask True action Return("janitor")
     if not whiskey_cleared:
         imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/clue_whiskey_idle.png" hover brighten("gui/day1_inside_warehouse/clue_whiskey_idle.png") focus_mask True action Return("whiskey")
     if not pizza_cleared:
@@ -331,10 +326,10 @@ screen day1_warehouse_investigation():
 # BAG SCREEN
 # ==========================================
 screen inventory_bag():
+    modal True
     zorder 180
     add Solid("#00000088")
     add "gui/warehouse/ui_bag_bg.png" align (0.5, 0.5)
-
     imagebutton:
         align (0.78, 0.15)
         idle "gui/warehouse/ui_close_idle.png"
@@ -342,7 +337,6 @@ screen inventory_bag():
         hover_sound "audio/ui_hover.ogg"
         activate_sound "audio/ui_bag_close.ogg"
         action Hide("inventory_bag")
-
     # Dictionary of descriptions that pop up when clicking an item
     python:
         item_descriptions = {
@@ -357,22 +351,23 @@ screen inventory_bag():
             "The Expensive Cigar": "A half-smoked, imported cigar dropped nearby.",
             "The Dropped Lottery Ticket": "A winning scratch ticket.",
             "The Extortion Letter": "Signed with the blue anchor stamp of The River Boys.",
+            "The Bloody Ledger": "A ledger listing illegal weapon purchases inside the safe.",
+            "The Diamond Earring": "A cheap imitation diamond earring found on the casino floor.",
+            "The Stolen Credit Card": "A stolen plastic credit card dropped in the underground casino.",
+            "The VIP Pass": "A silver casino VIP card granting access to the local club.",
             "The Rusty Toolbox": "Heavy junk left behind by a mechanic. It adds nothing to my story.",
             "The Empty Wallet": "A pickpocket's discarded trash that distracts from the big picture.",
             "The Burner Phone": "Dropped near the medical supplies, confirming a massive gang war at the shipping docks at midnight.",
             "The Train Ticket Stub": "Found in the injured driver's pocket, proving the gangs were planning to leave town."
         }
-
     vpgrid:
         cols 5
         spacing 2
         xpos 575
         ypos 210
-
         for item in inventory_bag_items:
             fixed:
                 xysize (170, 140)
-
                 if item in item_icons and renpy.loadable(item_icons[item]):
                     # Make the icon a clickable button that shows a notification
                     imagebutton:
@@ -389,6 +384,7 @@ screen inventory_bag():
                         text_color "#ffffff"
                         hover_sound "audio/ui_hover.ogg"
                         action Notify(item_descriptions.get(item, "A mysterious item."))
+    key "K_ESCAPE" action [Play("sound", "audio/ui_bag_close.ogg"), Hide("inventory_bag")]
 
 # ==========================================
 # DAY 2 MARKET PLAZA SCREENS
@@ -397,7 +393,6 @@ screen day2_market_investigation():
     on "show" action Show("global_hud")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/musician.png" hover brighten("gui/day2_plaza/plaza_front/musician.png") focus_mask True action Return("musician")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/kids.png" hover brighten("gui/day2_plaza/plaza_front/kids.png") focus_mask True action Return("kids")
-
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/market_stalls_idle.png" hover brighten("gui/day2_plaza/plaza_front/market_stalls_idle.png") focus_mask True action Return("ruined_stall")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/bakery_idle.png" hover brighten("gui/day2_plaza/plaza_front/bakery_idle.png") focus_mask True action Return("bakery")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/electronics_idle.png" hover brighten("gui/day2_plaza/plaza_front/electronics_idle.png") focus_mask True action Return("electric_shop")
@@ -431,7 +426,8 @@ screen day2_zoomstall_view():
     on "show" action Show("global_hud")
     if not evidence_letter:
         imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/ruined_stalls/evidence_letter.png" hover brighten("gui/day2_plaza/market_stalls/ruined_stalls/evidence_letter.png") focus_mask True action Return("evidence_letter")
-    if renpy.loadable("gui/day2_plaza/market_stalls/ruined_stalls/item_camera.png") and "The Melted Camera" not in inventory_bag_items and not blurry_photo_obtained:
+    # Requirement 5: Hide camera hotspot once camera_obtained is True
+    if not camera_obtained and renpy.loadable("gui/day2_plaza/market_stalls/ruined_stalls/item_camera.png") and "The Melted Camera" not in inventory_bag_items and not blurry_photo_obtained:
         imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/ruined_stalls/item_camera.png" hover brighten("gui/day2_plaza/market_stalls/ruined_stalls/item_camera.png") focus_mask True action Return("camera")
     if not renpy.get_screen("global_hud"):
         use global_hud
@@ -468,7 +464,7 @@ screen day2_bakery_kitchen_environment():
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bakery/kitchen/return_to_bakery_idle.png" hover brighten("gui/day2_plaza/bakery/kitchen/return_to_bakery_idle.png") focus_mask True action Return("return_to_bakery")
     if not renpy.get_screen("global_hud"):
         use global_hud
-    key "K_ESCAPE" action Return()
+    key "K_ESCAPE" action Return("return_to_bakery")
 
 screen day2_electric_shop_environment():
     on "show" action Show("global_hud")
@@ -507,10 +503,8 @@ screen day2_bench_environment():
     on "show" action Show("global_hud")
     if "The Dropped Lottery Ticket" not in day2_items_found:
         imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bench/item_ticket_idle.png" hover brighten("gui/day2_plaza/bench/item_ticket_idle.png") focus_mask True action Return("ticket")
-
     if "The Expensive Cigar" not in day2_items_found:
         imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/bench/item_cigarrete_idle.png" hover brighten("gui/day2_plaza/bench/item_cigarrete_idle.png") focus_mask True action Return("cigar")
-
     textbutton "Return to Plaza" xalign 0.92 yalign 0.14 hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return("return_to_plaza")
     if not renpy.get_screen("global_hud"):
         use global_hud
@@ -538,19 +532,20 @@ screen day3_casino_lobby():
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_lobby/go_to_cashier.png" hover brighten("gui/day3_casino/casino_lobby/go_to_cashier.png") focus_mask True action Return("cashier")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_lobby/go_to_outside_casino.png" hover brighten("gui/day3_casino/casino_lobby/go_to_outside_casino.png") focus_mask True action Return("outside")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_lobby/go_to_playroom.png" hover brighten("gui/day3_casino/casino_lobby/go_to_playroom.png") focus_mask True action Return("playroom")
-
     if slot_machine_shorted:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_lobby/go_to_underground_noBouncer.png" hover brighten("gui/day3_casino/casino_lobby/go_to_underground_noBouncer.png") focus_mask True action Return("underground")
     else:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_lobby/go_to_underground.png" hover brighten("gui/day3_casino/casino_lobby/go_to_underground.png") focus_mask True action Return("underground")
     if not renpy.get_screen("global_hud"):
         use global_hud
+    key "K_ESCAPE" action Return("outside")
 
 screen day3_cashier_environment():
     on "show" action Show("global_hud")
     textbutton "Back" hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return("back") align (0.05, 0.95)
     if not renpy.get_screen("global_hud"):
         use global_hud
+    key "K_ESCAPE" action Return("back")
 
 screen day3_underground_casino():
     on "show" action Show("global_hud")
@@ -559,14 +554,13 @@ screen day3_underground_casino():
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/bullet_wall_idle.png" hover brighten("gui/day3_casino/underground_casino/bullet_wall_idle.png") focus_mask True action Return("bullethole")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/cleaner_idle.png" hover brighten("gui/day3_casino/underground_casino/cleaner_idle.png") focus_mask True action Return("cleaner")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/waitress_idle.png" hover brighten("gui/day3_casino/underground_casino/waitress_idle.png") focus_mask True action Return("waitress")
-
     if "The Stolen Credit Card" not in day3_items_found:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/credit card idle.png" hover brighten("gui/day3_casino/underground_casino/credit card idle.png") focus_mask True action Return("creditcard")
-
     if "The VIP Pass" not in day3_items_found:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/underground_casino/vip_pass_idle.png" hover brighten("gui/day3_casino/underground_casino/vip_pass_idle.png") focus_mask True action Return("vippass")
     if not renpy.get_screen("global_hud"):
         use global_hud
+    key "K_ESCAPE" action Return("lobby")
 
 screen day3_backroom_environment():
     on "show" action Show("global_hud")
@@ -574,11 +568,11 @@ screen day3_backroom_environment():
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/backroom_room/go_to_open_vault.png" hover brighten("gui/day3_casino/backroom/backroom_room/go_to_open_vault.png") focus_mask True action Return("vault")
     else:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/backroom_room/go_to_vault.png" hover brighten("gui/day3_casino/backroom/backroom_room/go_to_vault.png") focus_mask True action Return("vault")
-
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/backroom_room/dealer_idle.png" hover brighten("gui/day3_casino/backroom/backroom_room/dealer_idle.png") focus_mask True action Return("dealer")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/backroom/backroom_room/go_backto_underground.png" hover brighten("gui/day3_casino/backroom/backroom_room/go_backto_underground.png") focus_mask True action Return("underground")
     if not renpy.get_screen("global_hud"):
         use global_hud
+    key "K_ESCAPE" action Return("underground")
 
 screen day3_safe_closeup_environment():
     on "show" action Show("global_hud")
@@ -587,6 +581,7 @@ screen day3_safe_closeup_environment():
     textbutton "Back" hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return("back") align (0.05, 0.95)
     if not renpy.get_screen("global_hud"):
         use global_hud
+    key "K_ESCAPE" action Return("back")
 
 screen day3_opened_safe_environment():
     on "show" action Show("global_hud")
@@ -595,6 +590,7 @@ screen day3_opened_safe_environment():
     textbutton "Leave Safe" hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return("back") align (0.05, 0.95)
     if not renpy.get_screen("global_hud"):
         use global_hud
+    key "K_ESCAPE" action Return("back")
 
 screen safe_puzzle_screen(current_digit, entered_code):
     on "show" action Show("global_hud")
@@ -608,7 +604,6 @@ screen safe_puzzle_screen(current_digit, entered_code):
     add "gui/day3_casino/backroom/safe/safe_minigame/safe_arrow.png":
         xalign 0.5
         yalign 0.15
-
     text "Code Entered: [entered_code]" xalign 0.5 yalign 0.05 size 40 color "#ffffff"
     key "a" action Return("turn_right")
     key "A" action Return("turn_right")
@@ -617,7 +612,6 @@ screen safe_puzzle_screen(current_digit, entered_code):
     key "K_RETURN" action Return("enter_digit")
     key "K_KP_ENTER" action Return("enter_digit")
     key "K_ESCAPE" action Return("exit")
-
     vbox:
         align (0.95, 0.95)
         text "'A' to turn Right" color "#ffffff"
@@ -633,25 +627,24 @@ screen day3_playroom_environment():
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/go_to_cards_closeup.png" hover brighten("gui/day3_casino/casino_playroom/go_to_cards_closeup.png") focus_mask True action Return("cards_closeup")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/go_to_wire_minigame.png" hover brighten("gui/day3_casino/casino_playroom/go_to_wire_minigame.png") focus_mask True action Return("wire_minigame")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/arthur_idle.png" hover brighten("gui/day3_casino/casino_playroom/arthur_idle.png") focus_mask True action Return("arthur")
-
     if slot_machine_shorted:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/destroyed_jukebox_bouncer.png" hover brighten("gui/day3_casino/casino_playroom/destroyed_jukebox_bouncer.png") focus_mask True action Return("jukebox")
     else:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/destroyed_jukebox_idle.png" hover brighten("gui/day3_casino/casino_playroom/destroyed_jukebox_idle.png") focus_mask True action Return("jukebox")
-
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/drunk_idle.png" hover brighten("gui/day3_casino/casino_playroom/drunk_idle.png") focus_mask True action Return("drunk")
     if not renpy.get_screen("global_hud"):
         use global_hud
+    key "K_ESCAPE" action Return("lobby")
 
 screen day3_cards_closeup_environment():
     on "show" action Show("global_hud")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/cards_closeup/cards_idle.png" hover brighten("gui/day3_casino/casino_playroom/cards_closeup/cards_idle.png") focus_mask True action Return("cards")
-
     if "The Diamond Earring" not in day3_items_found:
         imagebutton xpos 0 ypos 0 idle "gui/day3_casino/casino_playroom/cards_closeup/earring_idle.png" hover brighten("gui/day3_casino/casino_playroom/cards_closeup/earring_idle.png") focus_mask True action Return("earring")
     textbutton "Back" hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return("back") align (0.05, 0.95)
     if not renpy.get_screen("global_hud"):
         use global_hud
+    key "K_ESCAPE" action Return("back")
 
 screen day3_club_front_environment():
     on "show" action Show("global_hud")
@@ -659,6 +652,7 @@ screen day3_club_front_environment():
     textbutton "Back to Outside" hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return("outside") align (0.05, 0.95)
     if not renpy.get_screen("global_hud"):
         use global_hud
+    key "K_ESCAPE" action Return("outside")
 
 screen day3_club_inside_environment():
     on "show" action Show("global_hud")
@@ -666,6 +660,7 @@ screen day3_club_inside_environment():
     imagebutton xpos -17 ypos 0 idle "gui/day3_casino/local_club/inside_club/gossiper_idle.png" hover brighten("gui/day3_casino/local_club/inside_club/gossiper_idle.png") focus_mask True action Return("gossiper")
     if not renpy.get_screen("global_hud"):
         use global_hud
+    key "K_ESCAPE" action Return("outside")
 
 # ==========================================
 # DAY 5 DEPOT SCREENS
@@ -808,6 +803,7 @@ screen backroom_environment():
     imagebutton xpos 400 ypos 300 idle "safe_distant_idle.png" action Return("safe")
     if not renpy.get_screen("global_hud"):
         use global_hud
+    key "K_ESCAPE" action Return("underground")
 
 screen safe_closeup_environment():
     on "show" action Show("global_hud")
@@ -816,43 +812,42 @@ screen safe_closeup_environment():
     textbutton "Back" hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return("back") align (0.05, 0.95)
     if not renpy.get_screen("global_hud"):
         use global_hud
+    key "K_ESCAPE" action Return("back")
 
 # ==========================================
 # TUTORIAL SCREENS
 # ==========================================
 screen tutorial_office_environment():
+    on "show" action Show("global_hud")
     imagebutton xpos -9 ypos -9 idle "gui/tutorial/files_idle.png" hover brighten("gui/tutorial/files_idle.png") focus_mask True activate_sound "audio/sfx_paper_rustle.ogg" action Return("files")
-
     # The badge disappears after it is picked up
     if not tutorial_badge_picked:
         imagebutton xpos 0 ypos -9 idle "gui/tutorial/badge_idle.png" hover brighten("gui/tutorial/badge_idle.png") focus_mask True activate_sound "audio/sfx_pickup_item.ogg" action Return("badge")
-
     imagebutton xpos 0 ypos -9 idle "gui/tutorial/arthur_tuts_idle.png" hover brighten("gui/tutorial/arthur_tuts_idle.png") focus_mask True activate_sound "audio/ui_click.ogg" action Return("arthur")
     imagebutton xpos 0 ypos -9 idle "gui/tutorial/door_idle.png" hover brighten("gui/tutorial/door_idle.png") focus_mask True activate_sound "audio/sfx_door_open.ogg" action Return("door")
-
     # The News Van icon acts as the "Finish Tutorial" button
     imagebutton xalign 0.95 yalign 0.05 idle scoop_icon_idle("gui/tutorial/ui_icon_van_idle.png", 0.1) hover scoop_icon_hover("gui/tutorial/ui_icon_van_idle.png", 0.1) activate_sound "audio/sfx_van_door.ogg" action Return("van")
+    if not renpy.get_screen("global_hud"):
+        use global_hud
 
 # ==========================================
 # NEWSPAPER UI SCREEN
 # ==========================================
 screen newspaper_results_ui(headline, body, rating, score):
+    on "show" action Show("global_hud")
     # This displays your straight, un-slanted zoomed-in newspaper asset
     add "gui/newspaper_zoomed.jpg"
-
     # This aligns the text block perfectly over the straight box
     vbox:
         pos (600, 375)
         xsize 720
         spacing 15
-
         text headline size 28 bold True color "#1a1a1a"
         text body size 18 color "#2b2b2b" line_spacing 3
-
         null height 10
-
         text "Editor's Rating: [rating]" size 22 italic True color "#590000"
         text "Total Credibility: [score]" size 22 bold True color "#1a1a1a"
-
     # Standard textbutton at the bottom, repositioned slightly to prevent conflict
     textbutton "Put away newspaper" hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_click.ogg" action Return() align (0.5, 0.93) text_size 28 text_color "#ffffff" text_outlines [(2, "#000000", 0, 0)]
+    if not renpy.get_screen("global_hud"):
+        use global_hud
