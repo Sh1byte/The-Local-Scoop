@@ -1,0 +1,254 @@
+[
+    {
+        "Interactable_Object": "The Bloody Tire Tracks",
+        "Obtainable_Item": "The Train Ticket Stub",
+        "Witness": "Medic 1",
+        "Headline": "Blood on the Tracks: Syndicate Escape Halted at Old Rail Depot",
+        "Body": "Fresh tire skid marks cutting across the railyard tarmac expose a frantic getaway route taken by armed cartel enforcers. Furthermore, a charred interstate train ticket stub recovered from a blood-soaked jacket reveals the criminal factions were planning an immediate out-of-town escape. According to an anonymous local medic forced at gunpoint to treat injured gangsters, the missing bank cash has pushed both syndicates into a brutal all-out war."
+    },
+    {
+        "Interactable_Object": "The Bloody Tire Tracks",
+        "Obtainable_Item": "The Train Ticket Stub",
+        "Witness": "Train Engineer 1",
+        "Headline": "Locomotive Denial: Rail Engineer Blames Cargo Fall for Gang Hit",
+        "Body": "Bloody rubber tracks scarring the depot gravel mark the desperate escape path of wounded syndicate operatives. Furthermore, a charred interstate train ticket stub recovered from a blood-soaked jacket reveals the criminal factions were planning an immediate out-of-town escape. Rejecting all talk of gang warfare, railway worker Train Engineer insisted the injured victim merely suffered a clumsy fall from a moving cargo train."
+    },
+    {
+        "Interactable_Object": "The Bloody Tire Tracks",
+        "Obtainable_Item": "The Train Ticket Stub",
+        "Witness": "Hobo 1",
+        "Headline": "Escape Routes and Paranoia: Vagrant Decries Train Grease Poisoning",
+        "Body": "Deep tire ruts left outside the abandoned warehouse delineate a high-speed tactical retreat following a brutal gang ambush. Furthermore, a charred interstate train ticket stub recovered from a blood-soaked jacket reveals the criminal factions were planning an immediate out-of-town escape. Shouting wildly at investigators, a local vagrant claimed the entire railyard was contaminated by a government water-poisoning plot involving rogue lubricants."
+    },
+    {
+        "Interactable_Object": "The Bloody Tire Tracks",
+        "Obtainable_Item": "The Train Ticket Stub",
+        "Witness": "Tourist 1",
+        "Headline": "Hollywood on the Rails: Zombie Indie Film Confuses Syndicate Flight",
+        "Body": "Conspicuous tire tracks trailing away from the main depot platform provide undeniable forensic evidence of the rapid vehicle evacuation following the shootout. A crumpled railway ticket discovered near the medical supplies confirms that the syndicate operatives planned an immediate out-of-town escape. Tourist burst through the barricades claiming to be an extra on a low-budget zombie action film shooting with stage props."
+    },
+    {
+        "Interactable_Object": "The Bloody Tire Tracks",
+        "Obtainable_Item": "The Empty Wallet",
+        "Witness": "Medic 1",
+        "Headline": "Skid Marks and Stolen Leather: Midnight War Follows Empty Trail",
+        "Body": "Violent skid marks leading away from the depot platform overlap with a stripped, empty leather billfold tossed into the brush. A local clandestine medic who patched up a wounded enforcer confirmed that the missing bank cash has pushed rival criminal families to the brink of destruction."
+    },
+    {
+        "Interactable_Object": "The Bloody Tire Tracks",
+        "Obtainable_Item": "The Empty Wallet",
+        "Witness": "Train Engineer 1",
+        "Headline": "Depot Distractions: Empty Wallets and Imaginary Train Jumpers",
+        "Body": "Smeared rubber tracks and a discarded empty wallet point toward a chaotic ambush and subsequent looting at the rail yard. However, Train Engineer scoffed at reports of mob violence, swearing the victim was just a careless freight laborer who tumbled onto the tracks."
+    },
+    {
+        "Interactable_Object": "The Bloody Tire Tracks",
+        "Obtainable_Item": "The Empty Wallet",
+        "Witness": "Hobo 1",
+        "Headline": "Empty Pockets",
+        "Body": "Swerving tire marks and a hollow cash purse indicate a high-speed getaway accompanied by opportunistic street looting. The investigation was derailed when Hobo wandered through police tape, warning bystanders that toxic rail grease was actively contaminating the city's tap water."
+    },
+    {
+        "Interactable_Object": "The Bloody Tire Tracks",
+        "Obtainable_Item": "The Empty Wallet",
+        "Witness": "Tourist 1",
+        "Headline": "Cinematic Ambush: Fake Blood and Battered Wallets at Rail Yard",
+        "Body": "Deep tire ruts soaked in blood and a pickpocketed billfold suggest an armed ambush followed by petty theft. Unfazed by the police presence, an excited Tourist recorded video on a smartphone, convinced the entire scene was staged for a B-grade action film."
+    },
+    {
+        "Interactable_Object": "The Bloody Tire Tracks",
+        "Obtainable_Item": "The Rusty Toolbox",
+        "Witness": "Medic 1",
+        "Headline": "Heavy Metal Forensics: Wrench in Hand Amidst Impending Docks War",
+        "Body": "Heavy tire impressions trailing past the freight terminal match an abandoned mechanic's toolbox filled with industrial wrenches. An on-call doctor forced at gunpoint to treat a bleeding gangster revealed that underground tensions over the stolen money have completely erupted."
+    },
+    {
+        "Interactable_Object": "The Bloody Tire Tracks",
+        "Obtainable_Item": "The Rusty Toolbox",
+        "Witness": "Train Engineer 1",
+        "Headline": "Mechanic's Junk and Moving Trains: The Depot Runaround",
+        "Body": "Reckless tire marks outside the maintenance shed and a dropped iron tool chest point to an abruptly interrupted repair job during a shootout. Train Engineer rejected any gang connection, insisting the injured man was simply a maintenance worker who missed his footing."
+    },
+    {
+        "Interactable_Object": "The Bloody Tire Tracks",
+        "Obtainable_Item": "The Rusty Toolbox",
+        "Witness": "Hobo 1",
+        "Headline": "Toolboxes and Tyranny: Screaming Yard Local Blames Municipal Water",
+        "Body": "Bloody tread marks leaving the depot and an overturned toolbox indicate a violent clash near the train servicing bays. Meanwhile, Hobo shouted paranoid accusations at detectives, claiming municipal authorities were secretly poisoning drinking water with machine grease."
+    },
+    {
+        "Interactable_Object": "The Bloody Tire Tracks",
+        "Obtainable_Item": "The Rusty Toolbox",
+        "Witness": "Tourist 1",
+        "Headline": "Zombies",
+        "Body": "Screeching tire prints and a rusted toolbox left near the tracks suggest a frantic getaway during an industrial shootout. Baffled by the yellow tape, a clueless Tourist asked officers when the stunt actors and zombie extras would begin their next scene."
+    },
+    {
+        "Interactable_Object": "The Wild Dog Tracks",
+        "Obtainable_Item": "The Train Ticket Stub",
+        "Witness": "Medic 1",
+        "Headline": "Barking Up the Wrong Rail: Stray Paws Obscure Real Out-of-Town Lead",
+        "Body": "Scattered animal paw prints trailing fresh blood across the rail yard lead to an outbound train ticket stub dropped near the tracks. A local medic who treated a wounded gunman on-site confirmed that the city's two largest gangs are locked in a deadly battle over missing cash."
+    },
+    {
+        "Interactable_Object": "The Wild Dog Tracks",
+        "Obtainable_Item": "The Train Ticket Stub",
+        "Witness": "Train Engineer 1",
+        "Headline": "Canine Commute: Train Conductor Confounds Dog Prints with Cargo Leaps",
+        "Body": "Feral dog tracks converging near the depot floor and a recovered railway ticket point to stray animals scavenging after an attempted getaway. Train Engineer dismissed the incident entirely, maintaining that a freight worker merely slipped off a cargo door during his shift."
+    },
+    {
+        "Interactable_Object": "The Wild Dog Tracks",
+        "Obtainable_Item": "The Train Ticket Stub",
+        "Witness": "Hobo 1",
+        "Headline": "Feral Paws and Federal Flaws: Transient Unearths Depot Water Plot",
+        "Body": "Wild canine footprints weaving through the railyard mud and an unused train ticket indicate local strays inspecting an escape route. The scene descended into farce as Hobo yelled at investigators, alleging a covert government plot to poison tap water with rail lubricants."
+    },
+    {
+        "Interactable_Object": "The Wild Dog Tracks",
+        "Obtainable_Item": "The Train Ticket Stub",
+        "Witness": "Tourist 1",
+        "Headline": "Undead Hounds: Movie Tourists Confuse Stray Tracks for Horror Feature",
+        "Body": "Stray animal tracks crisscrossing the platform and a crumpled train ticket stub paint a grim picture of a botched escape attempt. Completely misinterpreting the evidence, Tourist praised the production value, believing the animal prints and fake blood were movie props."
+    },
+    {
+        "Interactable_Object": "The Wild Dog Tracks",
+        "Obtainable_Item": "The Empty Wallet",
+        "Witness": "Medic 1",
+        "Headline": "Chasing Strays: Empty Pockets and Canine Prints Derail War Intel",
+        "Body": "Neighborhood dog tracks circling a pool of blood and an empty, stripped wallet suggest feral animals and street thieves scavenged the scene post-shootout. An underground medic confirmed that mob enforcers are waging war across town following the disappearance of bank funds."
+    },
+    {
+        "Interactable_Object": "The Wild Dog Tracks",
+        "Obtainable_Item": "The Empty Wallet",
+        "Witness": "Train Engineer 1",
+        "Headline": "The Great Depot Slip: Conductor Claims Pickpocketed Cargo Tumble",
+        "Body": "Roaming canine footprints and a hollow billfold found in the weeds point to a chaotic night at the rail yard. Offering an absurd defense, Train Engineer swore no guns were fired, claiming the victim simply lost his balance and dropped his empty wallet while falling off a train."
+    },
+    {
+        "Interactable_Object": "The Wild Dog Tracks",
+        "Obtainable_Item": "The Empty Wallet",
+        "Witness": "Hobo 1",
+        "Headline": "Trifecta of Absurdity: Screaming Yard Vagrant Leads Clueless Scoop",
+        "Body": "Paw prints from local strays and a pickpocketed coin pouch indicate animal scavenging alongside petty theft. Local resident Hobo created a disturbance by shouting warnings that toxic industrial grease was being pumped directly into the public drinking water supply."
+    },
+    {
+        "Interactable_Object": "The Wild Dog Tracks",
+        "Obtainable_Item": "The Empty Wallet",
+        "Witness": "Tourist 1",
+        "Headline": "B-Movie Bloodbaths: Empty Billfolds and Stray Dogs Foil Investigation",
+        "Body": "Animal tracks stamped into bloody dirt and a stripped cash fold suggest scavengers looted the area after a violent confrontation. Impressed by the setup, a visiting Tourist snapped photos of the scene, assuming it was a promotional shoot for a Hollywood thriller."
+    },
+    {
+        "Interactable_Object": "The Wild Dog Tracks",
+        "Obtainable_Item": "The Rusty Toolbox",
+        "Witness": "Medic 1",
+        "Headline": "Heavy Luggage",
+        "Body": "Feral dog footprints surrounding an abandoned mechanic's toolbox point to a interrupted repair operation in the rail yard. According to a traumatized medic forced to treat an injured enforcer, the stolen bank money has incited an all-out war between rival syndicates."
+    },
+    {
+        "Interactable_Object": "The Wild Dog Tracks",
+        "Obtainable_Item": "The Rusty Toolbox",
+        "Witness": "Train Engineer 1",
+        "Headline": "Locomotive Lunacy: Iron Tools and Animal Prints Flummox Rail Worker",
+        "Body": "Canine paw marks weaving around an open tool chest suggest stray animals investigated heavy equipment left behind after a disturbance. Train Engineer scoffed at rumors of a gang feud, claiming a clumsily handled toolbox caused a routine workplace injury."
+    },
+    {
+        "Interactable_Object": "The Wild Dog Tracks",
+        "Obtainable_Item": "The Rusty Toolbox",
+        "Witness": "Hobo 1",
+        "Headline": "Cults by the Track: Screaming Wanderer Denounces Fluoride with Wrenches",
+        "Body": "Disturbed soil covered in animal prints and a rusted wrench set reveal stray dogs prowling near abandoned maintenance gear. Hobo interrupted the police investigation, screaming wildly that city tap water was being laced with chemical train grease by rogue officials."
+    },
+    {
+        "Interactable_Object": "The Wild Dog Tracks",
+        "Obtainable_Item": "The Rusty Toolbox",
+        "Witness": "Tourist 1",
+        "Headline": "Prop Department Blues: Journalist Carries Heavy Junk for Film Crew",
+        "Body": "Stray dog tracks circling an industrial toolbox give the appearance of an abandoned work site following a violent clash. Tourist cheerfully approached the crime scene, congratulating officers on what they believed to be realistic set decoration for an indie film."
+    },
+    {
+        "Interactable_Object": "The Leaking Oil Puddle",
+        "Obtainable_Item": "The Train Ticket Stub",
+        "Witness": "Medic 1",
+        "Headline": "Slick Disguises: Motor Oil Hides Gunplay as Medic Reveals War",
+        "Body": "A massive motor oil slick pooling across the depot pavement conceals dark stains from a midnight firefight, while a train ticket stub reveals an escape attempt. A local medic who treated a gunshot victim confirmed that the missing heist funds have triggered a cartel war."
+    },
+    {
+        "Interactable_Object": "The Leaking Oil Puddle",
+        "Obtainable_Item": "The Train Ticket Stub",
+        "Witness": "Train Engineer 1",
+        "Headline": "Slippery Excuses: Engineer Clings to Train Fall Theory Over Oil Slick",
+        "Body": "Leaking car fluid spreading over the platform and an outbound rail ticket suggest a damaged getaway vehicle was abandoned before suspects fled. Train Engineer rejected claims of gunplay, insisting a leaking locomotive engine caused a worker to slip and injure himself."
+    },
+    {
+        "Interactable_Object": "The Leaking Oil Puddle",
+        "Obtainable_Item": "The Train Ticket Stub",
+        "Witness": "Hobo 1",
+        "Headline": "Crude Conspiracies: Oil Slicks and Escape Passes Inflame Rail Tramp",
+        "Body": "A dark chemical oil puddle masking the crime scene and a crumpled train ticket indicate an engine failure during a frantic getaway attempt. Hobo caused a scene at the tape line, shouting paranoid claims about government agents contaminating municipal water with machine oil."
+    },
+    {
+        "Interactable_Object": "The Leaking Oil Puddle",
+        "Obtainable_Item": "The Train Ticket Stub",
+        "Witness": "Tourist 1",
+        "Headline": "Movie Magic or Motor Oil? Tourist Declares Real Escape Route a Set Piece",
+        "Body": "Glistening petroleum spilled across the rail ties and a dropped ticket stub point to a compromised escape vehicle. Unaware of any danger, an enthusiastic Tourist asked detectives if the spilled oil and ticket stub were part of an interactive murder mystery tour."
+    },
+    {
+        "Interactable_Object": "The Leaking Oil Puddle",
+        "Obtainable_Item": "The Empty Wallet",
+        "Witness": "Medic 1",
+        "Headline": "Broke by the Bay: Slain Getaway Slick Accompanies Bleak War News",
+        "Body": "A noxious oil slick pooling near the service bays and a stripped leather wallet suggest a breakdown accompanied by opportunistic looting. Testifying under anonymity, an emergency medic reported treating multiple syndicate enforcers wounded in ongoing turf battles."
+    },
+    {
+        "Interactable_Object": "The Leaking Oil Puddle",
+        "Obtainable_Item": "The Empty Wallet",
+        "Witness": "Train Engineer 1",
+        "Headline": "The Great Freight Fumble: Smashed Wallets and Grease Puddles Rule the Yard",
+        "Body": "Engine fluid leaking across the concrete apron and an empty billfold tossed into the dirt point to mechanical trouble amidst a theft. Train Engineer maintained that no criminal activity occurred, blaming the mess on a leaking oil pan and a clumsy freight handler."
+    },
+    {
+        "Interactable_Object": "The Leaking Oil Puddle",
+        "Obtainable_Item": "The Empty Wallet",
+        "Witness": "Hobo 1",
+        "Headline": "Drained Wallets",
+        "Body": "A heavy petroleum spill spreading over the gravel and a pickpocketed coin purse indicate a chaotic scene at the depot. Local transient Hobo disrupted the investigation by frantically screaming that city water was being poisoned with toxic industrial lubricants."
+    },
+    {
+        "Interactable_Object": "The Leaking Oil Puddle",
+        "Obtainable_Item": "The Empty Wallet",
+        "Witness": "Tourist 1",
+        "Headline": "Directorial Flop: Sightseer Sees Zombie Cinema in Cheap Grease and Wallets",
+        "Body": "Dark engine oil coating the railyard drainage and a hollow cash holder suggest a vehicle leak during a robbery. Tourist snapped selfies near the crime scene, praising the realism of what they assumed was a live stunt performance for an action flick."
+    },
+    {
+        "Interactable_Object": "The Leaking Oil Puddle",
+        "Obtainable_Item": "The Rusty Toolbox",
+        "Witness": "Medic 1",
+        "Headline": "Grease Monkey Blues: Heavy Spanners Accompanied by Secret War Expos\u00e9",
+        "Body": "A thick oil slick spreading across the garage floor matches an open toolbox filled with wrenches, pointing to sabotaged transport gear. A doctor who treated a wounded gangster confirmed that tensions over the missing bank loot have escalated into open warfare."
+    },
+    {
+        "Interactable_Object": "The Leaking Oil Puddle",
+        "Obtainable_Item": "The Rusty Toolbox",
+        "Witness": "Train Engineer 1",
+        "Headline": "Machinist's Delusion: Conductor Denies Shootout Despite Spilled Motor Fluid",
+        "Body": "Spilled motor fluid and an abandoned mechanic's chest indicate an abruptly halted repair job near the tracks. Train Engineer insisted the entire incident was a routine maintenance mishap, claiming a mechanic spilled oil and tripped over his own tools."
+    },
+    {
+        "Interactable_Object": "The Leaking Oil Puddle",
+        "Obtainable_Item": "The Rusty Toolbox",
+        "Witness": "Hobo 1",
+        "Headline": "The Wrenching Truth: Rail Tramp Confuses Leaking Car Grease for Federal Poison",
+        "Body": "Corrosive engine oil pooling on the tarmac and a rusted iron toolbox reveal heavy equipment abandoned during a midnight conflict. Hobo shouted at officers from across the street, insisting the oil puddle was proof of a municipal plot to pollute tap water."
+    },
+    {
+        "Interactable_Object": "The Leaking Oil Puddle",
+        "Obtainable_Item": "The Rusty Toolbox",
+        "Witness": "Tourist 1",
+        "Headline": "Cinematography in the Sump: Clueless Tourist Casts Reporter in Indie Sludge",
+        "Body": "Toxic engine fluid spreading across the railyard drainage reveals the careless contamination left by fleeing contraband runners, accompanied by a heavy iron toolbox left discarded near the rails, underscoring the hasty flight of corrupt logistics workers. Train Engineer scoffed at the violent conspiracy theories, swearing the wounded men were just careless laborers tumbling off stationary boxcars."
+    }
+]
