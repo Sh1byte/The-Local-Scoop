@@ -473,36 +473,34 @@ screen scoop_settings_menu():
     elif scoop_menu_tab == "credits":
         frame:
             align (0.5, 0.5)
-            xsize 820
-            ysize 640
+            xsize 860
+            ysize 680
             background Solid("#141414F5")
             padding (50, 45)
             vbox:
-                spacing 20
+                spacing 18
                 xfill True
                 yfill True
-                text "THE CREATORS" xalign 0.5 size 40 bold True color "#f0c75e" outlines [(2, "#000000", 0, 0)]
+                text "CREDITS" xalign 0.5 size 40 bold True color "#f0c75e" outlines [(2, "#000000", 0, 0)]
                 text "The Local Scoop — Development Team" xalign 0.5 size 22 italic True color "#aaaaaa"
-                null height 10
+                null height 6
                 viewport:
                     xfill True
-                    ysize 360
+                    ysize 410
                     scrollbars "vertical"
                     mousewheel True
+                    draggable True
                     vbox:
                         xfill True
-                        spacing 16
-                        text "Project Lead & Programming" xalign 0.5 size 22 bold True color "#f0c75e"
-                        text "Creator Name 1\nCreator Name 2" xalign 0.5 text_align 0.5 size 20 color "#ffffff"
-                        null height 6
-                        text "Story, Script & Investigation Design" xalign 0.5 size 22 bold True color "#f0c75e"
-                        text "Creator Name 3\nCreator Name 4" xalign 0.5 text_align 0.5 size 20 color "#ffffff"
-                        null height 6
-                        text "Backgrounds, Sprites & UI Art" xalign 0.5 size 22 bold True color "#f0c75e"
-                        text "Creator Name 5\nCreator Name 6" xalign 0.5 text_align 0.5 size 20 color "#ffffff"
-                        null height 6
-                        text "Music & Sound Design" xalign 0.5 size 22 bold True color "#f0c75e"
-                        text "The Creators" xalign 0.5 text_align 0.5 size 20 color "#ffffff"
+                        spacing 18
+                        for role_title, person_name in credits_list:
+                            vbox:
+                                xfill True
+                                spacing 4
+                                text "[role_title]" xalign 0.5 text_align 0.5 size 20 bold True color "#f0c75e"
+                                text "[person_name]" xalign 0.5 text_align 0.5 size 22 color "#ffffff"
+                        null height 10
+                        text "ALL IMAGES IN THIS GAME ARE AI GENERATED" xalign 0.5 text_align 0.5 size 20 bold True color "#d9534f"
                 textbutton "Back to Settings":
                     xalign 0.5
                     yalign 1.0

@@ -608,6 +608,7 @@ label day5_path_a_climax:
             scene day5_ea1_10 with dissolve
             "{cps=22}In the end, the truth is whatever the last man standing writes down.{/cps}{w=2.8}{nw}"
             "{cps=22}ENDING UNLOCKED: The Darker Path.{/cps}{w=3.0}{nw}"
+            $ current_ending_name = "The Darker Path"
         else:
             play sound "audio/sfx_whiskey_sip.ogg"
             scene day5_ea1_9_nomoney with fade
@@ -616,10 +617,9 @@ label day5_path_a_climax:
             scene day5_ea1_10_nomoney with dissolve
             "{cps=22}In the end, the truth is whatever the last man standing writes down.{/cps}{w=2.8}{nw}"
             "{cps=22}ENDING UNLOCKED: The Dark Path.{/cps}{w=3.0}{nw}"
+            $ current_ending_name = "The Dark Path"
 
-        stop music fadeout 2.0
-        scene black with fade
-        $ set_cutscene_lock(False)
+        call play_end_credits("The Redemption Path")
         return
 
     else:
@@ -750,8 +750,5 @@ label day5_path_b_start:
     "{cps=22}Together, we hadn't just written the biggest headline in the history of The Daily Herald, we had saved the town and proven what true journalism was all about.{/cps}{w=3.5}{nw}"
     "{cps=22}ENDING UNLOCKED: The Clean Sweep.{/cps}{w=3.0}{nw}"
 
-    stop music fadeout 2.0
-    stop ambient fadeout 2.0
-    scene black with fade
-    $ set_cutscene_lock(False)
+    call play_end_credits("The Clean Sweep")
     return
