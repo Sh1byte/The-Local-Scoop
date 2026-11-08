@@ -4,15 +4,12 @@ init python:
     def brighten(image_path, amount=0.2):
         return Transform(image_path, matrixcolor=BrightnessMatrix(amount))
 
-    # Automatically keeps global_hud active on all in-game screens
     if "global_hud" not in config.overlay_screens:
         config.overlay_screens.append("global_hud")
 
     def hide_all_investigation_screens():
         screens_to_hide = [
-            # Popups & Tutorial
             "inventory_bag", "news_van_screen", "tutorial_office_environment",
-            # Day 1 Screens & Overlays
             "day1_warehouse_investigation", "day1_warehouse_back_environment",
             "day1_warehouse_riverclose_environment", "day1_warehouse_inside_front_environment",
             "day1_warehouse_inside_back_environment", "day1_warehouse_garage_environment",
@@ -21,24 +18,19 @@ init python:
             "flashlight_open_environment", "flashlight_empty_environment",
             "key_holder_environment", "drawer_files_environment",
             "drawer3_environment", "development_environment",
-            # Day 2 Screens & Overlays
             "day2_market_investigation", "day2_ruined_stall_environment",
-            "day2_cashier_environment", "day2_zoomstall_view",
-            "day2_extortion_letter_view", "day2_another_stall_view",
-            "day2_bakery_environment", "day2_bakery_kitchen_environment",
-            "day2_electric_shop_environment", "day2_townhall_environment",
-            "day2_townhall_inside_environment", "day2_plaza_return",
+            "day2_zoomstall_view", "day2_extortion_letter_view",
+            "day2_another_stall_view", "day2_bakery_environment",
+            "day2_bakery_kitchen_environment", "day2_electric_shop_environment",
+            "day2_townhall_environment", "day2_townhall_inside_environment",
             "day2_bench_environment", "day2_blurry_photo_overlay",
-            # Day 3 Screens & Overlays
             "day3_outside_casino", "day3_casino_lobby",
             "day3_cashier_environment", "day3_underground_casino",
             "day3_backroom_environment", "day3_safe_closeup_environment",
             "day3_opened_safe_environment", "safe_puzzle_screen",
             "day3_playroom_environment", "day3_cards_closeup_environment",
             "day3_club_front_environment", "day3_club_inside_environment",
-            "day3_wire_minigame_screen", "backroom_environment",
-            "safe_closeup_environment",
-            # Day 5 Screens & Overlays
+            "day3_wire_minigame_screen",
             "day5_depot_investigation", "day5_maintenance_bay_environment",
             "day5_oilleak_closeup_environment", "day5_abandoned_tracks_environment",
             "day5_tracks_closeup_environment", "day5_grass_closeup_environment",
@@ -48,7 +40,6 @@ init python:
         for scr in screens_to_hide:
             renpy.hide_screen(scr)
 
-    # Icon mapping for the Inventory Grid UI
     item_icons = {
         "Battery": "gui/icons/battery.png",
         "The Janitor's Keyring": "gui/icons/keyring.png",
@@ -71,8 +62,29 @@ init python:
         "The Train Ticket Stub": "gui/icons/ticketstub.png"
     }
 
+    item_descriptions = {
+        "Battery": "A heavy industrial battery. It might power something.",
+        "The Janitor's Keyring": "A keyring with a master key attached. Could unlock doors or drawers.",
+        "The Broken Pocket Watch": "An expensive watch. Talk about the 'flow' of time.",
+        "The Lost Dog Collar": "A dirty pet collar. I wonder if it belongs to a dog that was here.",
+        "The Brass Lighter": "Engraved with a skull and crossed wrenches. A crucial piece of evidence.",
+        "Bread": "Some leftover bread. Maybe I can use this to feed a hungry animal.",
+        "The Melted Camera": "The casing is melted, but the memory chip inside might survive.",
+        "Blurry Photograph": "A blurry photo recovered from the melted camera. Shows the fire starting.",
+        "The Expensive Cigar": "A half-smoked, imported cigar dropped nearby.",
+        "The Dropped Lottery Ticket": "A winning scratch ticket.",
+        "The Extortion Letter": "Signed with the blue anchor stamp of The River Boys.",
+        "The Bloody Ledger": "A ledger listing illegal weapon purchases inside the safe.",
+        "The Diamond Earring": "A cheap imitation diamond earring found on the casino floor.",
+        "The Stolen Credit Card": "A stolen plastic credit card dropped in the underground casino.",
+        "The VIP Pass": "A silver casino VIP card granting access to the local club.",
+        "The Rusty Toolbox": "Heavy junk left behind by a mechanic. It adds nothing to my story.",
+        "The Empty Wallet": "A pickpocket's discarded trash that distracts from the big picture.",
+        "The Burner Phone": "Dropped near the medical supplies, confirming a massive gang war at the shipping docks at midnight.",
+        "The Train Ticket Stub": "Found in the injured driver's pocket, proving the gangs were planning to leave town."
+    }
+
 init 5:
-    # Default hover sound across all investigation imagebuttons
     style image_button:
         hover_sound "audio/ui_hover.ogg"
 
@@ -80,21 +92,15 @@ screen news_van_screen():
     modal True
     zorder 150
     python:
-        # Check if the player has gathered enough core evidence based on the current day
-        can_write = False
-        if current_day == 1 and len(day1_clues_found) > 0 and len(day1_items_found) > 0 and len(day1_witnesses_found) > 0:
-            can_write = True
-        elif current_day == 2 and len(day2_clues_found) > 0 and len(day2_items_found) > 0 and len(day2_witnesses_found) > 0:
-            can_write = True
-        elif current_day == 3 and len(day3_clues_found) > 0 and len(day3_items_found) > 0 and any(w in day3_witnesses_found for w in ["Dealer 1", "Cleaner 1", "Waitress 1", "Drunk Patron 1"]):
-            can_write = True
-        elif current_day == 5 and len(day5_clues_found) > 0 and len(day5_items_found) > 0 and len(day5_witnesses_found) > 0:
-            can_write = True
+        can_write = (
+            (current_day == 1 and "The Smashed Paint Can" in day1_clues_found and "Missing blueprint" in day1_items_found and "Watchman 1" in day1_witnesses_found)
+            or (current_day == 2 and "The Scorched Gas Can" in day2_clues_found and "The Melted Camera" in day2_items_found and "Vendor 1" in day2_witnesses_found)
+            or (current_day == 3 and "The Bullet-Riddled Wall" in day3_clues_found and "The VIP Pass" in day3_items_found and "Dealer 1" in day3_witnesses_found)
+            or (current_day == 5 and "The Bloody Tire Tracks" in day5_clues_found and "The Train Ticket Stub" in day5_items_found and "Medic 1" in day5_witnesses_found and evidence_phone)
+        )
     on "show" action If(not can_write, Play("sound", "audio/ui_evidence_locked.ogg"))
     if can_write:
-        # Normal Background when ready to write
         add "gui/warehouse/bg van.jpg"
-        # Show typewriter to create the news (hides all active room cutouts before jumping)
         imagebutton:
             xalign 0.5
             yalign 0.5
@@ -104,12 +110,9 @@ screen news_van_screen():
             activate_sound "audio/sfx_typewriter_write.ogg"
             action [Function(hide_all_investigation_screens), Jump("newspaper_minigame_router")]
     else:
-        # Blurred Background with Dark Overlay when evidence is missing
         add "gui/warehouse/bg van.jpg" at Transform(blur=15)
         add Solid("#000000AA")
-        # Not enough evidence notification
         text "(The evidence isn't enough to create a good story, maybe I should look for more)" xalign 0.5 yalign 0.5 size 30 color "#FFFFFF" outlines [(2, "#000000", 0, 0)]
-    # Button to leave the van cutout
     textbutton "Leave Van":
         xalign 0.02
         yalign 0.05
@@ -131,9 +134,6 @@ label newspaper_minigame_router:
     elif current_day == 5:
         jump day5_morning_newspaper
 
-# ==========================================
-# DAY 1 WAREHOUSE SCREENS
-# ==========================================
 screen day1_warehouse_back_environment():
     on "show" action Show("global_hud")
     imagebutton xpos 0 ypos 0 idle "gui/day1_back_warehouse/fisherman.png" hover brighten("gui/day1_back_warehouse/fisherman.png") focus_mask True action Return("fisherman")
@@ -158,7 +158,6 @@ screen day1_warehouse_riverclose_environment():
 
 screen day1_warehouse_inside_front_environment():
     on "show" action Show("global_hud")
-    # Requirement 4: Janitor remains visible after handing over the keyring
     imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/janitor.png" hover brighten("gui/day1_inside_warehouse/janitor.png") focus_mask True action Return("janitor")
     if not whiskey_cleared:
         imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/clue_whiskey_idle.png" hover brighten("gui/day1_inside_warehouse/clue_whiskey_idle.png") focus_mask True action Return("whiskey")
@@ -172,7 +171,6 @@ screen day1_warehouse_inside_front_environment():
 
 screen day1_warehouse_inside_back_environment():
     on "show" action Show("global_hud")
-    # Requirement 4: Janitor remains visible after handing over the keyring
     imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/janitor.png" hover brighten("gui/day1_inside_warehouse/janitor.png") focus_mask True action Return("janitor")
     if not whiskey_cleared:
         imagebutton xpos 0 ypos 0 idle "gui/day1_inside_warehouse/clue_whiskey_idle.png" hover brighten("gui/day1_inside_warehouse/clue_whiskey_idle.png") focus_mask True action Return("whiskey")
@@ -322,9 +320,6 @@ screen day1_warehouse_investigation():
     if not renpy.get_screen("global_hud"):
         use global_hud
 
-# ==========================================
-# BAG SCREEN
-# ==========================================
 screen inventory_bag():
     modal True
     zorder 180
@@ -337,29 +332,6 @@ screen inventory_bag():
         hover_sound "audio/ui_hover.ogg"
         activate_sound "audio/ui_bag_close.ogg"
         action Hide("inventory_bag")
-    # Dictionary of descriptions that pop up when clicking an item
-    python:
-        item_descriptions = {
-            "Battery": "A heavy industrial battery. It might power something.",
-            "The Janitor's Keyring": "A keyring with a master key attached. Could unlock doors or drawers.",
-            "The Broken Pocket Watch": "An expensive watch. Talk about the 'flow' of time.",
-            "The Lost Dog Collar": "A dirty pet collar. I wonder if it belongs to a dog that was here.",
-            "The Brass Lighter": "Engraved with a skull and crossed wrenches. A crucial piece of evidence.",
-            "Bread": "Some leftover bread. Maybe I can use this to feed a hungry animal.",
-            "The Melted Camera": "The casing is melted, but the memory chip inside might survive.",
-            "Blurry Photograph": "A blurry photo recovered from the melted camera. Shows the fire starting.",
-            "The Expensive Cigar": "A half-smoked, imported cigar dropped nearby.",
-            "The Dropped Lottery Ticket": "A winning scratch ticket.",
-            "The Extortion Letter": "Signed with the blue anchor stamp of The River Boys.",
-            "The Bloody Ledger": "A ledger listing illegal weapon purchases inside the safe.",
-            "The Diamond Earring": "A cheap imitation diamond earring found on the casino floor.",
-            "The Stolen Credit Card": "A stolen plastic credit card dropped in the underground casino.",
-            "The VIP Pass": "A silver casino VIP card granting access to the local club.",
-            "The Rusty Toolbox": "Heavy junk left behind by a mechanic. It adds nothing to my story.",
-            "The Empty Wallet": "A pickpocket's discarded trash that distracts from the big picture.",
-            "The Burner Phone": "Dropped near the medical supplies, confirming a massive gang war at the shipping docks at midnight.",
-            "The Train Ticket Stub": "Found in the injured driver's pocket, proving the gangs were planning to leave town."
-        }
     vpgrid:
         cols 5
         spacing 2
@@ -369,7 +341,6 @@ screen inventory_bag():
             fixed:
                 xysize (170, 140)
                 if item in item_icons and renpy.loadable(item_icons[item]):
-                    # Make the icon a clickable button that shows a notification
                     imagebutton:
                         align (0.5, 0.5)
                         idle item_icons[item]
@@ -386,9 +357,6 @@ screen inventory_bag():
                         action Notify(item_descriptions.get(item, "A mysterious item."))
     key "K_ESCAPE" action [Play("sound", "audio/ui_bag_close.ogg"), Hide("inventory_bag")]
 
-# ==========================================
-# DAY 2 MARKET PLAZA SCREENS
-# ==========================================
 screen day2_market_investigation():
     on "show" action Show("global_hud")
     imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/plaza_front/musician.png" hover brighten("gui/day2_plaza/plaza_front/musician.png") focus_mask True action Return("musician")
@@ -413,20 +381,10 @@ screen day2_ruined_stall_environment():
         use global_hud
     key "K_ESCAPE" action Return("return_to_plaza")
 
-screen day2_cashier_environment():
-    on "show" action Show("global_hud")
-    if not evidence_letter:
-        imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/ruined_stalls/extortion_letter.png" hover brighten("gui/day2_plaza/market_stalls/ruined_stalls/extortion_letter.png") focus_mask True action [Return("letter")]
-    textbutton "Back" xalign 0.92 yalign 0.14 hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return("back_to_stall")
-    if not renpy.get_screen("global_hud"):
-        use global_hud
-    key "K_ESCAPE" action Return("back_to_stall")
-
 screen day2_zoomstall_view():
     on "show" action Show("global_hud")
     if not evidence_letter:
         imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/ruined_stalls/evidence_letter.png" hover brighten("gui/day2_plaza/market_stalls/ruined_stalls/evidence_letter.png") focus_mask True action Return("evidence_letter")
-    # Requirement 5: Hide camera hotspot once camera_obtained is True
     if not camera_obtained and renpy.loadable("gui/day2_plaza/market_stalls/ruined_stalls/item_camera.png") and "The Melted Camera" not in inventory_bag_items and not blurry_photo_obtained:
         imagebutton xpos 0 ypos 0 idle "gui/day2_plaza/market_stalls/ruined_stalls/item_camera.png" hover brighten("gui/day2_plaza/market_stalls/ruined_stalls/item_camera.png") focus_mask True action Return("camera")
     if not renpy.get_screen("global_hud"):
@@ -492,13 +450,6 @@ screen day2_townhall_inside_environment():
         use global_hud
     key "K_ESCAPE" action Return("return_to_thfront")
 
-screen day2_plaza_return():
-    on "show" action Show("global_hud")
-    textbutton "Return to Plaza" xalign 0.92 yalign 0.14 hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return()
-    if not renpy.get_screen("global_hud"):
-        use global_hud
-    key "K_ESCAPE" action Return()
-
 screen day2_bench_environment():
     on "show" action Show("global_hud")
     if "The Dropped Lottery Ticket" not in day2_items_found:
@@ -513,13 +464,10 @@ screen day2_bench_environment():
 screen day2_blurry_photo_overlay():
     modal True
     add Solid("#00000088")
-    add "gui/day2_plaza//market_stalls/ruined_stalls/blurry_photo.png" align (0.5, 0.5) zoom 3
+    add "gui/day2_plaza/market_stalls/ruined_stalls/blurry_photo.png" align (0.5, 0.5) zoom 3
     textbutton "Close" xalign 0.92 yalign 0.14 hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return()
     key "K_ESCAPE" action Return()
 
-# ==========================================
-# DAY 3 CASINO SCREENS
-# ==========================================
 screen day3_outside_casino():
     on "show" action Show("global_hud")
     imagebutton xpos 0 ypos 0 idle "gui/day3_casino/outside_casino/go_to_casino.png" hover brighten("gui/day3_casino/outside_casino/go_to_casino.png") focus_mask True action Return("casino")
@@ -595,7 +543,6 @@ screen day3_opened_safe_environment():
 screen safe_puzzle_screen(current_digit, entered_code):
     on "show" action Show("global_hud")
     $ rotation_angle = current_digit * -36
-    # Keep the dial and arrow elements inside the minigame
     add "gui/day3_casino/backroom/safe/safe_minigame/safe_knob.png":
         xalign 0.5
         yalign 0.5
@@ -662,24 +609,17 @@ screen day3_club_inside_environment():
         use global_hud
     key "K_ESCAPE" action Return("outside")
 
-# ==========================================
-# DAY 5 DEPOT SCREENS
-# ==========================================
-# --- DEPOT ENTRANCE (MAIN HUB) ---
 screen day5_depot_investigation():
     on "show" action Show("global_hud")
     add "gui/day5_abandoned_station/Depot_Entrance/bg Depot_Entrance.jpg"
-    # Navigation Hotspots
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Depot_Entrance/go_to_Maintenance_Bay.png" hover brighten("gui/day5_abandoned_station/Depot_Entrance/go_to_Maintenance_Bay.png") focus_mask True action Return("go_to_maintenance_bay")
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Depot_Entrance/go_to_Train_Tracks.png" hover brighten("gui/day5_abandoned_station/Depot_Entrance/go_to_Train_Tracks.png") focus_mask True action Return("go_to_abandoned_tracks")
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Depot_Entrance/go_to_Triage.png" hover brighten("gui/day5_abandoned_station/Depot_Entrance/go_to_Triage.png") focus_mask True action Return("go_to_triage")
-    # NPC & Witness
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Depot_Entrance/Arthur_Day5.png" hover brighten("gui/day5_abandoned_station/Depot_Entrance/Arthur_Day5.png") focus_mask True action Return("arthur")
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Depot_Entrance/Tourist.png" hover brighten("gui/day5_abandoned_station/Depot_Entrance/Tourist.png") focus_mask True action Return("tourist")
     if not renpy.get_screen("global_hud"):
         use global_hud
 
-# --- MAINTENANCE BAY ---
 screen day5_maintenance_bay_environment():
     on "show" action Show("global_hud")
     if "The Rusty Toolbox" not in inventory_bag_items:
@@ -687,11 +627,8 @@ screen day5_maintenance_bay_environment():
         imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Maintenance_Bay/Toolbox_idle.png" hover brighten("gui/day5_abandoned_station/Maintenance_Bay/Toolbox_idle.png") focus_mask True activate_sound "audio/sfx_trash_metal.ogg" action [Notify("You got The Rusty Toolbox."), Return("toolbox")]
     else:
         add "gui/day5_abandoned_station/Maintenance_Bay/bg Maintenance_Bay_NoToolbox.jpg"
-    # Close-up Hotspot (Leaking Oil Puddle)
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Maintenance_Bay/go_to_OilLeak_CloseUp.png" hover brighten("gui/day5_abandoned_station/Maintenance_Bay/go_to_OilLeak_CloseUp.png") focus_mask True action Return("go_to_oilleak_closeup")
-    # Witness: Train Engineer 1
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Maintenance_Bay/Train_Engineer.png" hover brighten("gui/day5_abandoned_station/Maintenance_Bay/Train_Engineer.png") focus_mask True action Return("engineer")
-    # Return to Depot Entrance
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Maintenance_Bay/go_to_Depot_Entrance_MaintenanceBay.png" hover brighten("gui/day5_abandoned_station/Maintenance_Bay/go_to_Depot_Entrance_MaintenanceBay.png") focus_mask True action Return("depot_entrance")
     if not renpy.get_screen("global_hud"):
         use global_hud
@@ -705,7 +642,6 @@ screen day5_oilleak_closeup_environment():
         use global_hud
     key "K_ESCAPE" action Return("back")
 
-# --- ABANDONED TRACKS ---
 screen day5_abandoned_tracks_environment():
     on "show" action Show("global_hud")
     if "The Empty Wallet" not in inventory_bag_items:
@@ -713,11 +649,8 @@ screen day5_abandoned_tracks_environment():
         imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/go_to_Grass_CloseUp.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/go_to_Grass_CloseUp.png") focus_mask True action Return("go_to_grass_closeup")
     else:
         add "gui/day5_abandoned_station/Abandoned_Tracks/bg Abandoned_Tracks_NoWallet.jpg"
-    # Close-up Hotspot (Tracks)
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/go_to_Bloody_Tracks_CloseUp.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/go_to_Bloody_Tracks_CloseUp.png") focus_mask True action Return("go_to_tracks_closeup")
-    # Witness: Hobo 1
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/Homeless_Man_Idle.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/Homeless_Man_Idle.png") focus_mask True action Return("hobo")
-    # Return to Depot Entrance
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/go_to_Depot_Entrance.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/go_to_Depot_Entrance.png") focus_mask True action Return("depot_entrance")
     if not renpy.get_screen("global_hud"):
         use global_hud
@@ -726,7 +659,6 @@ screen day5_abandoned_tracks_environment():
 screen day5_tracks_closeup_environment():
     on "show" action Show("global_hud")
     add "gui/day5_abandoned_station/Abandoned_Tracks/Tracks_CloseUp.jpg"
-    # Clues: Bloody Tire Tracks & Wild Dog Tracks
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/Tire_Tracks.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/Tire_Tracks.png") focus_mask True action Return("tiretracks")
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/Animal_Tracks.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/Animal_Tracks.png") focus_mask True action Return("dogtracks")
     textbutton "Back" xalign 0.05 yalign 0.95 hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return("back") text_size 30 text_color "#FFFFFF"
@@ -737,7 +669,6 @@ screen day5_tracks_closeup_environment():
 screen day5_grass_closeup_environment():
     on "show" action Show("global_hud")
     add "gui/day5_abandoned_station/Abandoned_Tracks/Grass_CloseUp_NoWallet.jpg"
-    # Obtainable Item: The Empty Wallet (disappears when clicked)
     if "The Empty Wallet" not in inventory_bag_items:
         imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Abandoned_Tracks/Wallet_idle.png" hover brighten("gui/day5_abandoned_station/Abandoned_Tracks/Wallet_idle.png") focus_mask True activate_sound "audio/sfx_pickup_item.ogg" action [Notify("You got The Empty Wallet."), Return("wallet")]
     textbutton "Back" xalign 0.05 yalign 0.95 hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return("back") text_size 30 text_color "#FFFFFF"
@@ -745,7 +676,6 @@ screen day5_grass_closeup_environment():
         use global_hud
     key "K_ESCAPE" action Return("back")
 
-# --- MAKESHIFT TRIAGE & TENT ---
 screen day5_triage_environment():
     on "show" action Show("global_hud")
     if not evidence_phone and "The Burner Phone" not in inventory_bag_items:
@@ -753,11 +683,8 @@ screen day5_triage_environment():
         imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/go_to_Crate_CloseUp.png" hover brighten("gui/day5_abandoned_station/Triage/go_to_Crate_CloseUp.png") focus_mask True action Return("go_to_crate_closeup")
     else:
         add "gui/day5_abandoned_station/Triage/bg Makeshift_Triage_NoPhone.jpg"
-    # Tent Hotspot
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/go_to_Tent.png" hover brighten("gui/day5_abandoned_station/Triage/go_to_Tent.png") focus_mask True action Return("go_to_tent")
-    # Witness: Medic 1
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/Medic.png" hover brighten("gui/day5_abandoned_station/Triage/Medic.png") focus_mask True action Return("medic")
-    # Return to Depot Entrance
     textbutton "Back to Depot Entrance" xalign 0.05 yalign 0.95 hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return("depot_entrance") text_size 30 text_color "#FFFFFF"
     if not renpy.get_screen("global_hud"):
         use global_hud
@@ -766,7 +693,6 @@ screen day5_triage_environment():
 screen day5_crate_closeup_environment():
     on "show" action Show("global_hud")
     add "gui/day5_abandoned_station/Triage/Crate_CloseUp_NoPhone.jpg"
-    # Obtainable Evidence Item: The Burner Phone (disappears when clicked)
     if not evidence_phone and "The Burner Phone" not in inventory_bag_items:
         imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/Phone_idle.png" hover brighten("gui/day5_abandoned_station/Triage/Phone_idle.png") focus_mask True activate_sound "audio/sfx_phone_pickup.ogg" action [Notify("You got The Burner Phone."), Return("phone")]
     textbutton "Back" xalign 0.05 yalign 0.95 hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return("back") text_size 30 text_color "#FFFFFF"
@@ -781,7 +707,6 @@ screen day5_triage_tent_environment():
         imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/Tent/go_to_Coat_CloseUp.png" hover brighten("gui/day5_abandoned_station/Triage/Tent/go_to_Coat_CloseUp.png") focus_mask True action Return("go_to_coat_closeup")
     else:
         add "gui/day5_abandoned_station/Triage/Tent/bg Inside_Tent_NoTicket.jpg"
-    # Return outside to Makeshift Triage
     imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/Tent/go_to_Triage_Tent.png" hover brighten("gui/day5_abandoned_station/Triage/Tent/go_to_Triage_Tent.png") focus_mask True action Return("back_to_triage")
     if not renpy.get_screen("global_hud"):
         use global_hud
@@ -790,7 +715,6 @@ screen day5_triage_tent_environment():
 screen day5_coat_closeup_environment():
     on "show" action Show("global_hud")
     add "gui/day5_abandoned_station/Triage/Tent/Coat_CloseUp_NoTicket.jpg"
-    # Obtainable Story Item: The Train Ticket Stub (disappears when clicked)
     if "The Train Ticket Stub" not in inventory_bag_items:
         imagebutton xpos 0 ypos 0 idle "gui/day5_abandoned_station/Triage/Tent/Ticket_idle.png" hover brighten("gui/day5_abandoned_station/Triage/Tent/Ticket_idle.png") focus_mask True activate_sound "audio/sfx_paper_rustle.ogg" action [Notify("You got The Train Ticket Stub."), Return("ticketstub")]
     textbutton "Back" xalign 0.05 yalign 0.95 hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return("back") text_size 30 text_color "#FFFFFF"
@@ -798,46 +722,20 @@ screen day5_coat_closeup_environment():
         use global_hud
     key "K_ESCAPE" action Return("back")
 
-screen backroom_environment():
-    on "show" action Show("global_hud")
-    imagebutton xpos 400 ypos 300 idle "safe_distant_idle.png" action Return("safe")
-    if not renpy.get_screen("global_hud"):
-        use global_hud
-    key "K_ESCAPE" action Return("underground")
-
-screen safe_closeup_environment():
-    on "show" action Show("global_hud")
-    imagebutton xpos 350 ypos 250 idle "safe_closeup_idle.png" action Return("safe_interact")
-    imagebutton xpos 600 ypos 450 idle "clue_paper_idle.png" action Return("clue_paper")
-    textbutton "Back" hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_cancel.ogg" action Return("back") align (0.05, 0.95)
-    if not renpy.get_screen("global_hud"):
-        use global_hud
-    key "K_ESCAPE" action Return("back")
-
-# ==========================================
-# TUTORIAL SCREENS
-# ==========================================
 screen tutorial_office_environment():
     on "show" action Show("global_hud")
     imagebutton xpos -9 ypos -9 idle "gui/tutorial/files_idle.png" hover brighten("gui/tutorial/files_idle.png") focus_mask True activate_sound "audio/sfx_paper_rustle.ogg" action Return("files")
-    # The badge disappears after it is picked up
     if not tutorial_badge_picked:
         imagebutton xpos 0 ypos -9 idle "gui/tutorial/badge_idle.png" hover brighten("gui/tutorial/badge_idle.png") focus_mask True activate_sound "audio/sfx_pickup_item.ogg" action Return("badge")
     imagebutton xpos 0 ypos -9 idle "gui/tutorial/arthur_tuts_idle.png" hover brighten("gui/tutorial/arthur_tuts_idle.png") focus_mask True activate_sound "audio/ui_click.ogg" action Return("arthur")
     imagebutton xpos 0 ypos -9 idle "gui/tutorial/door_idle.png" hover brighten("gui/tutorial/door_idle.png") focus_mask True activate_sound "audio/sfx_door_open.ogg" action Return("door")
-    # The News Van icon acts as the "Finish Tutorial" button
     imagebutton xalign 0.95 yalign 0.05 idle scoop_icon_idle("gui/tutorial/ui_icon_van_idle.png", 0.1) hover scoop_icon_hover("gui/tutorial/ui_icon_van_idle.png", 0.1) activate_sound "audio/sfx_van_door.ogg" action Return("van")
     if not renpy.get_screen("global_hud"):
         use global_hud
 
-# ==========================================
-# NEWSPAPER UI SCREEN
-# ==========================================
 screen newspaper_results_ui(headline, body, rating, score):
     on "show" action Show("global_hud")
-    # This displays your straight, un-slanted zoomed-in newspaper asset
     add "gui/newspaper_zoomed.jpg"
-    # This aligns the text block perfectly over the straight box
     vbox:
         pos (600, 375)
         xsize 720
@@ -847,7 +745,6 @@ screen newspaper_results_ui(headline, body, rating, score):
         null height 10
         text "Editor's Rating: [rating]" size 22 italic True color "#590000"
         text "Total Credibility: [score]" size 22 bold True color "#1a1a1a"
-    # Standard textbutton at the bottom, repositioned slightly to prevent conflict
     textbutton "Put away newspaper" hover_sound "audio/ui_hover.ogg" activate_sound "audio/ui_click.ogg" action Return() align (0.5, 0.93) text_size 28 text_color "#ffffff" text_outlines [(2, "#000000", 0, 0)]
     if not renpy.get_screen("global_hud"):
         use global_hud

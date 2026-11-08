@@ -1,20 +1,9 @@
-# ==============================================================================
-# GLOBAL AUDIO CHANNELS & UI HOOKS (Shared across all days)
-# ==============================================================================
 init -10 python:
-    # Dedicated looping channel for environmental room tones & weather
-    renpy.music.register_channel("ambient", mixer="sfx", loop=True, tight=True)
-    # Dedicated looping channel for police sirens so gunfights/SFX never cut them off
     renpy.music.register_channel("siren", mixer="sfx", loop=True, tight=True)
-    # Dedicated one-shot channel for musical stings & jingles so SFX never cut them off
-    renpy.music.register_channel("sting", mixer="sfx", loop=False)
 
-    # Unbind ESC from opening the default Ren'Py pause menu so ESC always
-    # navigates back to the previous scene / closes active overlays
     if "K_ESCAPE" in config.keymap["game_menu"]:
         config.keymap["game_menu"].remove("K_ESCAPE")
 
-    # Finishes the CPS typewriter effect on click without skipping the {w=...} wait timer
     def finish_cps_only():
         what_widget = renpy.get_widget("say", "what")
         if what_widget is not None and getattr(what_widget, "slow", False):
@@ -23,42 +12,35 @@ init -10 python:
                 what_widget.slow_done()
             renpy.redraw(what_widget, 0)
 
-    # Pauses all game audio & freezes timers/cutscenes while Settings is open,
-    # then resumes everything once the player exits Settings
-    def open_settings_and_pause():
-        channels = ["music", "ambient", "sound", "sting", "siren", "voice", "audio"]
-        for ch in channels:
-            try:
-                renpy.music.set_pause(True, channel=ch)
-            except Exception:
-                pass
-        renpy.play("audio/ui_click.ogg", channel="audio")
-        renpy.call_in_new_context("_game_menu", "preferences")
-        for ch in channels:
-            try:
-                renpy.music.set_pause(False, channel=ch)
-            except Exception:
-                pass
-        renpy.restart_interaction()
+    def set_cutscene_lock(locked=True, cps=22):
+        if locked:
+            store._saved_cps = preferences.text_cps
+            preferences.text_cps = cps
+            store._skipping = False
+            store._rollback = False
+            store._dismiss_pause = False
+            store.quick_menu = False
+            renpy.show_screen("prologue_cutscene_lock")
+        else:
+            renpy.hide_screen("prologue_cutscene_lock")
+            preferences.text_cps = getattr(store, "_saved_cps", 0)
+            store._skipping = True
+            store._rollback = True
+            store._dismiss_pause = True
+            store.quick_menu = True
 
 init 10:
-    # Title screen music & global dialogue choice button UI sounds
-    define config.main_menu_music = "audio/bgm_main_menu.ogg"
     style choice_button:
         hover_sound "audio/ui_hover.ogg"
         activate_sound "audio/ui_click.ogg"
 
 init 999 python:
-    # Automatically plays ui_notify.ogg whenever renpy.notify() or Notify() triggers
     _scoop_default_notify = config.notify
     def _scoop_audio_notify(message):
         renpy.play("audio/ui_notify.ogg", channel="audio")
         return _scoop_default_notify(message)
     config.notify = _scoop_audio_notify
 
-# ==============================================================================
-# DAY 1 ASSETS & VARIABLES
-# ==============================================================================
 image bg warehouse = im.Scale("gui/warehouse/warehouse_front.png", 1920, 1072)
 image bg warehouse_back = im.Scale("gui/warehouse/bg_warehouse_back.png", 1920, 1072)
 image bg warehouse_office = im.Scale("gui/day1_office/bg_office.png", 1920, 1072)
@@ -84,8 +66,6 @@ define janitor = Character("Janitor", color="#cccccc")
 default day1_clue = ""
 default day1_item = ""
 default day1_witness = ""
-
-# Progression Variables
 default evidence_lighter = False
 default battery_obtained = False
 default office_empty = False
@@ -94,15 +74,12 @@ default janitor_helped = False
 default paint_cleared = False
 default whiskey_cleared = False
 default pizza_cleared = False
+default warehouse_inside_from_back = False
 default day1_clues_found = []
 default day1_items_found = []
 default day1_witnesses_found = []
-default day1_clicked_points = []
 default inventory_bag_items = []
 
-# ==============================================================================
-# STAGE SELECT & DAY 1 BRIEFING
-# ==============================================================================
 label stage1_briefing:
     $ current_day = 1
     show screen global_hud
@@ -125,20 +102,13 @@ label stage1_briefing:
             jump day5_path_a_start
 
 label day1_path:
-    $ current_day = 4 # Keeps Settings visible while hiding Bag/Van during briefing
+    $ current_day = 4
     show screen global_hud
     play sting "audio/sting_day_transition.ogg" volume 0.75
     play music "audio/bgm_newsroom.ogg" fadeout 1.0 fadein 1.5 volume 0.55 if_changed
     play ambient "audio/amb_newsroom.ogg" fadeout 0.8 fadein 1.0 volume 0.40 if_changed
 
-    # Lock skipping so clicking finishes CPS immediately but waits for {w=2.5}
-    $ _day1_old_cps = preferences.text_cps
-    $ preferences.text_cps = 28
-    $ _skipping = False
-    $ _rollback = False
-    $ _dismiss_pause = False
-    $ quick_menu = False
-    show screen prologue_cutscene_lock
+    $ set_cutscene_lock(True, 28)
 
     scene bg newsroom
     scene newsroom1 with dissolve
@@ -147,20 +117,11 @@ label day1_path:
     scene newsroom2 with dissolve
     arthur "{cps=28}Stay out of my way rookie! this is my story{/cps}{w=2.5}{nw}"
 
-    hide screen prologue_cutscene_lock
-    $ preferences.text_cps = _day1_old_cps
-    $ _skipping = True
-    $ _rollback = True
-    $ _dismiss_pause = True
-    $ quick_menu = True
+    $ set_cutscene_lock(False)
     $ current_day = 1
-
     play sound "audio/sfx_footsteps_move.ogg"
     jump day1_investigation_hub
 
-# ==============================================================================
-# DAY 1 WAREHOUSE EXTERIOR (FRONT HUB)
-# ==============================================================================
 label day1_investigation_hub:
     $ current_day = 1
     show screen global_hud
@@ -170,6 +131,7 @@ label day1_investigation_hub:
     call screen day1_warehouse_investigation
     $ clicked_object = _return
     show screen day1_warehouse_investigation
+
     if clicked_object == "lighter":
         play sound "audio/sfx_pickup_item.ogg"
         "It's a Brass Lighter engraved with a skull and crossed wrenches."
@@ -179,31 +141,22 @@ label day1_investigation_hub:
         if "The Brass Lighter" not in inventory_bag_items:
             $ inventory_bag_items.append("The Brass Lighter")
             $ renpy.notify("You got The Brass Lighter.")
-        hide screen day1_warehouse_investigation
-        jump day1_investigation_hub
     elif clicked_object == "watchman":
         if "Watchman 1" not in day1_witnesses_found:
             play sound "audio/ui_notepad_flip.ogg"
+            $ day1_witnesses_found.append("Watchman 1")
         watchman "I saw them... men in heavy leather jackets marking the warehouse as their territory."
         watchman "I didn't stop them because I was scared."
         watchman "I'm just a 'WATCH'man after all."
-        if "Watchman 1" not in day1_witnesses_found:
-            $ day1_witnesses_found.append("Watchman 1")
-        hide screen day1_warehouse_investigation
-        jump day1_investigation_hub
     elif clicked_object == "warehouse_graffiti":
         play sound "audio/sfx_camera_shutter.ogg"
         "The graffiti looks fresh. Someone wanted to mark this place as their territory."
         "Or their just incredibly artistic vandals. Either way, this is a crime scene."
-        hide screen day1_warehouse_investigation
-        jump day1_investigation_hub
     elif clicked_object == "warehouse_windows":
         play sound "audio/sfx_camera_shutter.ogg"
         "They destroyed even the warehouse windows."
         "I guess they are violent artists."
         "Or just violent."
-        hide screen day1_warehouse_investigation
-        jump day1_investigation_hub
     elif clicked_object == "warehouse_door":
         play sound "audio/sfx_door_open.ogg"
         hide screen day1_warehouse_investigation
@@ -224,13 +177,10 @@ label day1_investigation_hub:
         play sound "audio/sfx_van_door.ogg"
         hide screen day1_warehouse_investigation
         jump day1_newspaper_minigame
-    else:
-        hide screen day1_warehouse_investigation
-        jump day1_investigation_hub
 
-# ==============================================================================
-# DAY 1 WAREHOUSE BACK & RIVER CLOSE-UP
-# ==============================================================================
+    hide screen day1_warehouse_investigation
+    jump day1_investigation_hub
+
 label day1_warehouse_back:
     scene bg warehouse_back
     play music "audio/bgm_day1_warehouse.ogg" fadeout 1.0 fadein 1.0 volume 0.55 if_changed
@@ -238,24 +188,18 @@ label day1_warehouse_back:
     call screen day1_warehouse_back_environment
     $ clicked_object = _return
     show screen day1_warehouse_back_environment
+
     if clicked_object == "fisherman":
         if "Fisherman 1" not in day1_witnesses_found:
             play sound "audio/ui_notepad_flip.ogg"
+            $ day1_witnesses_found.append("Fisherman 1")
         fisherman "I swear, the warehouse was attacked by angry teenagers!"
         fisherman "I saw them spray painting the walls and smashing the windows."
         fisherman "I think..."
-        if "Fisherman 1" not in day1_witnesses_found:
-            $ day1_witnesses_found.append("Fisherman 1")
-        hide screen day1_warehouse_back_environment
-        jump day1_warehouse_back
     elif clicked_object == "river":
         play sound "audio/sfx_footsteps_move.ogg"
         hide screen day1_warehouse_back_environment
         jump day1_warehouse_riverclose
-    elif clicked_object == "return_to_back":
-        play sound "audio/ui_cancel.ogg"
-        hide screen day1_warehouse_back_environment
-        jump day1_warehouse_back
     elif clicked_object == "collar":
         play sound "audio/sfx_pickup_item.ogg"
         "A Lost Dog Collar lies in the dirt."
@@ -264,8 +208,6 @@ label day1_warehouse_back:
             $ day1_items_found.append("The Lost Dog Collar")
         if "The Lost Dog Collar" not in inventory_bag_items:
             $ inventory_bag_items.append("The Lost Dog Collar")
-        hide screen day1_warehouse_back_environment
-        jump day1_warehouse_back
     elif clicked_object == "warehouse_inside_from_the_back":
         play sound "audio/sfx_door_open.ogg"
         hide screen day1_warehouse_back_environment
@@ -279,9 +221,9 @@ label day1_warehouse_back:
         hide screen day1_warehouse_back_environment
         scene bg warehouse
         jump day1_investigation_hub
-    else:
-        hide screen day1_warehouse_back_environment
-        jump day1_warehouse_back
+
+    hide screen day1_warehouse_back_environment
+    jump day1_warehouse_back
 
 label day1_warehouse_riverclose:
     scene bg riverclose
@@ -290,6 +232,7 @@ label day1_warehouse_riverclose:
     call screen day1_warehouse_riverclose_environment
     $ clicked_object = _return
     show screen day1_warehouse_riverclose_environment
+
     if clicked_object == "watch":
         play sound "audio/sfx_water_splash.ogg"
         "There's a Broken Pocket Watch in the water."
@@ -305,20 +248,31 @@ label day1_warehouse_riverclose:
         play sound "audio/ui_cancel.ogg"
         hide screen day1_warehouse_riverclose_environment
         jump day1_warehouse_back
-    else:
-        hide screen day1_warehouse_riverclose_environment
-        jump day1_warehouse_riverclose
 
-# ---------------------------------------------
-# JANITOR TRASH LOGIC (Inside Warehouse)
-# ---------------------------------------------
+    hide screen day1_warehouse_riverclose_environment
+    jump day1_warehouse_riverclose
+
 label day1_warehouse_inside_from_the_back:
+    $ warehouse_inside_from_back = True
+    jump day1_warehouse_inside_hub
+
+label day1_warehouse_inside:
+    $ warehouse_inside_from_back = False
+    jump day1_warehouse_inside_hub
+
+label day1_warehouse_inside_hub:
     scene bg inside_warehouse
     play music "audio/bgm_day1_warehouse.ogg" fadeout 1.0 fadein 1.0 volume 0.50 if_changed
     play ambient "audio/amb_warehouse_int.ogg" fadeout 0.8 fadein 0.8 volume 0.45 if_changed
-    call screen day1_warehouse_inside_back_environment
-    $ clicked_object = _return
-    show screen day1_warehouse_inside_back_environment
+    if warehouse_inside_from_back:
+        call screen day1_warehouse_inside_back_environment
+        $ clicked_object = _return
+        show screen day1_warehouse_inside_back_environment
+    else:
+        call screen day1_warehouse_inside_front_environment
+        $ clicked_object = _return
+        show screen day1_warehouse_inside_front_environment
+
     if clicked_object == "janitor":
         if paint_cleared and pizza_cleared and whiskey_cleared:
             if not janitor_helped:
@@ -336,15 +290,12 @@ label day1_warehouse_inside_from_the_back:
                         janitor "Alright, but you can come help me anytime."
             else:
                 "The janitor is busy cleaning."
+        elif not janitor_spoken_to:
+            janitor "This building is a mess. I don't know how I would clean this up all by myself."
+            janitor "I don't get paid enough to clean up after vandals."
+            $ janitor_spoken_to = True
         else:
-            if not janitor_spoken_to:
-                janitor "This building is a mess. I don't know how I would clean this up all by myself."
-                janitor "I don't get paid enough to clean up after vandals."
-                $ janitor_spoken_to = True
-            else:
-                janitor "There's still so much trash everywhere..."
-        hide screen day1_warehouse_inside_back_environment
-        jump day1_warehouse_inside_from_the_back
+            janitor "There's still so much trash everywhere..."
     elif clicked_object == "whiskey":
         if "The Broken Whiskey Bottle" not in day1_clues_found:
             play sound "audio/ui_notepad_flip.ogg"
@@ -358,8 +309,6 @@ label day1_warehouse_inside_from_the_back:
                     "I threw the bottle in the trash."
                 "Leave it alone":
                     pass
-        hide screen day1_warehouse_inside_back_environment
-        jump day1_warehouse_inside_from_the_back
     elif clicked_object == "pizza":
         if "The Torn Pizza Box" not in day1_clues_found:
             play sound "audio/ui_notepad_flip.ogg"
@@ -373,8 +322,6 @@ label day1_warehouse_inside_from_the_back:
                     "I threw the boxes in the trash."
                 "Leave it alone":
                     pass
-        hide screen day1_warehouse_inside_back_environment
-        jump day1_warehouse_inside_from_the_back
     elif clicked_object == "paint_can":
         if "The Smashed Paint Can" not in day1_clues_found:
             play sound "audio/ui_notepad_flip.ogg"
@@ -388,111 +335,22 @@ label day1_warehouse_inside_from_the_back:
                     "I tossed the paint can."
                 "Leave it alone":
                     pass
-        hide screen day1_warehouse_inside_back_environment
-        jump day1_warehouse_inside_from_the_back
     elif clicked_object == "return_to_back":
         play sound "audio/sfx_door_open.ogg"
         hide screen day1_warehouse_inside_back_environment
+        hide screen day1_warehouse_inside_front_environment
         jump day1_warehouse_back
     elif clicked_object == "return_to_front":
         play sound "audio/sfx_door_open.ogg"
         hide screen day1_warehouse_inside_back_environment
-        scene bg warehouse
-        jump day1_investigation_hub
-    else:
-        hide screen day1_warehouse_inside_back_environment
-        jump day1_warehouse_inside_from_the_back
-
-label day1_warehouse_inside:
-    scene bg inside_warehouse
-    play music "audio/bgm_day1_warehouse.ogg" fadeout 1.0 fadein 1.0 volume 0.50 if_changed
-    play ambient "audio/amb_warehouse_int.ogg" fadeout 0.8 fadein 0.8 volume 0.45 if_changed
-    call screen day1_warehouse_inside_front_environment
-    $ clicked_object = _return
-    show screen day1_warehouse_inside_front_environment
-    if clicked_object == "janitor":
-        if paint_cleared and pizza_cleared and whiskey_cleared:
-            if not janitor_helped:
-                janitor "I am shocked! You cleaned up all this trash!"
-                janitor "Since you're so good at this, do you want to help me clean up the rest of the warehouse?"
-                menu:
-                    "Yes":
-                        janitor "Thank you so much! Here's my keyring, go find my cleaning tools in the other rooms."
-                        play sound "audio/sfx_keys_jingle.ogg"
-                        $ renpy.notify("You obtained a keyring.")
-                        if "The Janitor's Keyring" not in inventory_bag_items:
-                            $ inventory_bag_items.append("The Janitor's Keyring")
-                        $ janitor_helped = True
-                    "No":
-                        janitor "Alright, but you can come help me anytime."
-            else:
-                "The janitor is busy cleaning."
-        else:
-            if not janitor_spoken_to:
-                janitor "This building is a mess. I don't know how I would clean this up all by myself."
-                janitor "I don't get paid enough to clean up after vandals."
-                $ janitor_spoken_to = True
-            else:
-                janitor "There's still so much trash everywhere..."
-        hide screen day1_warehouse_inside_front_environment
-        jump day1_warehouse_inside
-    elif clicked_object == "whiskey":
-        if "The Broken Whiskey Bottle" not in day1_clues_found:
-            play sound "audio/ui_notepad_flip.ogg"
-            $ day1_clues_found.append("The Broken Whiskey Bottle")
-        "Just a cheap bottle left by a homeless person."
-        if janitor_spoken_to:
-            menu:
-                "Throw it away":
-                    play sound "audio/sfx_trash_glass.ogg"
-                    $ whiskey_cleared = True
-                    "I threw the bottle in the trash."
-                "Leave it alone":
-                    pass
-        hide screen day1_warehouse_inside_front_environment
-        jump day1_warehouse_inside
-    elif clicked_object == "pizza":
-        if "The Torn Pizza Box" not in day1_clues_found:
-            play sound "audio/ui_notepad_flip.ogg"
-            $ day1_clues_found.append("The Torn Pizza Box")
-        "Empty food boxes scattered around."
-        if janitor_spoken_to:
-            menu:
-                "Throw it away":
-                    play sound "audio/sfx_trash_cardboard.ogg"
-                    $ pizza_cleared = True
-                    "I threw the boxes in the trash."
-                "Leave it alone":
-                    pass
-        hide screen day1_warehouse_inside_front_environment
-        jump day1_warehouse_inside
-    elif clicked_object == "paint_can":
-        if "The Smashed Paint Can" not in day1_clues_found:
-            play sound "audio/ui_notepad_flip.ogg"
-            $ day1_clues_found.append("The Smashed Paint Can")
-        "It smells like industrial-grade spray paint. Proof of a coordinated, planned job."
-        if janitor_spoken_to:
-            menu:
-                "Throw it away":
-                    play sound "audio/sfx_trash_metal.ogg"
-                    $ paint_cleared = True
-                    "I tossed the paint can."
-                "Leave it alone":
-                    pass
-        hide screen day1_warehouse_inside_front_environment
-        jump day1_warehouse_inside
-    elif clicked_object == "return_to_front":
-        play sound "audio/sfx_door_open.ogg"
         hide screen day1_warehouse_inside_front_environment
         scene bg warehouse
         jump day1_investigation_hub
-    else:
-        hide screen day1_warehouse_inside_front_environment
-        jump day1_warehouse_inside
 
-# ==============================================================================
-# DAY 1 GARAGE, TOWER & WAREHOUSE OFFICE
-# ==============================================================================
+    hide screen day1_warehouse_inside_back_environment
+    hide screen day1_warehouse_inside_front_environment
+    jump day1_warehouse_inside_hub
+
 label day1_warehouse_garage_back:
     scene bg garage_back_warehouse
     play music "audio/bgm_day1_warehouse.ogg" fadeout 1.0 fadein 1.0 volume 0.50 if_changed
@@ -500,35 +358,26 @@ label day1_warehouse_garage_back:
     call screen day1_warehouse_garage_environment
     $ clicked_object = _return
     show screen day1_warehouse_garage_environment
+
     if clicked_object == "battery_charger":
         play sound "audio/sfx_flashlight_click.ogg"
         "The battery charger is still plugged in. Maybe it can power something useful."
-        hide screen day1_warehouse_garage_environment
-        jump day1_warehouse_garage_back
     elif clicked_object == "garage_boxes":
         play sound "audio/sfx_trash_cardboard.ogg"
         "Crates and shipping boxes are stacked against the wall."
         "Someone was moving equipment in a hurry."
-        hide screen day1_warehouse_garage_environment
-        jump day1_warehouse_garage_back
     elif clicked_object == "garage_driver":
         if "Delivery Driver 1" not in day1_witnesses_found:
             play sound "audio/ui_notepad_flip.ogg"
             $ day1_witnesses_found.append("Delivery Driver 1")
         driver "It was a rival shipping company trying to steal business."
         driver "Nobody plays fair in this town. I don't know why I even bother."
-        hide screen day1_warehouse_garage_environment
-        jump day1_warehouse_garage_back
     elif clicked_object == "garage_clipboard":
         play sound "audio/sfx_paper_rustle.ogg"
         "There are notes on the clipboard about deliveries and damaged cargo."
-        hide screen day1_warehouse_garage_environment
-        jump day1_warehouse_garage_back
     elif clicked_object == "garage_office":
         play sound "audio/sfx_drawer_locked.ogg"
         "The office was kept locked up tight. Someone was hiding something in here."
-        hide screen day1_warehouse_garage_environment
-        jump day1_warehouse_garage_back
     elif clicked_object == "return_to_back":
         play sound "audio/sfx_door_open.ogg"
         hide screen day1_warehouse_garage_environment
@@ -538,9 +387,9 @@ label day1_warehouse_garage_back:
         hide screen day1_warehouse_garage_environment
         scene bg warehouse
         jump day1_investigation_hub
-    else:
-        hide screen day1_warehouse_garage_environment
-        jump day1_warehouse_garage_back
+
+    hide screen day1_warehouse_garage_environment
+    jump day1_warehouse_garage_back
 
 label day1_warehouse_tower:
     scene bg tower_warehouse
@@ -549,14 +398,14 @@ label day1_warehouse_tower:
     call screen day1_warehouse_tower_environment
     $ clicked_object = _return
     show screen day1_warehouse_tower_environment
+
     if clicked_object == "jogger":
         if "Jogger 1" not in day1_witnesses_found:
             play sound "audio/ui_notepad_flip.ogg"
+            $ day1_witnesses_found.append("Jogger 1")
         jogger "I saw a glowing ghost damage the walls!"
         jogger "That place always creeped me out. I don't know why I even jog here."
         jogger "I think it's time I find a new route for my morning jogs."
-        if "Jogger 1" not in day1_witnesses_found:
-            $ day1_witnesses_found.append("Jogger 1")
         hide screen day1_warehouse_tower_environment
         jump day1_warehouse_tower
     elif clicked_object == "Battery":
@@ -565,23 +414,11 @@ label day1_warehouse_tower:
         "This can power something... I should take it."
         hide screen day1_warehouse_tower_environment
         jump day1_warehouse_tower
-    elif clicked_object == "return_to_front":
-        play sound "audio/sfx_footsteps_move.ogg"
-        hide screen day1_warehouse_tower_environment
-        scene bg warehouse
-        jump day1_investigation_hub
-    else:
-        play sound "audio/sfx_footsteps_move.ogg"
-        hide screen day1_warehouse_tower_environment
-        scene bg warehouse
-        jump day1_investigation_hub
 
-label day1_get_battery:
-    play sound "audio/sfx_flashlight_click.ogg"
-    "You got a battery."
-    if "Battery" not in inventory_bag_items:
-        $ inventory_bag_items.append("Battery")
-    return
+    play sound "audio/sfx_footsteps_move.ogg"
+    hide screen day1_warehouse_tower_environment
+    scene bg warehouse
+    jump day1_investigation_hub
 
 label day1_warehouse_office:
     if office_empty:
@@ -593,6 +430,7 @@ label day1_warehouse_office:
     call screen day1_warehouse_office_environment
     $ clicked_object = _return
     show screen day1_warehouse_office_environment
+
     if clicked_object == "drawer2":
         if office_empty:
             if "The Janitor's Keyring" in inventory_bag_items:
@@ -635,20 +473,12 @@ label day1_warehouse_office:
             "My parcel or my equipment just arrived. I need a battery."
         hide screen day1_warehouse_office_environment
         jump day1_warehouse_office
-    elif clicked_object == "return_to_front":
-        play sound "audio/sfx_door_open.ogg"
-        hide screen day1_warehouse_office_environment
-        scene bg warehouse
-        jump day1_investigation_hub
-    else:
-        play sound "audio/sfx_door_open.ogg"
-        hide screen day1_warehouse_office_environment
-        scene bg warehouse
-        jump day1_investigation_hub
 
-# ==============================================================================
-# DAY 1 NEWSPAPER MINIGAME & EDITION RESULTS
-# ==============================================================================
+    play sound "audio/sfx_door_open.ogg"
+    hide screen day1_warehouse_office_environment
+    scene bg warehouse
+    jump day1_investigation_hub
+
 label day1_newspaper_minigame:
     $ hide_all_investigation_screens()
     play sound "audio/sfx_typewriter_write.ogg"
@@ -748,21 +578,14 @@ label day1_api_execution:
         article_result = sheetdb_client.fetch_newspaper_article(day1_clue, day1_item, day1_witness, "day1")
         daily_headline = article_result.get("headline", "Error: Story Not Found")
         daily_body = article_result.get("body", "Error: Check database connection.")
-        day1_accurate_picks = (
-            (day1_clue == "The Smashed Paint Can")
-            + (day1_item == "Missing blueprint")
-            + (day1_witness == "Watchman 1")
-        )
-    # Show the wide desk shot first
+
     scene desk_newspaper
     play sound "audio/sfx_newspaper_print.ogg"
     "Let's see how the morning edition turned out..."
-    # Play high or low credibility sting when the zoomed newspaper opens
-    if day1_accurate_picks >= 2:
+    if day1_score >= 2:
         play sting "audio/sting_rating_high.ogg" volume 0.80
     else:
         play sting "audio/sting_rating_low.ogg" volume 0.80
-    # Call the zoomed-in UI screen and pass it the variables
     call screen newspaper_results_ui(daily_headline, daily_body, daily_rating, total_credibility_score)
     play sound "audio/sfx_paper_rustle.ogg"
     $ renpy.force_autosave(True)

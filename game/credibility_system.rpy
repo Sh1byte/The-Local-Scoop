@@ -1,101 +1,31 @@
 default total_credibility_score = 0
 
-# ----------------------------------------
-# Day 1 Credibility Calculator
-# ----------------------------------------
+init python:
+    def evaluate_credibility(clue, item, witness, target_clue, target_item, target_witness):
+        score = (clue == target_clue) + (item == target_item) + (witness == target_witness)
+        if score == 3:
+            store.daily_rating = "True Journalism"
+            store.total_credibility_score += 10
+        elif score == 2:
+            store.daily_rating = "Sensationalist"
+            store.total_credibility_score += 5
+        else:
+            store.daily_rating = "Fake News"
+            store.total_credibility_score -= 5
+        return score
+
 label calculate_day1_credibility:
-    $ day1_score = 0
-    
-    if day1_clue == "The Smashed Paint Can":
-        $ day1_score += 1
-    if day1_item == "Missing blueprint":
-        $ day1_score += 1
-    if day1_witness == "Watchman 1":
-        $ day1_score += 1
-
-    if day1_score == 3:
-        $ daily_rating = "True Journalism"
-        $ total_credibility_score += 10
-    elif day1_score == 2:
-        $ daily_rating = "Sensationalist"
-        $ total_credibility_score += 5
-    else:
-        $ daily_rating = "Fake News"
-        $ total_credibility_score -= 5
-        
+    $ day1_score = evaluate_credibility(day1_clue, day1_item, day1_witness, "The Smashed Paint Can", "Missing blueprint", "Watchman 1")
     return
 
-# ----------------------------------------
-# Day 2 Credibility Calculator
-# ----------------------------------------
 label calculate_day2_credibility:
-    $ day2_score = 0
-    
-    if day2_clue == "The Scorched Gas Can":
-        $ day2_score += 1
-    if day2_item == "The Melted Camera":
-        $ day2_score += 1
-    if day2_witness == "Vendor 1":
-        $ day2_score += 1
-
-    if day2_score == 3:
-        $ daily_rating = "True Journalism"
-        $ total_credibility_score += 10
-    elif day2_score == 2:
-        $ daily_rating = "Sensationalist"
-        $ total_credibility_score += 5
-    else:
-        $ daily_rating = "Fake News"
-        $ total_credibility_score -= 5
-        
+    $ day2_score = evaluate_credibility(day2_clue, day2_item, day2_witness, "The Scorched Gas Can", "The Melted Camera", "Vendor 1")
     return
 
-# ----------------------------------------
-# Day 3 Credibility Calculator
-# ----------------------------------------
 label calculate_day3_credibility:
-    $ day3_score = 0
-    
-    if day3_clue == "The Bullet-Riddled Wall":
-        $ day3_score += 1
-    if day3_item == "The VIP Pass":
-        $ day3_score += 1
-    if day3_witness == "Dealer 1":
-        $ day3_score += 1
-
-    if day3_score == 3:
-        $ daily_rating = "True Journalism"
-        $ total_credibility_score += 10
-    elif day3_score == 2:
-        $ daily_rating = "Sensationalist"
-        $ total_credibility_score += 5
-    else:
-        $ daily_rating = "Fake News"
-        $ total_credibility_score -= 5
-        
+    $ day3_score = evaluate_credibility(day3_clue, day3_item, day3_witness, "The Bullet-Riddled Wall", "The VIP Pass", "Dealer 1")
     return
 
-# ----------------------------------------
-# Day 5 (Path A) Credibility Calculator
-# ----------------------------------------
 label calculate_day5_credibility:
-    $ day5_score = 0
-    
-    if day5_clue == "The Bloody Tire Tracks":
-        $ day5_score += 1
-    if day5_item == "The Train Ticket Stub":
-        $ day5_score += 1
-    if day5_witness == "Medic 1":
-        $ day5_score += 1
-
-    if day5_score == 3:
-        $ daily_rating = "True Journalism"
-        $ total_credibility_score += 10
-    elif day5_score == 2:
-        $ daily_rating = "Sensationalist"
-        $ total_credibility_score += 5
-    else:
-        $ daily_rating = "Fake News"
-        $ total_credibility_score -= 5
-        
+    $ day5_score = evaluate_credibility(day5_clue, day5_item, day5_witness, "The Bloody Tire Tracks", "The Train Ticket Stub", "Medic 1")
     return

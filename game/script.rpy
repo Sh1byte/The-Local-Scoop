@@ -7,8 +7,5 @@
 
 label start:
     stop music fadeout 1.0
-    
     show screen global_hud
-
-    # Jump directly into your Day 1 script
     jump stage1_briefing

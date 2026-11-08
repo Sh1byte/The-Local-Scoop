@@ -1,6 +1,3 @@
-# ==========================================
-# DAY 3 IMAGES
-# ==========================================
 image bg casino_outside = im.Scale("gui/day3_casino/outside_casino/bg_Casino_Outside.jpg", 1920, 1080)
 image bg club_front = im.Scale("gui/day3_casino/local_club/bg_Front_Door_Club.jpg", 1920, 1080)
 image bg club_inside = im.Scale("gui/day3_casino/local_club/inside_club/bg_Club_Room.jpg", 1920, 1080)
@@ -14,12 +11,8 @@ image bg backroom_open = im.Scale("gui/day3_casino/backroom/backroom_room/bg_bac
 image bg safe_closeup = im.Scale("gui/day3_casino/backroom/safe/vault_close_up.jpg", 1920, 1080)
 image bg safe_minigame = im.Scale("gui/day3_casino/backroom/safe/safe_minigame/safe.png", 1920, 1080)
 image bg opened_safe = im.Scale("gui/day3_casino/backroom/safe/opened_safe/vault_open.jpg", 1920, 1080)
-image bg wiring_minigame = im.Scale("gui/day3_casino/casino_playroom/wire_minigame/bg_wire_box.jpg", 1920, 1080)
-image desk_newspaper = im.Scale("gui/desk_newspaper.jpg", 1920, 1080)
 image d3newsroom1 = "gui/newsroom_scenes/Day3_Scene1.jpg"
 image d3newsroom2 = "gui/newsroom_scenes/Day3_Scene2.jpg"
-
-# --- NEW CONDITIONAL BACKGROUNDS ---
 image bg playroom_fire = im.Scale("gui/day3_casino/casino_playroom/bg_playroom_fire.jpg", 1920, 1080)
 image bg playroom_bouncer = im.Scale("gui/day3_casino/casino_playroom/bg_playroom_bouncer.jpg", 1920, 1080)
 image bg casino_lobby_nobouncer = im.Scale("gui/day3_casino/casino_lobby/bg_casino lobby_noBouncer.jpg", 1920, 1080)
@@ -28,7 +21,6 @@ define dealer = Character("Dealer", color="#cccccc")
 define cleaner = Character("Cleaner", color="#cccccc")
 define waitress = Character("Waitress", color="#cccccc")
 define drunk = Character("Drunk Patron", color="#cccccc")
-define arthur = Character("Arthur", color="#ff9900")
 
 default day3_clue = ""
 default day3_item = ""
@@ -40,11 +32,8 @@ default day3_witnesses_found = []
 default safe_unlocked = False
 default slot_machine_shorted = False
 
-# ==========================================
-# DAY 3 BRIEFING
-# ==========================================
 label day3_start:
-    $ current_day = 4 # Keeps Settings visible while hiding Bag/Van during briefing
+    $ current_day = 4
     show screen global_hud
     python:
         for item in ["Blurry Photograph", "The Expensive Cigar", "The Dropped Lottery Ticket"]:
@@ -68,9 +57,6 @@ label day3_start:
     show screen global_hud
     jump day3_outside
 
-# ==========================================
-# DAY 3 LOCATIONS
-# ==========================================
 label day3_outside:
     $ current_day = 3
     show screen global_hud
@@ -85,11 +71,7 @@ label day3_outside:
     elif action == "club_front":
         play sound "audio/sfx_footsteps_move.ogg"
         jump day3_club_front
-    elif action == "newsroom":
-        play sound "audio/sfx_van_door.ogg"
-        jump day3_newspaper_minigame
-    else:
-        jump day3_outside
+    jump day3_outside
 
 label day3_club_front:
     scene bg club_front at topleft
@@ -107,15 +89,8 @@ label day3_club_front:
             play sound "audio/ui_evidence_locked.ogg"
             "Club Bouncer" "You need a VIP Pass to get past this door."
             jump day3_club_front
-    elif action == "outside":
-        play sound "audio/sfx_footsteps_move.ogg"
-        jump day3_outside
-    elif action == "newsroom":
-        play sound "audio/sfx_van_door.ogg"
-        jump day3_newspaper_minigame
-    else:
-        play sound "audio/sfx_footsteps_move.ogg"
-        jump day3_outside
+    play sound "audio/sfx_footsteps_move.ogg"
+    jump day3_outside
 
 label day3_club_inside:
     scene bg club_inside at topleft
@@ -123,19 +98,12 @@ label day3_club_inside:
     stop ambient fadeout 0.8
     call screen day3_club_inside_environment
     $ action = _return
-    if action == "outside":
-        play sound "audio/sfx_door_open.ogg"
-        jump day3_club_front
-    elif action == "gossiper":
+    if action == "gossiper":
         play sound "audio/ui_notepad_flip.ogg"
         "Gossiping group" "They say the leader of one of the gang is someone powerful enough to control the whole town..."
         jump day3_club_inside
-    elif action == "newsroom":
-        play sound "audio/sfx_van_door.ogg"
-        jump day3_newspaper_minigame
-    else:
-        play sound "audio/sfx_door_open.ogg"
-        jump day3_club_front
+    play sound "audio/sfx_door_open.ogg"
+    jump day3_club_front
 
 label day3_lobby:
     if slot_machine_shorted:
@@ -146,10 +114,7 @@ label day3_lobby:
     play ambient "audio/amb_casino_crime.ogg" fadeout 0.8 fadein 0.8 volume 0.45 if_changed
     call screen day3_casino_lobby
     $ action = _return
-    if action == "outside":
-        play sound "audio/sfx_door_open.ogg"
-        jump day3_outside
-    elif action == "playroom":
+    if action == "playroom":
         play sound "audio/sfx_door_open.ogg"
         jump day3_playroom
     elif action == "underground":
@@ -164,19 +129,14 @@ label day3_lobby:
     elif action == "cashier":
         play sound "audio/sfx_footsteps_move.ogg"
         jump day3_cashier_closeup
-    elif action == "newsroom":
-        play sound "audio/sfx_van_door.ogg"
-        jump day3_newspaper_minigame
-    else:
-        play sound "audio/sfx_door_open.ogg"
-        jump day3_outside
+    play sound "audio/sfx_door_open.ogg"
+    jump day3_outside
 
 label day3_cashier_closeup:
     scene bg cashier_closeup at topleft
     play music "audio/bgm_day3_casino.ogg" fadeout 1.0 fadein 1.0 volume 0.55 if_changed
     play ambient "audio/amb_casino_crime.ogg" fadeout 0.8 fadein 0.8 volume 0.45 if_changed
     call screen day3_cashier_environment
-    $ action = _return
     play sound "audio/ui_cancel.ogg"
     jump day3_lobby
 
@@ -190,10 +150,7 @@ label day3_playroom:
     play music "audio/bgm_day3_casino.ogg" fadeout 1.0 fadein 1.0 volume 0.50 if_changed
     call screen day3_playroom_environment
     $ action = _return
-    if action == "lobby":
-        play sound "audio/sfx_door_open.ogg"
-        jump day3_lobby
-    elif action == "cards_closeup":
+    if action == "cards_closeup":
         play sound "audio/sfx_footsteps_move.ogg"
         jump day3_cards_closeup
     elif action == "wire_minigame":
@@ -220,21 +177,14 @@ label day3_playroom:
         drunk "I was drunk and passed out, but I saw the whole thing!"
         "But there are no holes on the wall. Maybe he is exaggerating."
         jump day3_playroom
-    elif action == "newsroom":
-        play sound "audio/sfx_van_door.ogg"
-        jump day3_newspaper_minigame
-    else:
-        play sound "audio/sfx_door_open.ogg"
-        jump day3_lobby
+    play sound "audio/sfx_door_open.ogg"
+    jump day3_lobby
 
 label day3_cards_closeup:
     scene bg cards_closeup at topleft
     call screen day3_cards_closeup_environment
     $ action = _return
-    if action == "back":
-        play sound "audio/ui_cancel.ogg"
-        jump day3_playroom
-    elif action == "cards":
+    if action == "cards":
         play sound "audio/sfx_paper_rustle.ogg"
         if "The Scattered Marked Cards" not in day3_clues_found:
             $ day3_clues_found.append("The Scattered Marked Cards")
@@ -252,9 +202,8 @@ label day3_cards_closeup:
         "A fake diamond earring on the floor."
         "I thought casino is where rich people gamble, but this is a cheap imitation."
         jump day3_cards_closeup
-    else:
-        play sound "audio/ui_cancel.ogg"
-        jump day3_playroom
+    play sound "audio/ui_cancel.ogg"
+    jump day3_playroom
 
 label day3_wire_minigame:
     if slot_machine_shorted:
@@ -262,8 +211,7 @@ label day3_wire_minigame:
         "I should move quickly."
         jump day3_playroom
     call screen day3_wire_minigame_screen
-    $ action = _return
-    if action == "win":
+    if _return == "win":
         $ slot_machine_shorted = True
         play sound "audio/sfx_spark.ogg"
         play ambient "audio/amb_playroom_fire.ogg" fadeout 0.5 fadein 0.8 volume 0.55 if_changed
@@ -273,26 +221,16 @@ label day3_wire_minigame:
         scene bg playroom_bouncer at topleft with fade
         "The Casino Bouncer shouts in panic and runs over to inspect the Playroom!"
         jump day3_playroom
-    elif action == "back":
-        play sound "audio/ui_cancel.ogg"
-        jump day3_playroom
-    else:
-        play sound "audio/ui_cancel.ogg"
-        jump day3_playroom
+    play sound "audio/ui_cancel.ogg"
+    jump day3_playroom
 
-# ==========================================
-# UNDERGROUND CASINO, BACKROOM & SAFE PUZZLE
-# ==========================================
 label day3_underground:
     scene bg underground_casino at topleft
     play music "audio/bgm_day3_underground.ogg" fadeout 1.0 fadein 1.2 volume 0.55 if_changed
     play ambient "audio/amb_casino_crime.ogg" fadeout 0.8 fadein 0.8 volume 0.45 if_changed
     call screen day3_underground_casino
     $ action = _return
-    if action == "lobby":
-        play sound "audio/sfx_door_open.ogg"
-        jump day3_lobby
-    elif action == "backroom":
+    if action == "backroom":
         play sound "audio/sfx_door_open.ogg"
         jump day3_backroom
     elif action == "bullethole":
@@ -340,12 +278,8 @@ label day3_underground:
         "It's a VIP Pass to a local club. A silver casino card."
         "With this, I can get into the club"
         jump day3_underground
-    elif action == "newsroom":
-        play sound "audio/sfx_van_door.ogg"
-        jump day3_newspaper_minigame
-    else:
-        play sound "audio/sfx_door_open.ogg"
-        jump day3_lobby
+    play sound "audio/sfx_door_open.ogg"
+    jump day3_lobby
 
 label day3_backroom:
     if safe_unlocked:
@@ -356,10 +290,7 @@ label day3_backroom:
     play ambient "audio/amb_casino_crime.ogg" fadeout 0.8 fadein 0.8 volume 0.45 if_changed
     call screen day3_backroom_environment
     $ action = _return
-    if action == "underground":
-        play sound "audio/sfx_door_open.ogg"
-        jump day3_underground
-    elif action == "vault":
+    if action == "vault":
         play sound "audio/sfx_footsteps_move.ogg"
         jump day3_safe_close_up
     elif action == "dealer":
@@ -370,12 +301,8 @@ label day3_backroom:
         dealer "The Iron Syndicate raided us because this is the River Boys' casino!"
         dealer "The tension between the two gangs has been building for years, and it looks like it about to explode!"
         jump day3_backroom
-    elif action == "newsroom":
-        play sound "audio/sfx_van_door.ogg"
-        jump day3_newspaper_minigame
-    else:
-        play sound "audio/sfx_door_open.ogg"
-        jump day3_underground
+    play sound "audio/sfx_door_open.ogg"
+    jump day3_underground
 
 label day3_safe_close_up:
     scene bg safe_closeup at topleft
@@ -383,10 +310,7 @@ label day3_safe_close_up:
     play ambient "audio/amb_casino_crime.ogg" fadeout 0.8 fadein 0.8 volume 0.40 if_changed
     call screen day3_safe_closeup_environment
     $ action = _return
-    if action == "back":
-        play sound "audio/ui_cancel.ogg"
-        jump day3_backroom
-    elif action == "clue_paper":
+    if action == "clue_paper":
         play sound "audio/sfx_paper_rustle.ogg"
         "The note has a jack-o-lantern and a genie, maybe this is a clue. It says Jack-O-Lantern and a genie."
         "When do I see jack-o-lanterns and for the genies, could it be the number of wishes? Maybe this is an elaborate clue."
@@ -398,9 +322,8 @@ label day3_safe_close_up:
         else:
             play sound "audio/ui_click.ogg"
             jump day3_safe_minigame
-    else:
-        play sound "audio/ui_cancel.ogg"
-        jump day3_backroom
+    play sound "audio/ui_cancel.ogg"
+    jump day3_backroom
 
 label day3_safe_minigame:
     $ safe_current_digit = 0
@@ -434,12 +357,8 @@ label day3_safe_minigame_loop:
         else:
             play sound "audio/sfx_safe_enter.ogg"
         jump day3_safe_minigame_loop
-    elif action == "exit":
-        play sound "audio/ui_cancel.ogg"
-        jump day3_safe_close_up
-    else:
-        play sound "audio/ui_cancel.ogg"
-        jump day3_safe_close_up
+    play sound "audio/ui_cancel.ogg"
+    jump day3_safe_close_up
 
 label day3_opened_safe_view:
     scene bg opened_safe at topleft
@@ -455,19 +374,12 @@ label day3_opened_safe_view:
         "I found a Bloody Ledger listing illegal weapon purchases inside the safe."
         "The details are all here, the buyers, the sellers, the dates, and the prices."
         jump day3_opened_safe_view
-    elif action == "back":
-        play sound "audio/ui_cancel.ogg"
-        jump day3_safe_close_up
-    else:
-        play sound "audio/ui_cancel.ogg"
-        jump day3_safe_close_up
+    play sound "audio/ui_cancel.ogg"
+    jump day3_safe_close_up
 
-# ==========================================
-# NEWSROOM MINIGAME
-# ==========================================
 label day3_newspaper_minigame:
     $ hide_all_investigation_screens()
-    $ current_day = 4 # Keeps Settings visible while hiding Bag/Van during newspaper creation
+    $ current_day = 4
     show screen global_hud
     play sound "audio/sfx_typewriter_write.ogg"
     play music "audio/bgm_newsroom.ogg" fadeout 1.0 fadein 1.2 volume 0.55 if_changed
@@ -566,15 +478,11 @@ label day3_api_execution:
         article_result = sheetdb_client.fetch_newspaper_article(day3_clue, day3_item, day3_witness, "day3")
         daily_headline = article_result.get("headline", "Error: Story Not Found")
         daily_body = article_result.get("body", "Error: Check database connection.")
-        day3_accurate_picks = (
-            (day3_clue == "The Bullet-Riddled Wall")
-            + (day3_item == "The VIP Pass")
-            + (day3_witness == "Dealer 1")
-        )
+
     scene desk_newspaper
     play sound "audio/sfx_newspaper_print.ogg"
     "Let's see how the casino edition turned out..."
-    if day3_accurate_picks >= 2:
+    if day3_score >= 2:
         play sting "audio/sting_rating_high.ogg" volume 0.80
     else:
         play sting "audio/sting_rating_low.ogg" volume 0.80

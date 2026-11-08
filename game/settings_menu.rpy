@@ -1,16 +1,12 @@
 init offset = 999
-# ==============================================================================
-# 1. GLOBAL AUDIO CONTROLLER (0.5x Stings, BGM Ducking, 4x Ambience) & HUD/SAVE
-# ==============================================================================
+
 default scoop_current_location = "Investigation"
 default scoop_menu_tab = "main"
 
 init -5 python:
-    # Register independent Ambient mixer and Sting channel
     renpy.music.register_channel("ambient", mixer="ambient", loop=True, tight=True)
     renpy.music.register_channel("sting", mixer="sfx", loop=False)
 
-    # Preserve the true built-in renpy.music.play across Shift+R reloads and multiple files
     if not hasattr(renpy.music, "_scoop_real_play"):
         if (
             "_scoop_orig_music_play" in globals()
@@ -19,16 +15,12 @@ init -5 python:
             renpy.music._scoop_real_play = _scoop_orig_music_play
         else:
             renpy.music._scoop_real_play = renpy.music.play
-
     _scoop_orig_music_play = renpy.music._scoop_real_play
     _scoop_sting_active = False
 
     def _scoop_prepend_volume(filenames, factor=4.0):
-        """Applies a sample gain multiplier to audio filenames."""
         if isinstance(filenames, str):
-            if not filenames.startswith("<"):
-                return f"<volume {factor}>{filenames}"
-            return filenames
+            return f"<volume {factor}>{filenames}" if not filenames.startswith("<") else filenames
         elif isinstance(filenames, (list, tuple)):
             return [
                 (f"<volume {factor}>{f}" if isinstance(f, str) and not f.startswith("<") else f)
@@ -38,17 +30,14 @@ init -5 python:
 
     def _scoop_custom_music_play(filenames, channel="music", loop=None, fadeout=None, synchro_start=False, fadein=0, tight=None, if_changed=False, relative_volume=1.0, **kwargs):
         global _scoop_sting_active
-        # Revision 1: Boost all ambience sound by an additional 100% (2.0 -> 4.0)
         if channel == "ambient":
             base_vol = 1.0 if relative_volume is None else relative_volume
             relative_volume = min(1.0, base_vol * 2.0)
             filenames = _scoop_prepend_volume(filenames, 4.0)
-        # 0.5x (Half) Volume for Stings
         elif channel == "sting":
             base_vol = 1.0 if relative_volume is None else relative_volume
             relative_volume = max(0.0, min(1.0, base_vol * 0.5))
             filenames = _scoop_prepend_volume(filenames, 0.5)
-
         rv = renpy.music._scoop_real_play(
             filenames,
             channel=channel,
@@ -61,48 +50,34 @@ init -5 python:
             relative_volume=relative_volume,
             **kwargs
         )
-
-        # Pause and mute BGM ("music") whenever a sting is playing
-        if channel == "sting":
+        if channel == "sting" or (channel == "music" and (_scoop_sting_active or renpy.music.get_playing(channel="sting"))):
             _scoop_sting_active = True
             renpy.music.set_volume(0.0, delay=0.0, channel="music")
             renpy.music.set_pause(True, channel="music")
-        elif channel == "music":
-            if _scoop_sting_active or renpy.music.get_playing(channel="sting"):
-                _scoop_sting_active = True
-                renpy.music.set_volume(0.0, delay=0.0, channel="music")
-                renpy.music.set_pause(True, channel="music")
         return rv
 
     renpy.music.play = _scoop_custom_music_play
 
     def _scoop_sting_periodic_monitor():
-        """Keeps BGM paused while a sting plays and resumes BGM once the sting ends."""
         global _scoop_sting_active
         if renpy.music.get_playing(channel="sting"):
             _scoop_sting_active = True
             renpy.music.set_volume(0.0, delay=0.0, channel="music")
             if not renpy.music.get_pause(channel="music"):
                 renpy.music.set_pause(True, channel="music")
-        else:
-            if _scoop_sting_active:
-                _scoop_sting_active = False
-                renpy.music.set_pause(False, channel="music")
-                renpy.music.set_volume(1.0, delay=0.4, channel="music")
+        elif _scoop_sting_active:
+            _scoop_sting_active = False
+            renpy.music.set_pause(False, channel="music")
+            renpy.music.set_volume(1.0, delay=0.4, channel="music")
 
     if _scoop_sting_periodic_monitor not in config.periodic_callbacks:
         config.periodic_callbacks.append(_scoop_sting_periodic_monitor)
 
     def scoop_hide_legacy_menus():
-        """Ensures no leftover or duplicate settings screens block the Save/Load UI."""
-        for scr in [
-            "settings_menu", "settings", "settings_screen", "pause_menu",
-            "file_slots", "game_menu"
-        ]:
+        for scr in ["settings_menu", "settings", "settings_screen", "pause_menu", "file_slots", "game_menu"]:
             if renpy.get_screen(scr):
                 renpy.hide_screen(scr)
 
-    # Keep global_hud visible during gameplay without retaining menu screens into saves
     def _scoop_retain_event_state():
         if not renpy.get_screen("main_menu") and not renpy.context()._menu:
             store._rollback = True
@@ -116,10 +91,7 @@ init -5 python:
         global _scoop_sting_active
         _scoop_sting_active = False
         store.scoop_menu_tab = "main"
-        for scr in [
-            "scoop_settings_menu", "scoop_save_screen", "scoop_load_screen",
-            "scoop_audio_screen", "scoop_credits_screen", "save", "load", "preferences"
-        ]:
+        for scr in ["scoop_settings_menu", "save", "load", "preferences", "about"]:
             renpy.hide_screen(scr)
         renpy.music.stop(channel="sting")
         renpy.music.set_pause(False, channel="music")
@@ -158,13 +130,9 @@ init 999 python:
     if "global_hud" not in config.overlay_screens:
         config.overlay_screens.append("global_hud")
 
-# ==============================================================================
-# 2. PERSISTENT GLOBAL HUD (Settings Top-Left, Bag & News Van Top-Right)
-# ==============================================================================
 screen global_hud():
     zorder 200
     if not renpy.get_screen("main_menu") and not renpy.context()._menu:
-        # Top-Left Settings Button (hides while News Van is open)
         if not renpy.get_screen("news_van_screen"):
             if renpy.loadable("gui/icons/settings.png"):
                 imagebutton:
@@ -199,10 +167,7 @@ screen global_hud():
                         SetVariable("scoop_menu_tab", "main"),
                         ShowMenu("scoop_settings_menu")
                     ]
-
-        # Top-Right Bag & News Van Icons (Visible on Days 1, 2, 3, and 5 outside of Tutorial)
         if current_day != 4 and not renpy.get_screen("tutorial_spotlight") and not renpy.get_screen("tutorial_office_environment"):
-            # Persistent Bag Icon
             imagebutton:
                 xalign 0.88
                 yalign 0.05
@@ -213,7 +178,6 @@ screen global_hud():
                     If(renpy.get_screen("inventory_bag"), Play("sound", "audio/ui_bag_close.ogg"), Play("sound", "audio/ui_bag_open.ogg")),
                     ToggleScreen("inventory_bag")
                 ]
-            # News Van Icon
             imagebutton:
                 xalign 0.95
                 yalign 0.05
@@ -223,14 +187,11 @@ screen global_hud():
                 activate_sound "audio/sfx_van_door.ogg"
                 action Show("news_van_screen")
 
-# ==============================================================================
-# 3. CUSTOM NOIR STYLES FOR SLIDERS & MENU BUTTONS
-# ==============================================================================
 style scoop_volume_slider is bar:
     xsize 500
     ysize 22
-    left_bar Frame(Solid("#c99838"), 0, 0)   # Gold filled track
-    right_bar Frame(Solid("#2b2b2b"), 0, 0)  # Dark unfilled track
+    left_bar Frame(Solid("#c99838"), 0, 0)
+    right_bar Frame(Solid("#2b2b2b"), 0, 0)
     thumb Solid("#ffffff", xsize=14, ysize=30)
     thumb_offset 7
     hover_sound "audio/ui_hover.ogg"
@@ -253,22 +214,14 @@ style scoop_menu_btn_text is text:
     hover_color "#111111"
     insensitive_color "#555555"
 
-# ==============================================================================
-# 4. UNIFIED SETTINGS, AUDIO, SAVE, LOAD & CREDITS SCREEN
-#    (Single screen switches tabs so Settings UI never covers Save/Load slots)
-# ==============================================================================
 screen scoop_settings_menu():
     tag menu
     modal True
     zorder 300
     on "show" action Function(scoop_hide_legacy_menus)
     on "replace" action Function(scoop_hide_legacy_menus)
-
     add Solid("#000000B8")
 
-    # --------------------------------------------------------------------------
-    # TAB 1: MAIN SETTINGS HUB
-    # --------------------------------------------------------------------------
     if scoop_menu_tab == "main":
         frame:
             align (0.5, 0.5)
@@ -282,18 +235,15 @@ screen scoop_settings_menu():
                 yalign 0.5
                 text "SETTINGS" xalign 0.5 size 38 bold True color "#f0c75e" outlines [(2, "#000000", 0, 0)]
                 null height 8
-
                 button:
                     style "scoop_menu_btn"
                     action SetVariable("scoop_menu_tab", "audio")
                     text "Audio" style "scoop_menu_btn_text"
-
                 button:
                     style "scoop_menu_btn"
                     sensitive (not main_menu)
                     action [FilePage(1), SetVariable("scoop_menu_tab", "save")]
                     text "Save" style "scoop_menu_btn_text"
-
                 button:
                     style "scoop_menu_btn"
                     action [
@@ -301,12 +251,10 @@ screen scoop_settings_menu():
                         SetVariable("scoop_menu_tab", "load")
                     ]
                     text "Load" style "scoop_menu_btn_text"
-
                 button:
                     style "scoop_menu_btn"
                     action SetVariable("scoop_menu_tab", "credits")
                     text "Credits" style "scoop_menu_btn_text"
-
                 button:
                     style "scoop_menu_btn"
                     sensitive (not main_menu)
@@ -315,7 +263,6 @@ screen scoop_settings_menu():
                         yes=[Stop("ambient"), Stop("sting"), SetVariable("scoop_menu_tab", "main"), MainMenu(confirm=False)]
                     )
                     text "Main Menu" style "scoop_menu_btn_text"
-
                 null height 8
                 textbutton ("Back to Title" if main_menu else "Resume Game"):
                     xalign 0.5
@@ -325,12 +272,8 @@ screen scoop_settings_menu():
                     text_size 24
                     text_color "#bbbbbb"
                     text_hover_color "#f0c75e"
-
         key "K_ESCAPE" action [Play("sound", "audio/ui_cancel.ogg"), Return()]
 
-    # --------------------------------------------------------------------------
-    # TAB 2: AUDIO SETTINGS
-    # --------------------------------------------------------------------------
     elif scoop_menu_tab == "audio":
         frame:
             align (0.5, 0.5)
@@ -342,8 +285,6 @@ screen scoop_settings_menu():
                 spacing 26
                 xfill True
                 text "AUDIO SETTINGS" xalign 0.5 size 36 bold True color "#f0c75e" outlines [(2, "#000000", 0, 0)]
-
-                # Slider 1: Background Music (BGM)
                 vbox:
                     spacing 8
                     hbox:
@@ -355,8 +296,6 @@ screen scoop_settings_menu():
                         value Preference("music volume")
                         style "scoop_volume_slider"
                         xalign 0.5
-
-                # Slider 2: Sound Effects (SFX & Stings)
                 vbox:
                     spacing 8
                     hbox:
@@ -369,8 +308,6 @@ screen scoop_settings_menu():
                         style "scoop_volume_slider"
                         released Play("sound", "audio/ui_notify.ogg")
                         xalign 0.5
-
-                # Slider 3: Ambience (Environmental Audio)
                 vbox:
                     spacing 8
                     hbox:
@@ -382,7 +319,6 @@ screen scoop_settings_menu():
                         value Preference("mixer ambient volume")
                         style "scoop_volume_slider"
                         xalign 0.5
-
                 null height 6
                 hbox:
                     xalign 0.5
@@ -396,7 +332,6 @@ screen scoop_settings_menu():
                         text_size 22
                         text_color "#ffffff"
                         text_hover_color "#f0c75e"
-
                     textbutton "Mute All":
                         hover_sound "audio/ui_hover.ogg"
                         activate_sound "audio/ui_click.ogg"
@@ -408,7 +343,6 @@ screen scoop_settings_menu():
                         text_size 22
                         text_color "#ffffff"
                         text_selected_color "#ffaaaa"
-
                     textbutton "Back to Settings":
                         hover_sound "audio/ui_hover.ogg"
                         activate_sound "audio/ui_cancel.ogg"
@@ -419,13 +353,10 @@ screen scoop_settings_menu():
                         text_size 22
                         text_bold True
                         text_color "#111111"
-
         key "K_ESCAPE" action [Play("sound", "audio/ui_cancel.ogg"), SetVariable("scoop_menu_tab", "main")]
 
-    # --------------------------------------------------------------------------
-    # TAB 3: SAVE INVESTIGATION EVENT
-    # --------------------------------------------------------------------------
-    elif scoop_menu_tab == "save":
+    elif scoop_menu_tab in ("save", "load"):
+        $ is_save = (scoop_menu_tab == "save")
         frame:
             align (0.5, 0.5)
             xsize 1360
@@ -436,12 +367,22 @@ screen scoop_settings_menu():
                 spacing 20
                 xfill True
                 yfill True
-                text "SAVE INVESTIGATION EVENT" xalign 0.5 size 36 bold True color "#f0c75e" outlines [(2, "#000000", 0, 0)]
-
-                # Page Selector (Pages 1 - 5)
+                text ("SAVE INVESTIGATION EVENT" if is_save else "LOAD INVESTIGATION EVENT") xalign 0.5 size 36 bold True color "#f0c75e" outlines [(2, "#000000", 0, 0)]
                 hbox:
                     xalign 0.5
                     spacing 16
+                    if not is_save:
+                        textbutton "Auto Saves":
+                            hover_sound "audio/ui_hover.ogg"
+                            activate_sound "audio/ui_click.ogg"
+                            action FilePage("auto")
+                            background Solid("#262626")
+                            selected_background Solid("#c99838")
+                            hover_background Solid("#444444")
+                            padding (18, 8)
+                            text_size 20
+                            text_color "#ffffff"
+                            text_selected_color "#111111"
                     for page_num in range(1, 6):
                         textbutton "Page [page_num]":
                             hover_sound "audio/ui_hover.ogg"
@@ -454,8 +395,6 @@ screen scoop_settings_menu():
                             text_size 20
                             text_color "#ffffff"
                             text_selected_color "#111111"
-
-                # 3x2 Save Slot Grid
                 grid 3 2:
                     xalign 0.5
                     spacing 26
@@ -468,15 +407,21 @@ screen scoop_settings_menu():
                             button:
                                 xfill True
                                 yfill True
+                                sensitive (True if is_save else FileLoadable(slot))
                                 background None
                                 hover_background Solid("#ffffff18")
                                 hover_sound "audio/ui_hover.ogg"
                                 activate_sound "audio/ui_click.ogg"
-                                action [
-                                    SetVariable("save_name", "Day " + str(current_day) + " - " + str(scoop_current_location)),
-                                    FileSave(slot, confirm=False),
-                                    Notify("Saved to Slot " + str(slot) + ".")
-                                ]
+                                action (
+                                    [
+                                        SetVariable("save_name", "Day " + str(current_day) + " - " + str(scoop_current_location)),
+                                        FileSave(slot, confirm=False),
+                                        Notify("Saved to Slot " + str(slot) + ".")
+                                    ] if is_save else [
+                                        SetVariable("scoop_menu_tab", "main"),
+                                        FileLoad(slot, confirm=False)
+                                    ]
+                                )
                                 vbox:
                                     spacing 6
                                     xalign 0.5
@@ -488,7 +433,7 @@ screen scoop_settings_menu():
                                         text "EMPTY SLOT" align (0.5, 0.5) size 18 color "#555555"
                                         add FileScreenshot(slot) align (0.5, 0.5) at Transform(maxsize=(300, 169))
                                     text FileSaveName(slot) xalign 0.5 size 18 bold True color "#f0c75e"
-                                    text FileTime(slot, format="%b %d, %Y - %I:%M %p", empty="Click to Save Event") xalign 0.5 size 16 color "#cccccc"
+                                    text FileTime(slot, format="%b %d, %Y - %I:%M %p", empty=("Click to Save Event" if is_save else "No Save Data")) xalign 0.5 size 16 color "#cccccc"
                             if FileLoadable(slot):
                                 textbutton "Delete":
                                     align (1.0, 0.0)
@@ -500,8 +445,6 @@ screen scoop_settings_menu():
                                     padding (8, 4)
                                     text_size 14
                                     text_color "#ffffff"
-
-                # Navigation Footer
                 hbox:
                     xalign 0.5
                     spacing 35
@@ -516,7 +459,7 @@ screen scoop_settings_menu():
                         text_size 22
                         text_bold True
                         text_color "#111111"
-                    textbutton "Resume Game":
+                    textbutton ("Back to Title" if (main_menu and not is_save) else "Resume Game"):
                         hover_sound "audio/ui_hover.ogg"
                         activate_sound "audio/ui_cancel.ogg"
                         action [SetVariable("scoop_menu_tab", "main"), Return()]
@@ -525,129 +468,8 @@ screen scoop_settings_menu():
                         padding (26, 10)
                         text_size 22
                         text_color "#ffffff"
-
         key "K_ESCAPE" action [Play("sound", "audio/ui_cancel.ogg"), SetVariable("scoop_menu_tab", "main")]
 
-    # --------------------------------------------------------------------------
-    # TAB 4: LOAD INVESTIGATION EVENT
-    # --------------------------------------------------------------------------
-    elif scoop_menu_tab == "load":
-        frame:
-            align (0.5, 0.5)
-            xsize 1360
-            ysize 840
-            background Solid("#141414F5")
-            padding (45, 35)
-            vbox:
-                spacing 20
-                xfill True
-                yfill True
-                text "LOAD INVESTIGATION EVENT" xalign 0.5 size 36 bold True color "#f0c75e" outlines [(2, "#000000", 0, 0)]
-
-                # Page Selector (Auto + Pages 1 - 5)
-                hbox:
-                    xalign 0.5
-                    spacing 16
-                    textbutton "Auto Saves":
-                        hover_sound "audio/ui_hover.ogg"
-                        activate_sound "audio/ui_click.ogg"
-                        action FilePage("auto")
-                        background Solid("#262626")
-                        selected_background Solid("#c99838")
-                        hover_background Solid("#444444")
-                        padding (18, 8)
-                        text_size 20
-                        text_color "#ffffff"
-                        text_selected_color "#111111"
-                    for page_num in range(1, 6):
-                        textbutton "Page [page_num]":
-                            hover_sound "audio/ui_hover.ogg"
-                            activate_sound "audio/ui_click.ogg"
-                            action FilePage(page_num)
-                            background Solid("#262626")
-                            selected_background Solid("#c99838")
-                            hover_background Solid("#444444")
-                            padding (18, 8)
-                            text_size 20
-                            text_color "#ffffff"
-                            text_selected_color "#111111"
-
-                # 3x2 Load Slot Grid
-                grid 3 2:
-                    xalign 0.5
-                    spacing 26
-                    for slot in range(1, 7):
-                        frame:
-                            xsize 390
-                            ysize 265
-                            background Solid("#222222")
-                            padding (12, 12)
-                            button:
-                                xfill True
-                                yfill True
-                                sensitive FileLoadable(slot)
-                                background None
-                                hover_background Solid("#ffffff18")
-                                hover_sound "audio/ui_hover.ogg"
-                                activate_sound "audio/ui_click.ogg"
-                                action [
-                                    SetVariable("scoop_menu_tab", "main"),
-                                    FileLoad(slot, confirm=False)
-                                ]
-                                vbox:
-                                    spacing 6
-                                    xalign 0.5
-                                    fixed:
-                                        xsize 300
-                                        ysize 169
-                                        xalign 0.5
-                                        add Solid("#111111")
-                                        text "EMPTY SLOT" align (0.5, 0.5) size 18 color "#555555"
-                                        add FileScreenshot(slot) align (0.5, 0.5) at Transform(maxsize=(300, 169))
-                                    text FileSaveName(slot) xalign 0.5 size 18 bold True color "#f0c75e"
-                                    text FileTime(slot, format="%b %d, %Y - %I:%M %p", empty="No Save Data") xalign 0.5 size 16 color "#cccccc"
-                            if FileLoadable(slot):
-                                textbutton "Delete":
-                                    align (1.0, 0.0)
-                                    hover_sound "audio/ui_hover.ogg"
-                                    activate_sound "audio/ui_cancel.ogg"
-                                    action FileDelete(slot, confirm=False)
-                                    background Solid("#6e1919CC")
-                                    hover_background Solid("#a62424")
-                                    padding (8, 4)
-                                    text_size 14
-                                    text_color "#ffffff"
-
-                # Navigation Footer
-                hbox:
-                    xalign 0.5
-                    spacing 35
-                    yalign 1.0
-                    textbutton "Back to Settings":
-                        hover_sound "audio/ui_hover.ogg"
-                        activate_sound "audio/ui_cancel.ogg"
-                        action SetVariable("scoop_menu_tab", "main")
-                        background Solid("#c99838")
-                        hover_background Solid("#e3b34c")
-                        padding (26, 10)
-                        text_size 22
-                        text_bold True
-                        text_color "#111111"
-                    textbutton ("Back to Title" if main_menu else "Resume Game"):
-                        hover_sound "audio/ui_hover.ogg"
-                        activate_sound "audio/ui_cancel.ogg"
-                        action [SetVariable("scoop_menu_tab", "main"), Return()]
-                        background Solid("#2b2b2b")
-                        hover_background Solid("#444444")
-                        padding (26, 10)
-                        text_size 22
-                        text_color "#ffffff"
-
-        key "K_ESCAPE" action [Play("sound", "audio/ui_cancel.ogg"), SetVariable("scoop_menu_tab", "main")]
-
-    # --------------------------------------------------------------------------
-    # TAB 5: CREDITS
-    # --------------------------------------------------------------------------
     elif scoop_menu_tab == "credits":
         frame:
             align (0.5, 0.5)
@@ -693,43 +515,7 @@ screen scoop_settings_menu():
                     text_size 22
                     text_bold True
                     text_color "#111111"
-
         key "K_ESCAPE" action [Play("sound", "audio/ui_cancel.ogg"), SetVariable("scoop_menu_tab", "main")]
-
-# ==============================================================================
-# 5. ROUTE ALL SAVE / LOAD / AUDIO / CREDITS / DEFAULT SCREENS INTO UNIFIED UI
-# ==============================================================================
-screen scoop_save_screen():
-    tag menu
-    modal True
-    zorder 300
-    on "show" action [SetVariable("scoop_menu_tab", "save"), If(FileCurrentPage() in ("auto", "quick"), FilePage(1))]
-    on "replace" action [SetVariable("scoop_menu_tab", "save"), If(FileCurrentPage() in ("auto", "quick"), FilePage(1))]
-    use scoop_settings_menu
-
-screen scoop_load_screen():
-    tag menu
-    modal True
-    zorder 300
-    on "show" action [SetVariable("scoop_menu_tab", "load"), If(FileCurrentPage() == "quick", FilePage(1))]
-    on "replace" action [SetVariable("scoop_menu_tab", "load"), If(FileCurrentPage() == "quick", FilePage(1))]
-    use scoop_settings_menu
-
-screen scoop_audio_screen():
-    tag menu
-    modal True
-    zorder 300
-    on "show" action SetVariable("scoop_menu_tab", "audio")
-    on "replace" action SetVariable("scoop_menu_tab", "audio")
-    use scoop_settings_menu
-
-screen scoop_credits_screen():
-    tag menu
-    modal True
-    zorder 300
-    on "show" action SetVariable("scoop_menu_tab", "credits")
-    on "replace" action SetVariable("scoop_menu_tab", "credits")
-    use scoop_settings_menu
 
 screen save():
     tag menu
@@ -763,9 +549,6 @@ screen about():
     on "replace" action SetVariable("scoop_menu_tab", "credits")
     use scoop_settings_menu
 
-# ==============================================================================
-# 6. ELEVATED CONFIRM & NOTIFY SCREENS (Always Render Above Settings/Save/Load)
-# ==============================================================================
 screen confirm(message, yes_action, no_action):
     modal True
     zorder 500
