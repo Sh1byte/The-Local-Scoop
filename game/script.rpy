@@ -8,4 +8,4 @@
 label start:
     stop music fadeout 1.0
     show screen global_hud
-    jump stage1_briefing
+    jump prologue_start
