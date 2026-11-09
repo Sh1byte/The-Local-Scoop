@@ -206,6 +206,8 @@ style input:
 
 screen choice(items):
     style_prefix "choice"
+    modal True
+    zorder 120
 
     vbox:
         for i in items:

@@ -7,59 +7,11 @@ init -5 python:
     renpy.music.register_channel("ambient", mixer="ambient", loop=True, tight=True)
     renpy.music.register_channel("sting", mixer="sfx", loop=False)
 
-    if not hasattr(renpy.music, "_scoop_real_play"):
-        if (
-            "_scoop_orig_music_play" in globals()
-            and getattr(_scoop_orig_music_play, "__name__", "") != "_scoop_custom_music_play"
-        ):
-            renpy.music._scoop_real_play = _scoop_orig_music_play
-        else:
-            renpy.music._scoop_real_play = renpy.music.play
-    _scoop_orig_music_play = renpy.music._scoop_real_play
     _scoop_sting_active = False
-
-    def _scoop_prepend_volume(filenames, factor=4.0):
-        if isinstance(filenames, str):
-            return f"<volume {factor}>{filenames}" if not filenames.startswith("<") else filenames
-        elif isinstance(filenames, (list, tuple)):
-            return [
-                (f"<volume {factor}>{f}" if isinstance(f, str) and not f.startswith("<") else f)
-                for f in filenames
-            ]
-        return filenames
-
-    def _scoop_custom_music_play(filenames, channel="music", loop=None, fadeout=None, synchro_start=False, fadein=0, tight=None, if_changed=False, relative_volume=1.0, **kwargs):
-        global _scoop_sting_active
-        if channel == "ambient":
-            base_vol = 1.0 if relative_volume is None else relative_volume
-            relative_volume = min(1.0, base_vol * 2.0)
-            filenames = _scoop_prepend_volume(filenames, 4.0)
-        elif channel == "sting":
-            base_vol = 1.0 if relative_volume is None else relative_volume
-            relative_volume = max(0.0, min(1.0, base_vol * 0.5))
-            filenames = _scoop_prepend_volume(filenames, 0.5)
-        rv = renpy.music._scoop_real_play(
-            filenames,
-            channel=channel,
-            loop=loop,
-            fadeout=fadeout,
-            synchro_start=synchro_start,
-            fadein=fadein,
-            tight=tight,
-            if_changed=if_changed,
-            relative_volume=relative_volume,
-            **kwargs
-        )
-        if channel == "sting" or (channel == "music" and (_scoop_sting_active or renpy.music.get_playing(channel="sting"))):
-            _scoop_sting_active = True
-            renpy.music.set_volume(0.0, delay=0.0, channel="music")
-            renpy.music.set_pause(True, channel="music")
-        return rv
-
-    renpy.music.play = _scoop_custom_music_play
 
     def _scoop_sting_periodic_monitor():
         global _scoop_sting_active
+        renpy.music.set_volume(0.5, delay=0.0, channel="sting")
         if renpy.music.get_playing(channel="sting"):
             _scoop_sting_active = True
             renpy.music.set_volume(0.0, delay=0.0, channel="music")

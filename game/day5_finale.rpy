@@ -145,22 +145,18 @@ label day5_investigation_hub:
         if "Tourist 1" not in day5_witnesses_found:
             play sound "audio/ui_notepad_flip.ogg"
             $ day5_witnesses_found.append("Tourist 1")
-            $ renpy.notify("Witness interviewed: Tourist.")
         show expression "gui/day5_abandoned_station/Depot_Entrance/Tourist.png" at topleft
         play sound "audio/sfx_camera_shutter.ogg"
         tourist "I didn't know this town would be this active!"
         tourist "I've been snapping photos all morning! I'm pretty sure they were just filming a zombie action movie here with fake blood."
     elif clicked_object == "go_to_maintenance_bay":
         play sound "audio/sfx_door_open.ogg"
-        "(Let's check out the maintenance bay.)"
         jump day5_maintenance_bay_hub
     elif clicked_object == "go_to_abandoned_tracks":
         play sound "audio/sfx_footsteps_move.ogg"
-        "(Let's head over to the abandoned tracks.)"
         jump day5_abandoned_tracks_hub
     elif clicked_object == "go_to_triage":
         play sound "audio/sfx_footsteps_move.ogg"
-        "(Looks like a makeshift medical area over there. Let's check it out.)"
         jump day5_triage_hub
     elif clicked_object == "newsroom":
         play sound "audio/sfx_van_door.ogg"
@@ -182,7 +178,6 @@ label day5_maintenance_bay_hub:
         if "Train Engineer 1" not in day5_witnesses_found:
             play sound "audio/ui_notepad_flip.ogg"
             $ day5_witnesses_found.append("Train Engineer 1")
-            $ renpy.notify("Witness interviewed: Train Engineer.")
         show expression "gui/day5_abandoned_station/Maintenance_Bay/Train_Engineer.png" at topleft
         engineer "Nothing mysterious about it. That driver just fell off a moving cargo train."
         engineer "I was working on the tracks when I saw him tumble right off."
@@ -195,7 +190,6 @@ label day5_maintenance_bay_hub:
             $ inventory_bag_items.append("The Rusty Toolbox")
     elif clicked_object == "go_to_oilleak_closeup":
         play sound "audio/sfx_footsteps_move.ogg"
-        "(Looks like there's a dark puddle leaking on the floor over there.)"
         jump day5_oilleak_closeup_hub
     elif clicked_object == "depot_entrance":
         play sound "audio/sfx_door_open.ogg"
@@ -208,7 +202,6 @@ label day5_oilleak_closeup_hub:
     if "The Leaking Oil Puddle" not in day5_clues_found:
         play sound "audio/ui_notepad_flip.ogg"
         $ day5_clues_found.append("The Leaking Oil Puddle")
-        $ renpy.notify("Clue found: The Leaking Oil Puddle.")
     "Looks like normal car trouble."
     "Wait, what is that red drop beside the puddle?"
     call screen day5_oilleak_closeup_environment
@@ -229,20 +222,14 @@ label day5_abandoned_tracks_hub:
         if "Hobo 1" not in day5_witnesses_found:
             play sound "audio/ui_notepad_flip.ogg"
             $ day5_witnesses_found.append("Hobo 1")
-            $ renpy.notify("Witness interviewed: Hobo.")
         show expression "gui/day5_abandoned_station/Abandoned_Tracks/Homeless_Man_Idle.png" at topleft
         hobo "Wake up! The government is poisoning the water supply!"
         hobo "I drank from a rusty faucet and my stomach hurt ALL WEEK!"
     elif clicked_object == "go_to_tracks_closeup":
         play sound "audio/sfx_footsteps_move.ogg"
-        "(Looks like there are some tracks on the ground near the rails.)"
         jump day5_tracks_closeup_hub
     elif clicked_object == "go_to_grass_closeup":
         play sound "audio/sfx_footsteps_move.ogg"
-        if "The Empty Wallet" not in inventory_bag_items:
-            "(Looks like there's something lying in the grass.)"
-        else:
-            "(Nothing else left in the grass.)"
         jump day5_grass_closeup_hub
     elif clicked_object == "depot_entrance":
         play sound "audio/sfx_footsteps_move.ogg"
@@ -259,14 +246,12 @@ label day5_tracks_closeup_hub:
         if "The Bloody Tire Tracks" not in day5_clues_found:
             play sting "audio/sting_clue_major.ogg" volume 0.75
             $ day5_clues_found.append("The Bloody Tire Tracks")
-            $ renpy.notify("Clue found: The Bloody Tire Tracks.")
         "Bloody tire tracks. They show the exact escape route of the ambushed gangsters."
         jump day5_tracks_closeup_hub
     elif clicked_object == "dogtracks":
         if "The Wild Dog Tracks" not in day5_clues_found:
             play sound "audio/ui_notepad_flip.ogg"
             $ day5_clues_found.append("The Wild Dog Tracks")
-            $ renpy.notify("Clue found: The Wild Dog Tracks.")
         "Wild dog tracks. Maybe they were drawn to the smell of blood."
         "Or they just went for a hunt and stumbled through here accidentally."
         jump day5_tracks_closeup_hub
@@ -302,19 +287,13 @@ label day5_triage_hub:
         if "Medic 1" not in day5_witnesses_found:
             play sound "audio/ui_notepad_flip.ogg"
             $ day5_witnesses_found.append("Medic 1")
-            $ renpy.notify("Witness interviewed: Medic.")
         show expression "gui/day5_abandoned_station/Triage/Medic.png" at topleft
         medic "They forced me at gunpoint to treat a wounded gangster! He kept muttering about how they're gonna get revenge at the shipping docks tonight!"
     elif clicked_object == "go_to_crate_closeup":
         play sound "audio/sfx_footsteps_move.ogg"
-        if "The Burner Phone" not in inventory_bag_items and not evidence_phone:
-            "(Looks like there's something dropped near the medical crates.)"
-        else:
-            "(Nothing else near the medical supplies.)"
         jump day5_crate_closeup_hub
     elif clicked_object == "go_to_tent":
         play sound "audio/sfx_zipper_tent.ogg"
-        "(Looks like the wounded driver was treated inside this tent. Let's take a look inside.)"
         jump day5_triage_tent_hub
     elif clicked_object == "depot_entrance":
         play sound "audio/sfx_footsteps_move.ogg"
@@ -348,10 +327,6 @@ label day5_triage_tent_hub:
     $ clicked_object = _return
     if clicked_object == "go_to_coat_closeup":
         play sound "audio/sfx_paper_rustle.ogg"
-        if "The Train Ticket Stub" not in inventory_bag_items:
-            "(Looks like there's something sticking out of the driver's coat pocket.)"
-        else:
-            "(Nothing else left in the coat pocket.)"
         jump day5_coat_closeup_hub
     elif clicked_object == "back_to_triage":
         play sound "audio/sfx_zipper_tent.ogg"
@@ -474,7 +449,7 @@ label select_day5_witness:
                     jump select_day5_witness
 
 label day5_api_execution:
-    call calculate_day5_credibility
+    call calculate_day5_credibility from _call_calculate_day5_credibility
     python:
         article_result = sheetdb_client.fetch_newspaper_article(day5_clue, day5_item, day5_witness, "day5")
         daily_headline = article_result.get("headline", "Error: Story Not Found")
@@ -526,7 +501,7 @@ label day5_path_a_climax:
 
     play sound "audio/sfx_door_open.ogg"
     scene day5_pas1_5 with dissolve
-    "{cps=22}(Grabbing our coats and cameras, the two of us hurried out of the newsroom into the cold night, heading straight for the shipping docks.){/cps}{w=2.8}{nw}"
+    "{cps=22}(Grabbing our cameras, the two of us hurried out of the newsroom into the cold night, heading straight for the shipping docks.){/cps}{w=2.8}{nw}"
 
     stop ambient fadeout 1.0
     scene black with fade
@@ -619,7 +594,7 @@ label day5_path_a_climax:
             "{cps=22}ENDING UNLOCKED: The Dark Path.{/cps}{w=3.0}{nw}"
             $ current_ending_name = "The Dark Path"
 
-        call play_end_credits("The Redemption Path")
+        call play_end_credits("The Redemption Path") from _call_play_end_credits
         return
 
     else:
@@ -750,5 +725,5 @@ label day5_path_b_start:
     "{cps=22}Together, we hadn't just written the biggest headline in the history of The Daily Herald, we had saved the town and proven what true journalism was all about.{/cps}{w=3.5}{nw}"
     "{cps=22}ENDING UNLOCKED: The Clean Sweep.{/cps}{w=3.0}{nw}"
 
-    call play_end_credits("The Clean Sweep")
+    call play_end_credits("The Clean Sweep") from _call_play_end_credits_1
     return

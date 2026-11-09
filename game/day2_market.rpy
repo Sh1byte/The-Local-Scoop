@@ -543,7 +543,7 @@ label select_day2_witness:
                     jump select_day2_witness
 
 label day2_api_execution:
-    call calculate_day2_credibility
+    call calculate_day2_credibility from _call_calculate_day2_credibility
     python:
         article_result = sheetdb_client.fetch_newspaper_article(day2_clue, day2_item, day2_witness, "day2")
         daily_headline = article_result.get("headline", "Error: Story Not Found")
